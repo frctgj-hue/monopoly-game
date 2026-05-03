@@ -93,7 +93,7 @@ const Board: React.FC<BoardProps> = ({ board, players, onCellClick }) => {
   };
 
   const getSpecialCellStyle = (property: Property) => {
-    if (property.name.includes('Шанс')) return 'bg-red-100'; // Светло-красный для Шанс
+    if (property.name.includes('Шанс')) return 'bg-red-200'; // Светло-красный для Шанс
     return 'bg-[#F5F0E8]'; // Стандартный бежевый
   };
 
@@ -162,9 +162,9 @@ const Board: React.FC<BoardProps> = ({ board, players, onCellClick }) => {
           <>
             {property.name.includes('Шанс') ? (
               // Иконка Шанс в центре с фоном
-              <div className="text-center text-2xl mb-1 relative -mt-2">
+              <div className="text-center text-3xl mb-1 relative">
                 <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="w-10 h-10 bg-red-200 rounded-full opacity-50"></div>
+                  <div className="w-12 h-12 bg-red-300 rounded-full opacity-40"></div>
                 </div>
                 <div className="relative z-10" style={{
                   filter: 'drop-shadow(2px 2px 3px rgba(0,0,0,0.2))'
