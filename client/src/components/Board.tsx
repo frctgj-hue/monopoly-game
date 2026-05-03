@@ -109,7 +109,7 @@ const Board: React.FC<BoardProps> = ({ board, players, onCellClick }) => {
         } ${isOwned && owner ? 'ring-2 ring-offset-0' : ''} ${
           isCorner
             ? getCornerStyle(index)
-            : (property.name.includes('Шанс') ? 'bg-red-200' : 'bg-[#F5F0E8]')
+            : (property.name.includes('Шанс') ? 'bg-red-300' : 'bg-[#F5F0E8]')
         } group shadow-sm hover:shadow-md`}
         style={{
           ...(isOwned && owner ? { borderColor: owner.color, borderWidth: '3px' } : {}),
