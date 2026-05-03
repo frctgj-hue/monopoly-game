@@ -211,9 +211,11 @@ const Board: React.FC<BoardProps> = ({ board, players, onCellClick }) => {
         )}
 
         {/* Название - капсом, жирный шрифт */}
-        <div className={`${isCorner ? 'text-[12px]' : 'text-[9px]'} font-black text-center uppercase leading-tight text-gray-900 px-0.5`}>
-          {property.name}
-        </div>
+        {!property.name.includes('Шанс') && (
+          <div className={`${isCorner ? 'text-[12px]' : 'text-[9px]'} font-black text-center uppercase leading-tight text-gray-900 px-0.5`}>
+            {property.name}
+          </div>
+        )}
 
         {/* Цена - поверх полоски */}
         {property.price > 0 && (
