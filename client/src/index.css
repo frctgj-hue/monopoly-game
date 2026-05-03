@@ -87,7 +87,7 @@ body {
 
   .backdrop-blur-glass {
     backdrop-filter: blur(10px);
-    background: rgba(255, 255, 255, 0.9);
+    background: rgba(255, 255, 255, 0.95);
   }
 
   .gradient-monopoly {
