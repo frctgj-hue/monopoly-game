@@ -1,4 +1,6 @@
 import React from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faHouse, faPlay } from '@fortawesome/free-solid-svg-icons';
 import type { Player } from '../types/game.types';
 import TokenPiece from './TokenPiece';
 
@@ -45,8 +47,8 @@ const PlayersList: React.FC<PlayersListProps> = ({ players, currentPlayerId, myP
                         {isMe && <span className="ml-1 text-xs text-blue-600">(Вы)</span>}
                       </div>
                       {isCurrentPlayer && (
-                        <div className="text-xs text-green-600 font-medium">
-                          ▶ Ходит
+                        <div className="text-xs font-bold uppercase flex items-center gap-1" style={{ color: '#2d8659' }}>
+                          <FontAwesomeIcon icon={faPlay} /> Ходит
                         </div>
                       )}
                       {player.isBankrupt && (
@@ -68,7 +70,9 @@ const PlayersList: React.FC<PlayersListProps> = ({ players, currentPlayerId, myP
                 {/* Имущество */}
                 <td className="text-center py-2">
                   <div className="text-sm">
-                    <div className="font-medium">{player.properties.length} 🏠</div>
+                    <div className="font-medium flex items-center justify-center gap-1">
+                      {player.properties.length} <FontAwesomeIcon icon={faHouse} />
+                    </div>
                   </div>
                 </td>
               </tr>
