@@ -398,6 +398,12 @@ export class GameService {
 
       case 'jailFree':
         player.getOutOfJailFreeCards += 1;
+        // Если игрок уже в тюрьме, автоматически используем карточку
+        if (player.inJail) {
+          player.getOutOfJailFreeCards -= 1;
+          player.inJail = false;
+          player.jailTurns = 0;
+        }
         break;
 
       case 'repairs':
