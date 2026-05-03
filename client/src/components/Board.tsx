@@ -92,11 +92,6 @@ const Board: React.FC<BoardProps> = ({ board, players, onCellClick }) => {
     return 'bg-[#F5F0E8]';
   };
 
-  const getSpecialCellStyle = (property: Property) => {
-    if (property.name.includes('Шанс')) return 'bg-red-200'; // Светло-красный для Шанс
-    return 'bg-[#F5F0E8]'; // Стандартный бежевый
-  };
-
   const renderCell = (property: Property, index: number) => {
     const playersOnCell = players.filter(p => p.position === index);
     const isOwned = property.owner !== null;
@@ -111,7 +106,11 @@ const Board: React.FC<BoardProps> = ({ board, players, onCellClick }) => {
         data-property-id={index}
         className={`relative border-2 border-black cursor-pointer hover:brightness-95 transition-all duration-200 flex flex-col items-center justify-between ${
           isCorner ? 'p-2' : 'p-1'
-        } ${isOwned && owner ? 'ring-2 ring-offset-0' : ''} ${isCorner ? getCornerStyle(index) : (property.type === 'special' ? getSpecialCellStyle(property) : 'bg-[#F5F0E8]')} group shadow-sm hover:shadow-md`}
+        } ${isOwned && owner ? 'ring-2 ring-offset-0' : ''} ${
+          isCorner
+            ? getCornerStyle(index)
+            : (property.name.includes('Шанс') ? 'bg-red-200' : 'bg-[#F5F0E8]')
+        } group shadow-sm hover:shadow-md`}
         style={{
           ...(isOwned && owner ? { borderColor: owner.color, borderWidth: '3px' } : {}),
           ...(isTopOrBottomRow ? { minHeight: '95px' } : {})
