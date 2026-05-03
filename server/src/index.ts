@@ -153,7 +153,19 @@ io.on('connection', (socket) => {
       }
     }
 
-    const updatedGame = gameService.getGame(gameId);
+    // Автоматическая оплата аренды при попадании на чужую недвижимость
+    let updatedGame = gameService.getGame(gameId);
+    if (updatedGame) {
+      const property = updatedGame.board[newPosition];
+      if (property && property.owner && property.owner !== socket.id && property.price > 0) {
+        const rent = gameService.payRent(gameId, socket.id, newPosition, diceRoll.total);
+        updatedGame = gameService.getGame(gameId);
+        if (rent > 0) {
+          io.to(gameId).emit('rent-paid', { playerId: socket.id, propertyId: newPosition, rent, game: updatedGame });
+        }
+      }
+    }
+
     io.to(gameId).emit('dice-rolled', {
       playerId: socket.id,
       diceRoll,
