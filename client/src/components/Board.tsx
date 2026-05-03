@@ -135,9 +135,7 @@ const Board: React.FC<BoardProps> = ({ board, players, onCellClick }) => {
             style={getColorStyle(property.color)}
           >
             <div className="absolute inset-0 bg-gradient-to-b from-white to-transparent opacity-20"></div>
-            <span className="text-white text-xs relative z-10" style={{
-              textShadow: '1px 1px 2px rgba(0,0,0,0.5)'
-            }}>
+            <span className="text-white text-xs relative z-10">
               <FontAwesomeIcon icon={faTrain} />
             </span>
           </div>
