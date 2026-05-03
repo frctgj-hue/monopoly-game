@@ -63,67 +63,67 @@ const PropertyManagement: React.FC<PropertyManagementProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50 animate-fade-in">
-      <div className="bg-white rounded-3xl shadow-2xl max-w-4xl w-full mx-4 max-h-[90vh] overflow-hidden animate-scale-in">
-        <div className="bg-gradient-to-r from-blue-500 to-purple-600 p-6 text-white">
+    <div className="w-full">
+      <div className="bg-white rounded-lg shadow-2xl overflow-hidden">
+        <div className="p-4 text-white border-b-4 border-black" style={{ backgroundColor: '#2d8659' }}>
           <div className="flex items-center justify-between">
-            <h2 className="text-2xl font-bold">🏠 Управление недвижимостью</h2>
+            <h2 className="text-xl font-bold uppercase">Управление недвижимостью</h2>
             <button
               onClick={onClose}
-              className="text-white hover:bg-white hover:bg-opacity-20 rounded-full p-2 transition-all"
+              className="text-white hover:bg-white hover:bg-opacity-20 rounded-full w-8 h-8 transition-all font-bold text-xl"
             >
-              ✕
+              ×
             </button>
           </div>
-          <div className="mt-2 text-lg">
-            💰 Баланс: ${player.money}
+          <div className="mt-2 text-base font-bold">
+            Баланс: ${player.money}
           </div>
         </div>
 
-        <div className="p-6 overflow-y-auto max-h-[calc(90vh-120px)]">
+        <div className="p-4 overflow-y-auto max-h-[800px]">
           {Object.keys(groupedProperties).length === 0 ? (
-            <div className="text-center py-12 text-gray-500">
-              <div className="text-6xl mb-4">🏚️</div>
-              <p className="text-xl">У вас пока нет недвижимости</p>
+            <div className="text-center py-8 text-gray-500">
+              <div className="text-4xl mb-3">🏚️</div>
+              <p className="text-base">У вас пока нет недвижимости</p>
             </div>
           ) : (
-            <div className="space-y-6">
+            <div className="space-y-4">
               {Object.entries(groupedProperties).map(([color, props]) => {
                 const monopoly = hasMonopoly(color);
                 const houseCost = getHouseCost(color);
 
                 return (
-                  <div key={color} className="bg-gray-50 rounded-2xl p-4">
-                    <div className="flex items-center gap-3 mb-4">
-                      <div className={`${getColorClass(color)} w-8 h-8 rounded`}></div>
-                      <h3 className="text-lg font-bold text-gray-800">
-                        {color.toUpperCase()}
+                  <div key={color} className="bg-gray-50 rounded-lg p-3 border-2 border-gray-300">
+                    <div className="flex items-center gap-2 mb-3">
+                      <div className={`${getColorClass(color)} w-6 h-6 rounded border-2 border-black`}></div>
+                      <h3 className="text-sm font-bold text-gray-800 uppercase">
+                        {color}
                       </h3>
                       {monopoly && (
-                        <span className="bg-green-500 text-white text-xs px-3 py-1 rounded-full font-bold">
-                          ⭐ МОНОПОЛИЯ
+                        <span className="text-white text-xs px-2 py-0.5 rounded-full font-bold" style={{ backgroundColor: '#2d8659' }}>
+                          МОНОПОЛИЯ
                         </span>
                       )}
                     </div>
 
-                    <div className="space-y-3">
+                    <div className="space-y-2">
                       {props.map(prop => (
                         <div
                           key={prop.id}
-                          className="bg-white rounded-xl p-4 border-2 border-gray-200"
+                          className="bg-white rounded-lg p-3 border-2 border-gray-300"
                         >
-                          <div className="flex items-center justify-between mb-3">
+                          <div className="flex items-center justify-between mb-2">
                             <div>
-                              <div className="font-bold text-gray-800">{prop.name}</div>
-                              <div className="text-sm text-gray-600">
+                              <div className="font-bold text-gray-800 text-sm">{prop.name}</div>
+                              <div className="text-xs text-gray-600">
                                 {prop.houses === 0 && 'Без построек'}
                                 {prop.houses > 0 && prop.houses < 5 && `🏠 ${prop.houses} ${prop.houses === 1 ? 'дом' : 'дома'}`}
                                 {prop.houses === 5 && '🏨 Отель'}
                               </div>
                             </div>
                             <div className="text-right">
-                              <div className="text-sm text-gray-600">Аренда</div>
-                              <div className="font-bold text-green-600">
+                              <div className="text-xs text-gray-600">Аренда</div>
+                              <div className="font-bold text-sm" style={{ color: '#2d8659' }}>
                                 ${prop.rent[prop.houses] || prop.rent[0]}
                               </div>
                             </div>
@@ -134,28 +134,30 @@ const PropertyManagement: React.FC<PropertyManagementProps> = ({
                               <button
                                 onClick={() => onBuildHouse(prop.id)}
                                 disabled={prop.houses >= 5 || player.money < houseCost}
-                                className={`flex-1 py-2 px-4 rounded-lg font-bold text-sm transition-all ${
+                                className={`flex-1 py-1.5 px-3 rounded-lg font-bold text-xs transition-all ${
                                   prop.houses >= 5 || player.money < houseCost
                                     ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
-                                    : 'bg-green-500 text-white hover:bg-green-600'
+                                    : 'text-white'
                                 }`}
+                                style={prop.houses < 5 && player.money >= houseCost ? { backgroundColor: '#2d8659' } : {}}
                               >
-                                {prop.houses === 4 ? `🏨 Построить отель ($${houseCost})` : `🏠 Построить дом ($${houseCost})`}
+                                {prop.houses === 4 ? `Отель ($${houseCost})` : `Дом ($${houseCost})`}
                               </button>
                               {prop.houses > 0 && (
                                 <button
                                   onClick={() => onSellHouse(prop.id)}
-                                  className="flex-1 py-2 px-4 rounded-lg font-bold text-sm bg-red-500 text-white hover:bg-red-600 transition-all"
+                                  className="flex-1 py-1.5 px-3 rounded-lg font-bold text-xs text-white transition-all"
+                                  style={{ backgroundColor: '#dc3545' }}
                                 >
-                                  💸 Продать ($${houseCost / 2})
+                                  Продать ($${houseCost / 2})
                                 </button>
                               )}
                             </div>
                           )}
 
                           {!monopoly && (
-                            <div className="text-center text-sm text-gray-500 py-2">
-                              Нужна монополия для строительства
+                            <div className="text-center text-xs text-gray-500 py-1">
+                              Нужна монополия
                             </div>
                           )}
                         </div>

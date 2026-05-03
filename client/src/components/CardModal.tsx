@@ -35,8 +35,7 @@ const CardModal: React.FC<CardModalProps> = ({ card, onClose }) => {
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50">
-      <div className="max-w-md w-full mx-4 perspective-1000">
+    <div className="w-full perspective-1000">
         <div
           className={`relative w-full transition-transform duration-700 transform-style-3d ${
             isFlipped ? 'rotate-y-180' : ''
@@ -95,7 +94,6 @@ const CardModal: React.FC<CardModalProps> = ({ card, onClose }) => {
             </div>
           </div>
         </div>
-      </div>
     </div>
   );
 };

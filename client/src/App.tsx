@@ -539,76 +539,6 @@ function App() {
 
   return (
     <div className="min-h-screen">
-      {/* Модальное окно отправки в тюрьму */}
-      {showGoToJail && (
-        <GoToJailModal
-          onConfirm={() => {
-            if (gameState) {
-              confirmGoToJail(gameState.id, (data) => {
-                if (data.success && data.game) {
-                  setGameState(data.game);
-                }
-              });
-            }
-            setShowGoToJail(false);
-          }}
-        />
-      )}
-
-      {/* Модальное окно карточки */}
-      <CardModal
-        card={currentCard}
-        onClose={() => {
-          if (currentCard && gameState) {
-            confirmCard(gameState.id, currentCard, (data) => {
-              if (data.success && data.game) {
-                setGameState(data.game);
-              }
-            });
-          }
-          setCurrentCard(null);
-        }}
-      />
-
-      {/* Модальное окно торговли - с затемнением */}
-      {showTradeModal && gameState && (
-        <div className="fixed inset-0 flex items-center justify-center p-8 bg-black bg-opacity-50" style={{
-          zIndex: 9999
-        }}>
-          <div className="bg-white rounded-lg shadow-2xl border-4 border-black p-6 max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-2xl font-black uppercase monopoly-title">
-                🤝 Торговля
-              </h2>
-              <button
-                onClick={() => setShowTradeModal(false)}
-                className="text-gray-800 hover:text-black font-bold text-3xl leading-none"
-              >
-                ×
-              </button>
-            </div>
-            <TradeModal
-              players={gameState.players}
-              board={gameState.board}
-              myPlayerId={myPlayerId}
-              onCreateTrade={handleCreateTrade}
-              onClose={() => setShowTradeModal(false)}
-            />
-          </div>
-        </div>
-      )}
-
-      {/* Модальное окно управления недвижимостью */}
-      {showPropertyManagement && gameState && (
-        <PropertyManagement
-          properties={gameState.board}
-          player={gameState.players.find(p => p.id === myPlayerId)!}
-          onBuildHouse={handleBuildHouse}
-          onSellHouse={handleSellHouse}
-          onClose={() => setShowPropertyManagement(false)}
-        />
-      )}
-
       {/* Уведомления о торговле */}
       {gameState?.tradeOffers
         .filter(trade => trade.status === 'pending')
@@ -624,28 +554,6 @@ function App() {
             onReject={handleRejectTrade}
           />
         ))}
-
-      {/* Анимация победы */}
-      {winner && (
-        <VictoryAnimation
-          winner={winner}
-          onClose={() => {
-            setWinner(null);
-            setPhase('lobby');
-            setGameState(null);
-          }}
-        />
-      )}
-
-      {/* Анимация банкротства */}
-      {bankruptPlayer && (
-        <BankruptcyAnimation
-          player={bankruptPlayer}
-          onComplete={() => setBankruptPlayer(null)}
-        />
-      )}
-
-      {/* Чат убран */}
 
       {/* Фазы игры с анимацией */}
       <div className="animate-fade-in">
@@ -665,7 +573,7 @@ function App() {
 
         {phase === 'playing' && gameState && (
           <div className="flex justify-center" style={{ backgroundColor: '#2d8659', paddingTop: '20px', paddingBottom: '20px', minHeight: '1250px' }}>
-            <div className="flex items-start" style={{ gap: '350px' }}>
+            <div className="flex items-start" style={{ gap: '20px' }}>
               {/* Доска - игровое поле (независимый блок) */}
               <div className="w-[1000px] h-[1000px] flex-shrink-0">
                 <Board
@@ -692,18 +600,109 @@ function App() {
                 />
               </div>
 
-              {/* Список игроков - справа от доски (независимый блок) */}
-              <div className="w-80 flex-shrink-0 space-y-4">
-                {/* Таблица игроков */}
-                <PlayersList
-                  players={gameState.players}
-                  currentPlayerId={gameState.players[gameState.currentPlayerIndex]?.id || ''}
-                  myPlayerId={myPlayerId}
-                />
+              {/* Центральная область для модальных окон */}
+              <div className="w-[300px] flex-shrink-0 space-y-4">
+                {/* Модальное окно отправки в тюрьму */}
+                {showGoToJail && (
+                  <div className="bg-white rounded-lg shadow-2xl border-4 border-red-600 p-6">
+                    <GoToJailModal
+                      onConfirm={() => {
+                        if (gameState) {
+                          confirmGoToJail(gameState.id, (data) => {
+                            if (data.success && data.game) {
+                              setGameState(data.game);
+                            }
+                          });
+                        }
+                        setShowGoToJail(false);
+                      }}
+                    />
+                  </div>
+                )}
 
-                {/* Модальное окно покупки недвижимости - под таблицей игроков */}
+                {/* Модальное окно карточки */}
+                {currentCard && (
+                  <div className="bg-white rounded-lg shadow-2xl border-4 border-black">
+                    <CardModal
+                      card={currentCard}
+                      onClose={() => {
+                        if (currentCard && gameState) {
+                          confirmCard(gameState.id, currentCard, (data) => {
+                            if (data.success && data.game) {
+                              setGameState(data.game);
+                            }
+                          });
+                        }
+                        setCurrentCard(null);
+                      }}
+                    />
+                  </div>
+                )}
+
+                {/* Модальное окно торговли */}
+                {showTradeModal && (
+                  <div className="bg-white rounded-lg shadow-2xl border-4 border-black p-4 max-h-[900px] overflow-y-auto">
+                    <div className="flex items-center justify-between mb-4">
+                      <h2 className="text-xl font-black uppercase monopoly-title">
+                        Торговля
+                      </h2>
+                      <button
+                        onClick={() => setShowTradeModal(false)}
+                        className="text-gray-800 hover:text-black font-bold text-2xl leading-none"
+                      >
+                        ×
+                      </button>
+                    </div>
+                    <TradeModal
+                      players={gameState.players}
+                      board={gameState.board}
+                      myPlayerId={myPlayerId}
+                      onCreateTrade={handleCreateTrade}
+                      onClose={() => setShowTradeModal(false)}
+                    />
+                  </div>
+                )}
+
+                {/* Модальное окно управления недвижимостью */}
+                {showPropertyManagement && (
+                  <div className="bg-white rounded-lg shadow-2xl border-4 border-black max-h-[900px] overflow-y-auto">
+                    <PropertyManagement
+                      properties={gameState.board}
+                      player={gameState.players.find(p => p.id === myPlayerId)!}
+                      onBuildHouse={handleBuildHouse}
+                      onSellHouse={handleSellHouse}
+                      onClose={() => setShowPropertyManagement(false)}
+                    />
+                  </div>
+                )}
+
+                {/* Анимация победы */}
+                {winner && (
+                  <div className="bg-white rounded-lg shadow-2xl border-4 border-yellow-500">
+                    <VictoryAnimation
+                      winner={winner}
+                      onClose={() => {
+                        setWinner(null);
+                        setPhase('lobby');
+                        setGameState(null);
+                      }}
+                    />
+                  </div>
+                )}
+
+                {/* Анимация банкротства */}
+                {bankruptPlayer && (
+                  <div className="bg-white rounded-lg shadow-2xl border-4 border-red-600">
+                    <BankruptcyAnimation
+                      player={bankruptPlayer}
+                      onComplete={() => setBankruptPlayer(null)}
+                    />
+                  </div>
+                )}
+
+                {/* Модальное окно покупки недвижимости */}
                 {selectedProperty !== null && (
-                  <div className="bg-white rounded-lg shadow-lg border-2 border-black p-4">
+                  <div className="bg-white rounded-lg shadow-2xl border-4 border-black p-4">
                     <PropertyModal
                       property={gameState.board[selectedProperty]}
                       playerMoney={gameState.players.find(p => p.id === myPlayerId)?.money || 0}
@@ -718,17 +717,29 @@ function App() {
                   </div>
                 )}
 
-                {/* Модальное окно аукциона - под таблицей игроков */}
+                {/* Модальное окно аукциона */}
                 {gameState.auction && (
-                  <AuctionModal
-                    auction={gameState.auction}
-                    property={gameState.board[gameState.auction.propertyId]}
-                    players={gameState.players}
-                    myPlayerId={myPlayerId}
-                    onPlaceBid={handlePlaceBid}
-                    onClose={handleCancelAuction}
-                  />
+                  <div className="bg-white rounded-lg shadow-2xl border-4 border-black">
+                    <AuctionModal
+                      auction={gameState.auction}
+                      property={gameState.board[gameState.auction.propertyId]}
+                      players={gameState.players}
+                      myPlayerId={myPlayerId}
+                      onPlaceBid={handlePlaceBid}
+                      onClose={handleCancelAuction}
+                    />
+                  </div>
                 )}
+              </div>
+
+              {/* Список игроков - справа от центральной области (независимый блок) */}
+              <div className="w-80 flex-shrink-0 space-y-4">
+                {/* Таблица игроков */}
+                <PlayersList
+                  players={gameState.players}
+                  currentPlayerId={gameState.players[gameState.currentPlayerIndex]?.id || ''}
+                  myPlayerId={myPlayerId}
+                />
 
                 {/* Панель управления для текущего игрока */}
                 {gameState.players[gameState.currentPlayerIndex]?.id === myPlayerId && (
@@ -777,6 +788,14 @@ function App() {
                       >
                         <FontAwesomeIcon icon={faHandshake} className="mr-2" />
                         Торговля
+                      </button>
+
+                      <button
+                        onClick={() => setShowPropertyManagement(true)}
+                        className="w-full py-2 px-4 rounded-lg font-bold text-xs text-white transition-all shadow-md uppercase"
+                        style={{ backgroundColor: '#dc3545' }}
+                      >
+                        🏠 Недвижимость
                       </button>
                     </div>
                   </div>
