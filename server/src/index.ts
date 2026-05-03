@@ -127,6 +127,23 @@ io.on('connection', (socket) => {
       return;
     }
 
+    // Проверка на налоговые клетки
+    if (newPosition === 4) {
+      // Подоходный налог
+      const updatedGame = gameService.getGame(gameId);
+      socket.emit('show-tax', { playerId: socket.id, taxType: 'income', amount: 200, game: updatedGame });
+      callback({ success: true, diceRoll, newPosition, game: updatedGame, showTax: true });
+      return;
+    }
+
+    if (newPosition === 38) {
+      // Налог на роскошь
+      const updatedGame = gameService.getGame(gameId);
+      socket.emit('show-tax', { playerId: socket.id, taxType: 'luxury', amount: 100, game: updatedGame });
+      callback({ success: true, diceRoll, newPosition, game: updatedGame, showTax: true });
+      return;
+    }
+
     // Проверка на клетки "Шанс" (7, 22, 36) и "Казна Зеона" (2, 17, 33)
     const chancePositions = [7, 22, 36];
     const communityPositions = [2, 17, 33];
@@ -281,6 +298,19 @@ io.on('connection', (socket) => {
     const game = gameService.getGame(gameId);
 
     io.to(gameId).emit('sent-to-jail', { playerId: socket.id, game });
+    callback({ success: true, game });
+  });
+
+  // Подтверждение оплаты налога
+  socket.on('confirm-tax', ({ gameId, amount }, callback) => {
+    const success = gameService.payTax(gameId, socket.id, amount);
+    if (!success) {
+      callback({ success: false, message: 'Не удалось оплатить налог' });
+      return;
+    }
+
+    const game = gameService.getGame(gameId);
+    io.to(gameId).emit('tax-paid', { playerId: socket.id, amount, game });
     callback({ success: true, game });
   });
 

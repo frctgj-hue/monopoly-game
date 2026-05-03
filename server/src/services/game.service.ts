@@ -106,20 +106,24 @@ export class GameService {
 
     const cell = game.board[position];
 
-    // Подоходный налог (клетка 4)
-    if (position === 4) {
-      player.money -= 200;
-    }
-
-    // Налог на роскошь (клетка 38)
-    if (position === 38) {
-      player.money -= 100;
-    }
+    // Подоходный налог (клетка 4) - теперь обрабатывается через модальное окно
+    // Налог на роскошь (клетка 38) - теперь обрабатывается через модальное окно
 
     // Идти в тюрьму (клетка 30)
     if (position === 30) {
       this.sendToJail(gameId, playerId);
     }
+  }
+
+  payTax(gameId: string, playerId: string, amount: number): boolean {
+    const game = this.games.get(gameId);
+    if (!game) return false;
+
+    const player = game.players.find(p => p.id === playerId);
+    if (!player) return false;
+
+    player.money -= amount;
+    return true;
   }
 
   calculateRailroadRent(gameId: string, ownerId: string): number {

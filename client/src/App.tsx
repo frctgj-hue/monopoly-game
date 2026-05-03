@@ -16,6 +16,7 @@ import TradeNotification from './components/TradeNotification';
 import VictoryAnimation from './components/VictoryAnimation';
 import BankruptcyAnimation from './components/BankruptcyAnimation';
 import GoToJailModal from './components/GoToJailModal';
+import TaxModal from './components/TaxModal';
 import { soundManager } from './utils/sounds';
 
 type GamePhase = 'lobby' | 'waiting' | 'playing';
@@ -36,6 +37,7 @@ function App() {
     drawCard,
     confirmCard,
     confirmGoToJail,
+    confirmTax,
     buildHouse,
     sellHouse,
     startAuction,
@@ -53,6 +55,7 @@ function App() {
   const [canRoll, setCanRoll] = useState(true);
   const [currentCard, setCurrentCard] = useState<Card | null>(null);
   const [showGoToJail, setShowGoToJail] = useState(false);
+  const [showTaxModal, setShowTaxModal] = useState<{ type: 'income' | 'luxury'; amount: number } | null>(null);
   const [showTradeModal, setShowTradeModal] = useState(false);
   const [showPropertyManagement, setShowPropertyManagement] = useState(false);
   const [selectedProperty, setSelectedProperty] = useState<number | null>(null);
@@ -108,6 +111,13 @@ function App() {
       setGameState(game);
       const player = game.players.find((p: Player) => p.id === playerId);
       showToast(`🚔 ${player?.name} отправлен в тюрьму!`, 'warning');
+    });
+
+    socket.on('show-tax', ({ playerId, taxType, amount, game }: { playerId: string; taxType: 'income' | 'luxury'; amount: number; game: GameState }) => {
+      setGameState(game);
+      if (playerId === socket.id) {
+        setShowTaxModal({ type: taxType, amount });
+      }
     });
 
     socket.on('show-go-to-jail', ({ game }: { game: GameState }) => {
@@ -346,6 +356,16 @@ function App() {
         setLastDiceRoll(undefined);
       }
     });
+  };
+
+  const handleConfirmTax = () => {
+    if (!gameState || !showTaxModal) return;
+    confirmTax(gameState.id, showTaxModal.amount, (data) => {
+      if (data.success && data.game) {
+        setGameState(data.game);
+      }
+    });
+    setShowTaxModal(null);
   };
 
   // Временно не используются, но нужны для будущего
@@ -616,6 +636,17 @@ function App() {
                         }
                         setShowGoToJail(false);
                       }}
+                    />
+                  </div>
+                )}
+
+                {/* Модальное окно налога */}
+                {showTaxModal && (
+                  <div className="bg-white rounded-lg shadow-2xl border-4 border-red-600 p-6">
+                    <TaxModal
+                      taxType={showTaxModal.type}
+                      amount={showTaxModal.amount}
+                      onConfirm={handleConfirmTax}
                     />
                   </div>
                 )}
