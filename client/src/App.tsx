@@ -17,12 +17,6 @@ import { soundManager } from './utils/sounds';
 
 type GamePhase = 'lobby' | 'waiting' | 'playing';
 
-interface ToastMessage {
-  id: number;
-  message: string;
-  type: 'info' | 'success' | 'warning' | 'error';
-}
-
 function App() {
   const {
     socket,
@@ -244,7 +238,7 @@ function App() {
     };
   }, [socket]);
 
-  const showToast = (message: string, type: 'info' | 'success' | 'warning' | 'error' = 'info') => {
+  const showToast = (_message: string, _type: 'info' | 'success' | 'warning' | 'error' = 'info') => {
     // Toast отключены, функция оставлена для совместимости
   };
 
