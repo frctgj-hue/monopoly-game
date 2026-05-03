@@ -53,8 +53,8 @@ const Lobby: React.FC<LobbyProps> = ({ onCreateGame, onJoinGame }) => {
           <div className="space-y-4 flex flex-col items-center">
             <button
               onClick={() => setMode('create')}
-              className="max-w-md w-full text-white font-bold py-32 px-8 rounded-xl transition-all text-xl shadow-lg hover:shadow-2xl transform hover:scale-105 hover:-translate-y-1 duration-200"
-              style={{ backgroundColor: '#dc3545' }}
+              className="max-w-md w-full text-white font-bold px-8 rounded-xl transition-all text-xl shadow-lg hover:shadow-2xl transform hover:scale-105 hover:-translate-y-1 duration-200"
+              style={{ backgroundColor: '#dc3545', paddingTop: '128px', paddingBottom: '128px' }}
             >
               <span className="flex items-center justify-center gap-3">
                 <FontAwesomeIcon icon={faPlus} className="text-2xl" />
@@ -64,8 +64,8 @@ const Lobby: React.FC<LobbyProps> = ({ onCreateGame, onJoinGame }) => {
 
             <button
               onClick={() => setMode('join')}
-              className="max-w-md w-full text-white font-bold py-32 px-8 rounded-xl transition-all text-xl shadow-lg hover:shadow-2xl transform hover:scale-105 hover:-translate-y-1 duration-200"
-              style={{ backgroundColor: '#dc3545' }}
+              className="max-w-md w-full text-white font-bold px-8 rounded-xl transition-all text-xl shadow-lg hover:shadow-2xl transform hover:scale-105 hover:-translate-y-1 duration-200"
+              style={{ backgroundColor: '#dc3545', paddingTop: '128px', paddingBottom: '128px' }}
             >
               <span className="flex items-center justify-center gap-3">
                 <FontAwesomeIcon icon={faDoorOpen} className="text-2xl" />
