@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons';
 import type { Player } from '../types/game.types';
 
 interface BankruptcyAnimationProps {
@@ -22,23 +24,23 @@ const BankruptcyAnimation: React.FC<BankruptcyAnimationProps> = ({ player, onCom
   if (!isVisible) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 animate-fade-in">
-      <div className="text-center animate-bankruptcy-shake">
-        <div className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-3xl shadow-2xl p-12 max-w-xl mx-4 border-4 border-red-600">
+    <div className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50">
+      <div className="text-center">
+        <div className="bg-white rounded-lg shadow-2xl p-12 max-w-xl mx-4 border-4 border-red-600">
           {/* Иконка банкротства */}
-          <div className="text-8xl mb-6 animate-bankruptcy">
-            💸
+          <div className="text-8xl mb-6 text-red-600">
+            <FontAwesomeIcon icon={faExclamationTriangle} />
           </div>
 
           {/* Заголовок */}
-          <h1 className="font-display text-5xl font-bold text-red-500 mb-4">
+          <h1 className="text-5xl font-bold text-red-600 mb-4 uppercase">
             БАНКРОТСТВО
           </h1>
 
           {/* Фишка игрока */}
           <div className="flex items-center justify-center gap-4 mb-6">
             <div
-              className="w-16 h-16 rounded-full flex items-center justify-center text-3xl shadow-lg opacity-50 animate-bankruptcy"
+              className="w-16 h-16 rounded-full flex items-center justify-center text-3xl shadow-lg opacity-50 border-4 border-black font-bold"
               style={{ backgroundColor: player.color }}
             >
               {player.name.charAt(0).toUpperCase()}
@@ -46,22 +48,15 @@ const BankruptcyAnimation: React.FC<BankruptcyAnimationProps> = ({ player, onCom
           </div>
 
           {/* Имя игрока */}
-          <h2 className="text-3xl font-bold text-white mb-4">
+          <h2 className="text-3xl font-bold text-gray-800 mb-4 uppercase">
             {player.name}
           </h2>
 
           {/* Сообщение */}
-          <div className="bg-red-900 bg-opacity-30 rounded-2xl p-6 mb-6">
-            <p className="text-xl text-red-200">
+          <div className="bg-gray-100 border-2 border-gray-300 p-6">
+            <p className="text-xl text-gray-800 font-medium">
               Игрок обанкротился и выбывает из игры
             </p>
-          </div>
-
-          {/* Эмодзи */}
-          <div className="flex justify-center gap-4 text-4xl opacity-70">
-            <span>😢</span>
-            <span>💔</span>
-            <span>📉</span>
           </div>
         </div>
       </div>
