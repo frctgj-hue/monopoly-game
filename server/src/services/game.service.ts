@@ -134,7 +134,7 @@ export class GameService {
       return prop && prop.type === 'railroad';
     }).length;
 
-    const rentMap = [0, 25, 50, 100, 200];
+    const rentMap = [0, 50, 100, 200, 400];
     return rentMap[railroadCount] || 0;
   }
 
