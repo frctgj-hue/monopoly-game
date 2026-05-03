@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCrown, faCopy, faCheck, faInfoCircle, faGamepad, faClock } from '@fortawesome/free-solid-svg-icons';
 import type { Player } from '../types/game.types';
 import TokenPiece from './TokenPiece';
 
@@ -28,37 +30,30 @@ const WaitingRoom: React.FC<WaitingRoomProps> = ({
   };
 
   return (
-    <div className="min-h-screen gradient-monopoly flex items-center justify-center p-4 relative overflow-hidden">
-      {/* Анимированный фон */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-20 left-10 text-6xl opacity-20 animate-float">🎩</div>
-        <div className="absolute top-40 right-20 text-5xl opacity-20 animate-float-delayed">🚗</div>
-        <div className="absolute bottom-32 left-1/4 text-7xl opacity-20 animate-float">🐕</div>
-        <div className="absolute bottom-20 right-1/3 text-6xl opacity-20 animate-float-delayed">🚢</div>
-      </div>
-
-      <div className="backdrop-blur-glass rounded-3xl shadow-2xl p-10 max-w-3xl w-full animate-scale-in relative z-10">
+    <div className="min-h-screen flex items-center justify-center p-4" style={{ backgroundColor: '#2d8659' }}>
+      <div className="bg-white rounded-lg shadow-2xl p-10 max-w-3xl w-full border-4 border-black">
         <div className="text-center mb-8">
-          <h2 className="font-display text-5xl font-bold text-gray-800 mb-3 text-shadow">
+          <h2 className="text-4xl font-bold text-gray-800 mb-3 uppercase">
             Комната ожидания
           </h2>
           <p className="text-gray-600 text-lg">Ожидание игроков...</p>
         </div>
 
         {/* ID игры с кнопкой копирования */}
-        <div className="bg-gradient-to-r from-blue-500 to-purple-600 rounded-2xl p-6 mb-8 shadow-lg">
-          <p className="text-white text-sm font-semibold text-center mb-2 opacity-90">
+        <div className="bg-gray-100 border-2 border-gray-300 rounded-lg p-6 mb-8">
+          <p className="text-gray-700 text-sm font-bold text-center mb-2 uppercase">
             ID игры для друзей:
           </p>
           <div className="flex items-center justify-center gap-3">
-            <p className="text-3xl font-mono font-bold text-white text-shadow-lg">
+            <p className="text-3xl font-mono font-bold text-gray-800">
               {gameId}
             </p>
             <button
               onClick={handleCopyGameId}
-              className="bg-white bg-opacity-20 hover:bg-opacity-30 text-white px-4 py-2 rounded-lg transition-all transform hover:scale-105 font-semibold"
+              className="bg-black hover:bg-gray-800 text-white px-4 py-2 rounded-lg transition-all font-semibold flex items-center gap-2"
             >
-              {copied ? '✓ Скопировано!' : '📋 Копировать'}
+              <FontAwesomeIcon icon={copied ? faCheck : faCopy} />
+              {copied ? 'Скопировано!' : 'Копировать'}
             </button>
           </div>
         </div>
@@ -66,17 +61,20 @@ const WaitingRoom: React.FC<WaitingRoomProps> = ({
         {/* Прогресс-бар игроков */}
         <div className="mb-6">
           <div className="flex items-center justify-between mb-2">
-            <h3 className="text-xl font-bold text-gray-700">
+            <h3 className="text-xl font-bold text-gray-800 uppercase">
               Игроки
             </h3>
-            <span className="text-lg font-semibold text-gray-600">
+            <span className="text-lg font-bold text-gray-800">
               {players.length}/4
             </span>
           </div>
-          <div className="w-full bg-gray-200 rounded-full h-3 overflow-hidden">
+          <div className="w-full bg-gray-200 border-2 border-gray-300 h-4">
             <div
-              className="bg-gradient-to-r from-green-400 to-green-600 h-full transition-all duration-500 rounded-full"
-              style={{ width: `${(players.length / 4) * 100}%` }}
+              className="h-full transition-all duration-500"
+              style={{
+                width: `${(players.length / 4) * 100}%`,
+                backgroundColor: '#2d8659'
+              }}
             />
           </div>
         </div>
@@ -87,8 +85,7 @@ const WaitingRoom: React.FC<WaitingRoomProps> = ({
             {players.map((player, index) => (
               <div
                 key={player.id}
-                className="bg-white bg-opacity-80 backdrop-blur-sm rounded-xl p-5 shadow-lg animate-slide-in border-2 border-transparent hover:border-blue-300 transition-all"
-                style={{ animationDelay: `${index * 0.1}s` }}
+                className="bg-white border-2 border-gray-300 rounded-lg p-5 shadow-md hover:border-gray-400 transition-all"
               >
                 <div className="flex items-center gap-4">
                   <TokenPiece color={player.color} size="lg" />
@@ -98,18 +95,16 @@ const WaitingRoom: React.FC<WaitingRoomProps> = ({
                         {player.name}
                       </span>
                       {player.id === myPlayerId && (
-                        <span className="bg-blue-100 text-blue-700 text-xs px-2 py-1 rounded-full font-semibold">
+                        <span className="bg-gray-800 text-white text-xs px-2 py-1 font-bold uppercase">
                           Вы
                         </span>
                       )}
                       {index === 0 && (
-                        <span className="text-2xl animate-bounce-soft" title="Хост">
-                          👑
-                        </span>
+                        <FontAwesomeIcon icon={faCrown} className="text-yellow-600" title="Хост" />
                       )}
                     </div>
                     <div className="text-sm text-gray-600 font-medium mt-1">
-                      ✓ Готов к игре
+                      <FontAwesomeIcon icon={faCheck} className="text-green-600" /> Готов к игре
                     </div>
                   </div>
                 </div>
@@ -120,7 +115,7 @@ const WaitingRoom: React.FC<WaitingRoomProps> = ({
             {Array.from({ length: 4 - players.length }).map((_, index) => (
               <div
                 key={`empty-${index}`}
-                className="bg-gray-100 bg-opacity-50 backdrop-blur-sm rounded-xl p-5 border-2 border-dashed border-gray-300 animate-pulse-glow"
+                className="bg-gray-50 border-2 border-dashed border-gray-300 rounded-lg p-5"
               >
                 <div className="flex items-center gap-4">
                   <div className="w-8 h-8 rounded-full bg-gray-300"></div>
@@ -136,17 +131,17 @@ const WaitingRoom: React.FC<WaitingRoomProps> = ({
         </div>
 
         {/* Информация */}
-        <div className="bg-yellow-50 border-2 border-yellow-300 rounded-xl p-5 mb-6">
+        <div className="bg-gray-100 border-2 border-gray-400 rounded-lg p-5 mb-6">
           <div className="flex items-start gap-3">
-            <span className="text-2xl">💡</span>
+            <FontAwesomeIcon icon={faInfoCircle} className="text-2xl text-gray-700 mt-1" />
             <p className="text-gray-700 font-medium">
               {isHost ? (
                 <>
-                  <strong className="text-yellow-700">Вы хост игры.</strong> Вы можете начать игру, когда будет минимум 2 игрока.
+                  <strong className="text-gray-900">Вы хост игры.</strong> Вы можете начать игру, когда будет минимум 2 игрока.
                 </>
               ) : (
                 <>
-                  <strong className="text-yellow-700">Ожидание хоста.</strong> Хост начнет игру, когда все будут готовы.
+                  <strong className="text-gray-900">Ожидание хоста.</strong> Хост начнет игру, когда все будут готовы.
                 </>
               )}
             </p>
@@ -158,21 +153,23 @@ const WaitingRoom: React.FC<WaitingRoomProps> = ({
           <button
             onClick={onStartGame}
             disabled={!canStart}
-            className={`w-full font-bold py-5 px-8 rounded-xl transition-all text-xl shadow-lg ${
+            className={`w-full font-bold py-5 px-8 rounded-lg transition-all text-xl shadow-lg uppercase ${
               canStart
-                ? 'gradient-green text-white hover:shadow-2xl transform hover:scale-105 animate-pulse-glow'
+                ? 'text-white hover:shadow-2xl'
                 : 'bg-gray-300 text-gray-500 cursor-not-allowed'
             }`}
+            style={canStart ? { backgroundColor: '#dc3545' } : {}}
           >
-            {canStart ? '🎮 Начать игру' : '⏳ Ожидание игроков (минимум 2)'}
+            <FontAwesomeIcon icon={canStart ? faGamepad : faClock} className="mr-2" />
+            {canStart ? 'Начать игру' : 'Ожидание игроков (минимум 2)'}
           </button>
         )}
 
         {!isHost && (
           <div className="text-center py-5">
-            <div className="inline-flex items-center gap-3 bg-white bg-opacity-50 rounded-full px-6 py-3">
-              <div className="animate-spin text-2xl">⏳</div>
-              <span className="text-gray-600 font-semibold">Ожидание начала игры...</span>
+            <div className="inline-flex items-center gap-3 bg-gray-100 border-2 border-gray-300 rounded-lg px-6 py-3">
+              <FontAwesomeIcon icon={faClock} className="text-2xl text-gray-600" />
+              <span className="text-gray-700 font-bold uppercase">Ожидание начала игры...</span>
             </div>
           </div>
         )}
