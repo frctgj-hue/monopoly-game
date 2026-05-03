@@ -11,8 +11,6 @@ interface PlayersListProps {
 }
 
 const PlayersList: React.FC<PlayersListProps> = ({ players, currentPlayerId, myPlayerId }) => {
-  const myPlayer = players.find(p => p.id === myPlayerId);
-
   return (
     <div className="bg-white rounded-lg shadow-lg border-2 border-black p-4">
       <h2 className="text-lg font-black uppercase mb-3 text-center monopoly-title">
@@ -48,6 +46,11 @@ const PlayersList: React.FC<PlayersListProps> = ({ players, currentPlayerId, myP
                         {player.name}
                         {isMe && <span className="ml-1 text-xs text-blue-600">(Вы)</span>}
                       </div>
+                      {isMe && (
+                        <div className="text-xs text-gray-600 font-medium">
+                          Освобождений: {player.getOutOfJailFreeCards}
+                        </div>
+                      )}
                       {isCurrentPlayer && (
                         <div className="text-xs font-bold uppercase flex items-center gap-1" style={{ color: '#2d8659' }}>
                           <FontAwesomeIcon icon={faPlay} /> Ходит
@@ -82,15 +85,6 @@ const PlayersList: React.FC<PlayersListProps> = ({ players, currentPlayerId, myP
           })}
         </tbody>
       </table>
-
-      {/* Карточки освобождения из тюрьмы */}
-      {myPlayer && (
-        <div className="mt-4 pt-3 border-t-2 border-gray-300">
-          <div className="text-sm font-bold text-gray-800 text-center">
-            Освобождений из тюрьмы: {myPlayer.getOutOfJailFreeCards}
-          </div>
-        </div>
-      )}
     </div>
   );
 };
