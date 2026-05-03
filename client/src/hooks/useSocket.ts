@@ -108,6 +108,14 @@ export const useSocket = () => {
     socket?.emit('draw-card', { gameId, type }, callback);
   };
 
+  const confirmCard = (
+    gameId: string,
+    card: Card,
+    callback: (data: { success: boolean; message?: string; game?: GameState }) => void
+  ) => {
+    socket?.emit('confirm-card', { gameId, card }, callback);
+  };
+
   const buildHouse = (
     gameId: string,
     propertyId: number,
@@ -219,6 +227,7 @@ export const useSocket = () => {
     useJailCard,
     declareBankruptcy,
     drawCard,
+    confirmCard,
     buildHouse,
     sellHouse,
     startAuction,

@@ -31,6 +31,7 @@ function App() {
     payJailFine,
     useJailCard,
     drawCard,
+    confirmCard,
     buildHouse,
     sellHouse,
     startAuction,
@@ -145,6 +146,10 @@ function App() {
       soundManager.playCardDrawn();
     });
 
+    socket.on('card-executed', ({ game }) => {
+      setGameState(game);
+    });
+
     // Аукционы
     socket.on('auction-started', ({ game }: { game: GameState }) => {
       setGameState(game);
@@ -224,6 +229,7 @@ function App() {
       socket.off('player-bankrupt');
       socket.off('game-finished');
       socket.off('card-drawn');
+      socket.off('card-executed');
       socket.off('auction-started');
       socket.off('bid-placed');
       socket.off('auction-ended');
@@ -523,15 +529,26 @@ function App() {
   return (
     <div className="min-h-screen">
       {/* Модальное окно карточки */}
-      <CardModal card={currentCard} onClose={() => setCurrentCard(null)} />
+      <CardModal
+        card={currentCard}
+        onClose={() => {
+          if (currentCard && gameState) {
+            confirmCard(gameState.id, currentCard, (data) => {
+              if (data.success && data.game) {
+                setGameState(data.game);
+              }
+            });
+          }
+          setCurrentCard(null);
+        }}
+      />
 
-      {/* Модальное окно торговли - зеленое по центру */}
+      {/* Модальное окно торговли - с затемнением */}
       {showTradeModal && gameState && (
-        <div className="fixed inset-0 flex items-center justify-center p-8" style={{
-          backgroundColor: '#CDE6D0',
+        <div className="fixed inset-0 flex items-center justify-center p-8 bg-black bg-opacity-50" style={{
           zIndex: 9999
         }}>
-          <div className="bg-[#CDE6D0] rounded-lg shadow-2xl border-4 border-black p-6 max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+          <div className="bg-white rounded-lg shadow-2xl border-4 border-black p-6 max-w-2xl w-full max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-2xl font-black uppercase monopoly-title">
                 🤝 Торговля

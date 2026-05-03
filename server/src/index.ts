@@ -137,7 +137,7 @@ io.on('connection', (socket) => {
     if (chancePositions.includes(newPosition)) {
       const card = gameService.drawCard(gameId, 'chance');
       if (card) {
-        gameService.executeCard(gameId, socket.id, card);
+        // НЕ применяем эффект сразу, только показываем карточку
         const updatedGame = gameService.getGame(gameId);
         io.to(gameId).emit('card-drawn', { playerId: socket.id, card, game: updatedGame });
         callback({ success: true, diceRoll, newPosition, game: updatedGame, card });
@@ -148,7 +148,7 @@ io.on('connection', (socket) => {
     if (communityPositions.includes(newPosition)) {
       const card = gameService.drawCard(gameId, 'community');
       if (card) {
-        gameService.executeCard(gameId, socket.id, card);
+        // НЕ применяем эффект сразу, только показываем карточку
         const updatedGame = gameService.getGame(gameId);
         io.to(gameId).emit('card-drawn', { playerId: socket.id, card, game: updatedGame });
         callback({ success: true, diceRoll, newPosition, game: updatedGame, card });
@@ -255,6 +255,15 @@ io.on('connection', (socket) => {
 
     io.to(gameId).emit('card-drawn', { playerId: socket.id, card, game });
     callback({ success: true, card, game });
+  });
+
+  // Подтверждение карточки - применить эффект
+  socket.on('confirm-card', ({ gameId, card }, callback) => {
+    const result = gameService.executeCard(gameId, socket.id, card);
+    const game = gameService.getGame(gameId);
+
+    io.to(gameId).emit('card-executed', { playerId: socket.id, card, game });
+    callback({ success: true, game });
   });
 
   // Строительство дома
