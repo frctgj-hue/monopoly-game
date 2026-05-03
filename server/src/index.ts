@@ -120,13 +120,10 @@ io.on('connection', (socket) => {
 
     // Проверка на клетку "Идти в тюрьму"
     if (newPosition === 30) {
-      gameService.sendToJail(gameId, socket.id);
+      // НЕ отправляем в тюрьму сразу, только показываем окно
       const updatedGame = gameService.getGame(gameId);
-      io.to(gameId).emit('sent-to-jail', {
-        playerId: socket.id,
-        game: updatedGame
-      });
-      callback({ success: true, diceRoll, newPosition: 10, game: updatedGame, sentToJail: true });
+      io.to(gameId).emit('show-go-to-jail', { playerId: socket.id, game: updatedGame });
+      callback({ success: true, diceRoll, newPosition, game: updatedGame, showGoToJail: true });
       return;
     }
 
@@ -263,6 +260,15 @@ io.on('connection', (socket) => {
     const game = gameService.getGame(gameId);
 
     io.to(gameId).emit('card-executed', { playerId: socket.id, card, game });
+    callback({ success: true, game });
+  });
+
+  // Подтверждение отправки в тюрьму
+  socket.on('confirm-go-to-jail', ({ gameId }, callback) => {
+    gameService.sendToJail(gameId, socket.id);
+    const game = gameService.getGame(gameId);
+
+    io.to(gameId).emit('sent-to-jail', { playerId: socket.id, game });
     callback({ success: true, game });
   });
 

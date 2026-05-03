@@ -13,6 +13,7 @@ import TradeModal from './components/TradeModal';
 import TradeNotification from './components/TradeNotification';
 import VictoryAnimation from './components/VictoryAnimation';
 import BankruptcyAnimation from './components/BankruptcyAnimation';
+import GoToJailModal from './components/GoToJailModal';
 import { soundManager } from './utils/sounds';
 
 type GamePhase = 'lobby' | 'waiting' | 'playing';
@@ -32,6 +33,7 @@ function App() {
     useJailCard,
     drawCard,
     confirmCard,
+    confirmGoToJail,
     buildHouse,
     sellHouse,
     startAuction,
@@ -48,6 +50,7 @@ function App() {
   const [lastDiceRoll, setLastDiceRoll] = useState<DiceRoll | undefined>();
   const [canRoll, setCanRoll] = useState(true);
   const [currentCard, setCurrentCard] = useState<Card | null>(null);
+  const [showGoToJail, setShowGoToJail] = useState(false);
   const [showTradeModal, setShowTradeModal] = useState(false);
   const [showPropertyManagement, setShowPropertyManagement] = useState(false);
   const [selectedProperty, setSelectedProperty] = useState<number | null>(null);
@@ -103,6 +106,11 @@ function App() {
       setGameState(game);
       const player = game.players.find((p: Player) => p.id === playerId);
       showToast(`🚔 ${player?.name} отправлен в тюрьму!`, 'warning');
+    });
+
+    socket.on('show-go-to-jail', ({ game }: { game: GameState }) => {
+      setGameState(game);
+      setShowGoToJail(true);
     });
 
     socket.on('jail-turn', ({ game }) => {
@@ -223,6 +231,7 @@ function App() {
       socket.off('rent-paid');
       socket.off('turn-ended');
       socket.off('sent-to-jail');
+      socket.off('show-go-to-jail');
       socket.off('jail-turn');
       socket.off('jail-paid');
       socket.off('jail-card-used');
@@ -528,6 +537,22 @@ function App() {
 
   return (
     <div className="min-h-screen">
+      {/* Модальное окно отправки в тюрьму */}
+      {showGoToJail && (
+        <GoToJailModal
+          onConfirm={() => {
+            if (gameState) {
+              confirmGoToJail(gameState.id, (data) => {
+                if (data.success && data.game) {
+                  setGameState(data.game);
+                }
+              });
+            }
+            setShowGoToJail(false);
+          }}
+        />
+      )}
+
       {/* Модальное окно карточки */}
       <CardModal
         card={currentCard}
