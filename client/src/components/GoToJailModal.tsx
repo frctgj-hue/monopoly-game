@@ -1,4 +1,6 @@
 import React from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faHandcuffs } from '@fortawesome/free-solid-svg-icons';
 
 interface GoToJailModalProps {
   onConfirm: () => void;
@@ -6,12 +8,12 @@ interface GoToJailModalProps {
 
 const GoToJailModal: React.FC<GoToJailModalProps> = ({ onConfirm }) => {
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50 animate-fade-in">
-      <div className="bg-white rounded-3xl shadow-2xl p-8 max-w-md w-full mx-4 animate-scale-in border-4 border-red-600">
+    <div className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50">
+      <div className="bg-white rounded-lg shadow-2xl p-8 max-w-md w-full mx-4 border-4 border-red-600">
         <div className="text-center">
           {/* Иконка */}
-          <div className="text-8xl mb-6 animate-bounce-soft">
-            👮
+          <div className="text-8xl mb-6 text-red-600">
+            <FontAwesomeIcon icon={faHandcuffs} />
           </div>
 
           {/* Заголовок */}
@@ -20,7 +22,7 @@ const GoToJailModal: React.FC<GoToJailModalProps> = ({ onConfirm }) => {
           </h2>
 
           {/* Описание */}
-          <p className="text-lg text-gray-700 mb-8">
+          <p className="text-lg text-gray-800 mb-8 font-medium">
             Вы попали на клетку "Идти в тюрьму".<br />
             Переместитесь в тюрьму без получения $200 за прохождение "Старт".
           </p>
@@ -28,7 +30,8 @@ const GoToJailModal: React.FC<GoToJailModalProps> = ({ onConfirm }) => {
           {/* Кнопка */}
           <button
             onClick={onConfirm}
-            className="w-full py-4 px-6 bg-gradient-to-r from-red-500 to-red-600 text-white rounded-xl font-bold text-lg hover:shadow-xl transition-all transform hover:scale-105"
+            className="w-full py-4 px-6 text-white rounded-lg font-bold text-lg transition-all shadow-lg uppercase"
+            style={{ backgroundColor: '#dc3545' }}
           >
             Далее
           </button>
