@@ -134,9 +134,9 @@ io.on('connection', (socket) => {
     if (chancePositions.includes(newPosition)) {
       const card = gameService.drawCard(gameId, 'chance');
       if (card) {
-        // НЕ применяем эффект сразу, только показываем карточку
+        // Показываем карточку только игроку, который её вытянул
         const updatedGame = gameService.getGame(gameId);
-        io.to(gameId).emit('card-drawn', { playerId: socket.id, card, game: updatedGame });
+        socket.emit('card-drawn', { playerId: socket.id, card, game: updatedGame });
         callback({ success: true, diceRoll, newPosition, game: updatedGame, card });
         return;
       }
@@ -145,9 +145,9 @@ io.on('connection', (socket) => {
     if (communityPositions.includes(newPosition)) {
       const card = gameService.drawCard(gameId, 'community');
       if (card) {
-        // НЕ применяем эффект сразу, только показываем карточку
+        // Показываем карточку только игроку, который её вытянул
         const updatedGame = gameService.getGame(gameId);
-        io.to(gameId).emit('card-drawn', { playerId: socket.id, card, game: updatedGame });
+        socket.emit('card-drawn', { playerId: socket.id, card, game: updatedGame });
         callback({ success: true, diceRoll, newPosition, game: updatedGame, card });
         return;
       }
