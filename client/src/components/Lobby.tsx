@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faDice, faHouse, faCar, faMoneyBill, faHatCowboy, faPlus, faDoorOpen, faUser, faKey } from '@fortawesome/free-solid-svg-icons';
+import { faDice, faHouse, faCar, faMoneyBill, faUserTie, faPlus, faDoorOpen, faUser, faKey } from '@fortawesome/free-solid-svg-icons';
 
 interface LobbyProps {
   onCreateGame: (playerName: string) => void;
@@ -31,7 +31,7 @@ const Lobby: React.FC<LobbyProps> = ({ onCreateGame, onJoinGame }) => {
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <div className="absolute top-20 left-10 text-6xl opacity-20 animate-float"><FontAwesomeIcon icon={faMoneyBill} /></div>
           <div className="absolute top-40 right-20 text-5xl opacity-20 animate-float-delayed"><FontAwesomeIcon icon={faHouse} /></div>
-          <div className="absolute bottom-32 left-1/4 text-7xl opacity-20 animate-float"><FontAwesomeIcon icon={faHatCowboy} /></div>
+          <div className="absolute bottom-32 left-1/4 text-7xl opacity-20 animate-float"><FontAwesomeIcon icon={faUserTie} /></div>
           <div className="absolute bottom-20 right-1/3 text-6xl opacity-20 animate-float-delayed"><FontAwesomeIcon icon={faDice} /></div>
           <div className="absolute top-1/3 right-10 text-5xl opacity-20 animate-float"><FontAwesomeIcon icon={faCar} /></div>
         </div>
@@ -43,7 +43,7 @@ const Lobby: React.FC<LobbyProps> = ({ onCreateGame, onJoinGame }) => {
               МОНОПОЛИЯ
             </h1>
             <div className="flex items-center justify-center gap-2 text-3xl mb-3">
-              <FontAwesomeIcon icon={faHatCowboy} />
+              <FontAwesomeIcon icon={faUserTie} />
               <FontAwesomeIcon icon={faDice} />
               <FontAwesomeIcon icon={faHouse} />
             </div>
