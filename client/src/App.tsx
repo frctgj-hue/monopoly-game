@@ -662,7 +662,7 @@ function App() {
         )}
 
         {phase === 'playing' && gameState && (
-          <div className="bg-[#CDE6D0] flex justify-center" style={{ paddingTop: '20px', paddingBottom: '20px', minHeight: '1250px' }}>
+          <div className="flex justify-center" style={{ backgroundColor: '#2d8659', paddingTop: '20px', paddingBottom: '20px', minHeight: '1250px' }}>
             <div className="flex items-start" style={{ gap: '350px' }}>
               {/* Доска - игровое поле (независимый блок) */}
               <div className="w-[1000px] h-[1000px] flex-shrink-0">
