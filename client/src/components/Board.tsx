@@ -131,7 +131,7 @@ const Board: React.FC<BoardProps> = ({ board, players, onCellClick }) => {
         {/* Цветная полоска для железных дорог */}
         {property.type === 'railroad' && (
           <div
-            className="w-full h-5 -mx-1 -mt-1 mb-1 border-b-2 border-black relative overflow-hidden"
+            className="w-full h-5 -mx-1 -mt-1 mb-1 border-b-2 border-white relative overflow-hidden"
             style={getColorStyle(property.color)}
           >
             <div className="absolute inset-0 bg-gradient-to-b from-white to-transparent opacity-20"></div>
