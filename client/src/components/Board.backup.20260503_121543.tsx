@@ -215,7 +215,7 @@ const Board: React.FC<BoardProps> = ({ board, players, onCellClick }) => {
         {/* Индикатор владельца */}
         {isOwned && owner && (
           <div className="absolute top-0.5 right-0.5">
-            <TokenPiece color={owner.color} size="xs" />
+            <TokenPiece color={owner.color} size="sm" />
           </div>
         )}
 

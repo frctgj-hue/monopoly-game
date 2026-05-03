@@ -5,7 +5,6 @@ import Lobby from './components/Lobby';
 import WaitingRoom from './components/WaitingRoom';
 import Board from './components/Board';
 import PlayersList from './components/PlayersList';
-import Toast from './components/Toast';
 import CardModal from './components/CardModal';
 import PropertyModal from './components/PropertyModal';
 import PropertyManagement from './components/PropertyManagement';
@@ -15,14 +14,13 @@ import TradeNotification from './components/TradeNotification';
 import VictoryAnimation from './components/VictoryAnimation';
 import BankruptcyAnimation from './components/BankruptcyAnimation';
 import { soundManager } from './utils/sounds';
-import type { ToastType } from './components/Toast';
 
 type GamePhase = 'lobby' | 'waiting' | 'playing';
 
 interface ToastMessage {
   id: number;
   message: string;
-  type: ToastType;
+  type: 'info' | 'success' | 'warning' | 'error';
 }
 
 function App() {
@@ -54,7 +52,6 @@ function App() {
   const [myPlayerId, setMyPlayerId] = useState<string>('');
   const [lastDiceRoll, setLastDiceRoll] = useState<DiceRoll | undefined>();
   const [canRoll, setCanRoll] = useState(true);
-  const [toasts, setToasts] = useState<ToastMessage[]>([]);
   const [currentCard, setCurrentCard] = useState<Card | null>(null);
   const [showTradeModal, setShowTradeModal] = useState(false);
   const [showPropertyManagement, setShowPropertyManagement] = useState(false);
@@ -247,17 +244,8 @@ function App() {
     };
   }, [socket]);
 
-  const showToast = (message: string, type: ToastType = 'info') => {
-    const id = Date.now();
-    setToasts(prev => {
-      const newToasts = [...prev, { id, message, type }];
-      // Ограничиваем максимум 3 сообщения
-      return newToasts.slice(-3);
-    });
-  };
-
-  const removeToast = (id: number) => {
-    setToasts(prev => prev.filter(toast => toast.id !== id));
+  const showToast = (message: string, type: 'info' | 'success' | 'warning' | 'error' = 'info') => {
+    // Toast отключены, функция оставлена для совместимости
   };
 
   const handleCreateGame = (playerName: string) => {
