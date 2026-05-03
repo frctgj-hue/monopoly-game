@@ -131,13 +131,24 @@ const Board: React.FC<BoardProps> = ({ board, players, onCellClick }) => {
         {/* Цветная полоска для железных дорог */}
         {property.type === 'railroad' && (
           <div
-            className="w-full h-5 -mx-1 -mt-1 mb-1 border-b-2 border-black flex items-center justify-center relative overflow-hidden"
+            className="w-full h-5 -mx-1 -mt-1 mb-1 border-b-2 border-black relative overflow-hidden"
             style={getColorStyle(property.color)}
           >
             <div className="absolute inset-0 bg-gradient-to-b from-white to-transparent opacity-20"></div>
-            <span className="text-white text-xs relative z-10">
+          </div>
+        )}
+
+        {/* Иконка для железных дорог */}
+        {property.type === 'railroad' && (
+          <div className="text-center text-2xl mb-1 relative">
+            <div className="absolute inset-0 flex items-center justify-center">
+              <div className="w-10 h-10 bg-gray-200 rounded-full opacity-30"></div>
+            </div>
+            <div className="relative z-10" style={{
+              filter: 'drop-shadow(2px 2px 3px rgba(0,0,0,0.2))'
+            }}>
               <FontAwesomeIcon icon={faTrain} />
-            </span>
+            </div>
           </div>
         )}
 
