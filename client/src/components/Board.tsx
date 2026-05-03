@@ -92,6 +92,11 @@ const Board: React.FC<BoardProps> = ({ board, players, onCellClick }) => {
     return 'bg-[#F5F0E8]';
   };
 
+  const getSpecialCellStyle = (property: Property) => {
+    if (property.name.includes('Шанс')) return 'bg-red-100'; // Светло-красный для Шанс
+    return 'bg-[#F5F0E8]'; // Стандартный бежевый
+  };
+
   const renderCell = (property: Property, index: number) => {
     const playersOnCell = players.filter(p => p.position === index);
     const isOwned = property.owner !== null;
@@ -106,7 +111,7 @@ const Board: React.FC<BoardProps> = ({ board, players, onCellClick }) => {
         data-property-id={index}
         className={`relative border-2 border-black cursor-pointer hover:brightness-95 transition-all duration-200 flex flex-col items-center justify-between ${
           isCorner ? 'p-2' : 'p-1'
-        } ${isOwned && owner ? 'ring-2 ring-offset-0' : ''} ${isCorner ? getCornerStyle(index) : 'bg-[#F5F0E8]'} group shadow-sm hover:shadow-md`}
+        } ${isOwned && owner ? 'ring-2 ring-offset-0' : ''} ${isCorner ? getCornerStyle(index) : (property.type === 'special' ? getSpecialCellStyle(property) : 'bg-[#F5F0E8]')} group shadow-sm hover:shadow-md`}
         style={{
           ...(isOwned && owner ? { borderColor: owner.color, borderWidth: '3px' } : {}),
           ...(isTopOrBottomRow ? { minHeight: '95px' } : {})
@@ -154,23 +159,40 @@ const Board: React.FC<BoardProps> = ({ board, players, onCellClick }) => {
 
         {/* Иконка для специальных клеток */}
         {specialIcon && property.type === 'special' && (
-          <div className={`text-center ${isCorner ? 'text-4xl' : 'text-xl'} mb-1`}>
-            {isCorner ? (
-              <div className="relative">
-                {/* Декоративная рамка для угловых клеток */}
+          <>
+            {property.name.includes('Шанс') ? (
+              // Иконка Шанс в центре с фоном
+              <div className="text-center text-2xl mb-1 relative -mt-2">
                 <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="w-16 h-16 border-2 border-black rounded-full opacity-20"></div>
+                  <div className="w-10 h-10 bg-red-200 rounded-full opacity-50"></div>
                 </div>
                 <div className="relative z-10" style={{
-                  filter: 'drop-shadow(2px 2px 3px rgba(0,0,0,0.3))'
+                  filter: 'drop-shadow(2px 2px 3px rgba(0,0,0,0.2))'
                 }}>
                   {specialIcon}
                 </div>
               </div>
             ) : (
-              specialIcon
+              // Остальные специальные клетки
+              <div className={`text-center ${isCorner ? 'text-4xl' : 'text-xl'} mb-1`}>
+                {isCorner ? (
+                  <div className="relative">
+                    {/* Декоративная рамка для угловых клеток */}
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <div className="w-16 h-16 border-2 border-black rounded-full opacity-20"></div>
+                    </div>
+                    <div className="relative z-10" style={{
+                      filter: 'drop-shadow(2px 2px 3px rgba(0,0,0,0.3))'
+                    }}>
+                      {specialIcon}
+                    </div>
+                  </div>
+                ) : (
+                  specialIcon
+                )}
+              </div>
             )}
-          </div>
+          </>
         )}
 
         {/* Иконка для коммунальных служб */}
