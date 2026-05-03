@@ -51,7 +51,8 @@ const Lobby: React.FC<LobbyProps> = ({ onCreateGame, onJoinGame }) => {
           <div className="space-y-4">
             <button
               onClick={() => setMode('create')}
-              className="w-full gradient-blue text-white font-bold py-5 px-8 rounded-xl transition-all text-xl shadow-lg hover:shadow-2xl transform hover:scale-105 hover:-translate-y-1 duration-200"
+              className="w-full text-white font-bold py-5 px-8 rounded-xl transition-all text-xl shadow-lg hover:shadow-2xl transform hover:scale-105 hover:-translate-y-1 duration-200"
+              style={{ backgroundColor: '#dc3545' }}
             >
               <span className="flex items-center justify-center gap-3">
                 <span className="text-2xl">➕</span>
@@ -61,7 +62,8 @@ const Lobby: React.FC<LobbyProps> = ({ onCreateGame, onJoinGame }) => {
 
             <button
               onClick={() => setMode('join')}
-              className="w-full gradient-green text-white font-bold py-5 px-8 rounded-xl transition-all text-xl shadow-lg hover:shadow-2xl transform hover:scale-105 hover:-translate-y-1 duration-200"
+              className="w-full text-white font-bold py-5 px-8 rounded-xl transition-all text-xl shadow-lg hover:shadow-2xl transform hover:scale-105 hover:-translate-y-1 duration-200"
+              style={{ backgroundColor: '#dc3545' }}
             >
               <span className="flex items-center justify-center gap-3">
                 <span className="text-2xl">🚪</span>
@@ -125,9 +127,10 @@ const Lobby: React.FC<LobbyProps> = ({ onCreateGame, onJoinGame }) => {
               disabled={!playerName.trim()}
               className={`w-full font-bold py-4 px-8 rounded-xl transition-all text-lg shadow-lg ${
                 playerName.trim()
-                  ? 'gradient-blue text-white hover:shadow-2xl transform hover:scale-105'
+                  ? 'text-white hover:shadow-2xl transform hover:scale-105'
                   : 'bg-gray-300 text-gray-500 cursor-not-allowed'
               }`}
+              style={playerName.trim() ? { backgroundColor: '#dc3545' } : {}}
             >
               Создать игру
             </button>
@@ -195,9 +198,10 @@ const Lobby: React.FC<LobbyProps> = ({ onCreateGame, onJoinGame }) => {
             disabled={!playerName.trim() || !gameId.trim()}
             className={`w-full font-bold py-4 px-8 rounded-xl transition-all text-lg shadow-lg ${
               playerName.trim() && gameId.trim()
-                ? 'gradient-green text-white hover:shadow-2xl transform hover:scale-105'
+                ? 'text-white hover:shadow-2xl transform hover:scale-105'
                 : 'bg-gray-300 text-gray-500 cursor-not-allowed'
             }`}
+            style={playerName.trim() && gameId.trim() ? { backgroundColor: '#dc3545' } : {}}
           >
             Присоединиться
           </button>
