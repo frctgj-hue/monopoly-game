@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faDice, faHouse, faCar, faMoneyBill, faHatCowboy, faPlus, faDoorOpen, faUser, faKey } from '@fortawesome/free-solid-svg-icons';
 
 interface LobbyProps {
   onCreateGame: (playerName: string) => void;
@@ -27,11 +29,11 @@ const Lobby: React.FC<LobbyProps> = ({ onCreateGame, onJoinGame }) => {
       <div className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden" style={{ backgroundColor: '#2d8659' }}>
         {/* Анимированный фон */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <div className="absolute top-20 left-10 text-6xl opacity-20 animate-float">💰</div>
-          <div className="absolute top-40 right-20 text-5xl opacity-20 animate-float-delayed">🏠</div>
-          <div className="absolute bottom-32 left-1/4 text-7xl opacity-20 animate-float">🎩</div>
-          <div className="absolute bottom-20 right-1/3 text-6xl opacity-20 animate-float-delayed">🎲</div>
-          <div className="absolute top-1/3 right-10 text-5xl opacity-20 animate-float">🚗</div>
+          <div className="absolute top-20 left-10 text-6xl opacity-20 animate-float"><FontAwesomeIcon icon={faMoneyBill} /></div>
+          <div className="absolute top-40 right-20 text-5xl opacity-20 animate-float-delayed"><FontAwesomeIcon icon={faHouse} /></div>
+          <div className="absolute bottom-32 left-1/4 text-7xl opacity-20 animate-float"><FontAwesomeIcon icon={faHatCowboy} /></div>
+          <div className="absolute bottom-20 right-1/3 text-6xl opacity-20 animate-float-delayed"><FontAwesomeIcon icon={faDice} /></div>
+          <div className="absolute top-1/3 right-10 text-5xl opacity-20 animate-float"><FontAwesomeIcon icon={faCar} /></div>
         </div>
 
         <div className="backdrop-blur-glass rounded-3xl shadow-2xl p-10 max-w-lg w-full animate-scale-in relative z-10">
@@ -41,9 +43,9 @@ const Lobby: React.FC<LobbyProps> = ({ onCreateGame, onJoinGame }) => {
               МОНОПОЛИЯ
             </h1>
             <div className="flex items-center justify-center gap-2 text-3xl mb-3">
-              <span>🎩</span>
-              <span>🎲</span>
-              <span>🏠</span>
+              <FontAwesomeIcon icon={faHatCowboy} />
+              <FontAwesomeIcon icon={faDice} />
+              <FontAwesomeIcon icon={faHouse} />
             </div>
             <p className="text-gray-600 text-lg font-medium">Онлайн игра</p>
           </div>
@@ -55,7 +57,7 @@ const Lobby: React.FC<LobbyProps> = ({ onCreateGame, onJoinGame }) => {
               style={{ backgroundColor: '#dc3545' }}
             >
               <span className="flex items-center justify-center gap-3">
-                <span className="text-2xl">➕</span>
+                <FontAwesomeIcon icon={faPlus} className="text-2xl" />
                 <span>Создать игру</span>
               </span>
             </button>
@@ -66,7 +68,7 @@ const Lobby: React.FC<LobbyProps> = ({ onCreateGame, onJoinGame }) => {
               style={{ backgroundColor: '#dc3545' }}
             >
               <span className="flex items-center justify-center gap-3">
-                <span className="text-2xl">🚪</span>
+                <FontAwesomeIcon icon={faDoorOpen} className="text-2xl" />
                 <span>Присоединиться к игре</span>
               </span>
             </button>
@@ -87,8 +89,8 @@ const Lobby: React.FC<LobbyProps> = ({ onCreateGame, onJoinGame }) => {
       <div className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden" style={{ backgroundColor: '#2d8659' }}>
         {/* Анимированный фон */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <div className="absolute top-20 left-10 text-6xl opacity-20 animate-float">💰</div>
-          <div className="absolute bottom-20 right-20 text-5xl opacity-20 animate-float-delayed">🏠</div>
+          <div className="absolute top-20 left-10 text-6xl opacity-20 animate-float"><FontAwesomeIcon icon={faMoneyBill} /></div>
+          <div className="absolute bottom-20 right-20 text-5xl opacity-20 animate-float-delayed"><FontAwesomeIcon icon={faHouse} /></div>
         </div>
 
         <div className="backdrop-blur-glass rounded-3xl shadow-2xl p-10 max-w-lg w-full animate-scale-in relative z-10">
@@ -108,7 +110,7 @@ const Lobby: React.FC<LobbyProps> = ({ onCreateGame, onJoinGame }) => {
           <div className="space-y-6">
             <div>
               <label className="block text-sm font-bold text-gray-700 mb-3 flex items-center gap-2">
-                <span className="text-xl">👤</span>
+                <FontAwesomeIcon icon={faUser} className="text-xl" />
                 <span>Ваше имя</span>
               </label>
               <input
@@ -144,8 +146,8 @@ const Lobby: React.FC<LobbyProps> = ({ onCreateGame, onJoinGame }) => {
     <div className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden" style={{ backgroundColor: '#2d8659' }}>
       {/* Анимированный фон */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-20 right-10 text-6xl opacity-20 animate-float">🎲</div>
-        <div className="absolute bottom-20 left-20 text-5xl opacity-20 animate-float-delayed">🚗</div>
+        <div className="absolute top-20 right-10 text-6xl opacity-20 animate-float"><FontAwesomeIcon icon={faDice} /></div>
+        <div className="absolute bottom-20 left-20 text-5xl opacity-20 animate-float-delayed"><FontAwesomeIcon icon={faCar} /></div>
       </div>
 
       <div className="backdrop-blur-glass rounded-3xl shadow-2xl p-10 max-w-lg w-full animate-scale-in relative z-10">
@@ -165,7 +167,7 @@ const Lobby: React.FC<LobbyProps> = ({ onCreateGame, onJoinGame }) => {
         <div className="space-y-6">
           <div>
             <label className="block text-sm font-bold text-gray-700 mb-3 flex items-center gap-2">
-              <span className="text-xl">👤</span>
+              <FontAwesomeIcon icon={faUser} className="text-xl" />
               <span>Ваше имя</span>
             </label>
             <input
@@ -181,7 +183,7 @@ const Lobby: React.FC<LobbyProps> = ({ onCreateGame, onJoinGame }) => {
 
           <div>
             <label className="block text-sm font-bold text-gray-700 mb-3 flex items-center gap-2">
-              <span className="text-xl">🔑</span>
+              <FontAwesomeIcon icon={faKey} className="text-xl" />
               <span>ID игры</span>
             </label>
             <input
