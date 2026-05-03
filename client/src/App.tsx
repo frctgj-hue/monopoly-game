@@ -1,4 +1,6 @@
 import { useEffect, useState } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faDice, faCheck, faHandshake } from '@fortawesome/free-solid-svg-icons';
 import { useSocket } from './hooks/useSocket';
 import type { GameState, DiceRoll, Card, Player } from './types/game.types';
 import Lobby from './components/Lobby';
@@ -738,8 +740,8 @@ function App() {
                     {/* Кубики */}
                     {lastDiceRoll && (
                       <div className="mb-3 flex justify-center">
-                        <div className="text-2xl">
-                          🎲 {lastDiceRoll.dice1} + {lastDiceRoll.dice2} = {lastDiceRoll.total}
+                        <div className="text-xl font-bold flex items-center gap-2">
+                          <FontAwesomeIcon icon={faDice} /> {lastDiceRoll.dice1} + {lastDiceRoll.dice2} = {lastDiceRoll.total}
                         </div>
                       </div>
                     )}
@@ -749,26 +751,32 @@ function App() {
                       {canRoll && (
                         <button
                           onClick={handleRollDice}
-                          className="w-full py-3 px-4 rounded-lg font-bold text-sm bg-gradient-to-r from-blue-500 to-blue-600 text-white hover:from-blue-600 hover:to-blue-700 transition-all shadow-md"
+                          className="w-full py-3 px-4 rounded-lg font-bold text-sm text-white transition-all shadow-md uppercase"
+                          style={{ backgroundColor: '#2d8659' }}
                         >
-                          🎲 Бросить кубики
+                          <FontAwesomeIcon icon={faDice} className="mr-2" />
+                          Бросить кубики
                         </button>
                       )}
 
                       {!canRoll && (
                         <button
                           onClick={handleEndTurn}
-                          className="w-full py-3 px-4 rounded-lg font-bold text-sm bg-gradient-to-r from-green-500 to-green-600 text-white hover:from-green-600 hover:to-green-700 transition-all shadow-md"
+                          className="w-full py-3 px-4 rounded-lg font-bold text-sm text-white transition-all shadow-md uppercase"
+                          style={{ backgroundColor: '#2d8659' }}
                         >
-                          ✓ Завершить ход
+                          <FontAwesomeIcon icon={faCheck} className="mr-2" />
+                          Завершить ход
                         </button>
                       )}
 
                       <button
                         onClick={() => setShowTradeModal(true)}
-                        className="w-full py-2 px-4 rounded-lg font-bold text-xs bg-gradient-to-r from-purple-500 to-pink-500 text-white hover:from-purple-600 hover:to-pink-600 transition-all shadow-md"
+                        className="w-full py-2 px-4 rounded-lg font-bold text-xs text-white transition-all shadow-md uppercase"
+                        style={{ backgroundColor: '#dc3545' }}
                       >
-                        🤝 Торговля
+                        <FontAwesomeIcon icon={faHandshake} className="mr-2" />
+                        Торговля
                       </button>
                     </div>
                   </div>
