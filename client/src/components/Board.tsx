@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArrowRight, faEye, faParking, faHandcuffs, faQuestion, faMoneyBill, faTrain, faLightbulb, faDroplet } from '@fortawesome/free-solid-svg-icons';
+import { faArrowRight, faEye, faParking, faHandcuffs, faQuestion, faMoneyBill, faTrain, faLightbulb, faDroplet, faSackDollar } from '@fortawesome/free-solid-svg-icons';
 import type { Property, Player } from '../types/game.types';
 import TokenPiece from './TokenPiece';
 import BuildingAnimation from './BuildingAnimation';
@@ -74,7 +74,7 @@ const Board: React.FC<BoardProps> = ({ board, players, onCellClick }) => {
     if (property.id === 20) return <FontAwesomeIcon icon={faParking} />; // Парковка
     if (property.id === 30) return <FontAwesomeIcon icon={faHandcuffs} />; // В тюрьму
     if (property.name.includes('Шанс')) return <FontAwesomeIcon icon={faQuestion} />;
-    if (property.name.includes('казна')) return <FontAwesomeIcon icon={faQuestion} />;
+    if (property.name.includes('казна')) return <FontAwesomeIcon icon={faSackDollar} />;
     if (property.name.includes('налог')) return <FontAwesomeIcon icon={faMoneyBill} />;
     if (property.type === 'railroad') return <FontAwesomeIcon icon={faTrain} />;
     if (property.type === 'utility') {
