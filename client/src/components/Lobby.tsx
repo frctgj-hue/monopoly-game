@@ -50,10 +50,10 @@ const Lobby: React.FC<LobbyProps> = ({ onCreateGame, onJoinGame }) => {
             <p className="text-gray-600 text-lg font-medium">Онлайн игра</p>
           </div>
 
-          <div className="space-y-4">
+          <div className="space-y-4 flex flex-col items-center">
             <button
               onClick={() => setMode('create')}
-              className="w-full text-white font-bold py-5 px-8 rounded-xl transition-all text-xl shadow-lg hover:shadow-2xl transform hover:scale-105 hover:-translate-y-1 duration-200"
+              className="max-w-md w-full text-white font-bold py-8 px-8 rounded-xl transition-all text-xl shadow-lg hover:shadow-2xl transform hover:scale-105 hover:-translate-y-1 duration-200"
               style={{ backgroundColor: '#dc3545' }}
             >
               <span className="flex items-center justify-center gap-3">
@@ -64,7 +64,7 @@ const Lobby: React.FC<LobbyProps> = ({ onCreateGame, onJoinGame }) => {
 
             <button
               onClick={() => setMode('join')}
-              className="w-full text-white font-bold py-5 px-8 rounded-xl transition-all text-xl shadow-lg hover:shadow-2xl transform hover:scale-105 hover:-translate-y-1 duration-200"
+              className="max-w-md w-full text-white font-bold py-8 px-8 rounded-xl transition-all text-xl shadow-lg hover:shadow-2xl transform hover:scale-105 hover:-translate-y-1 duration-200"
               style={{ backgroundColor: '#dc3545' }}
             >
               <span className="flex items-center justify-center gap-3">
