@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faQuestion, faMoneyBill } from '@fortawesome/free-solid-svg-icons';
 import type { Card } from '../types/game.types';
 
 interface CardModalProps {
@@ -23,17 +25,17 @@ const CardModal: React.FC<CardModalProps> = ({ card, onClose }) => {
   if (!card) return null;
 
   const getCardIcon = (type: string) => {
-    return type === 'chance' ? '❓' : '💰';
+    return type === 'chance' ? <FontAwesomeIcon icon={faQuestion} /> : <FontAwesomeIcon icon={faMoneyBill} />;
   };
 
   const getCardColor = (type: string) => {
     return type === 'chance'
-      ? 'from-orange-400 to-red-500'
-      : 'from-blue-400 to-purple-500';
+      ? '#dc3545'
+      : '#2d8659';
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50 animate-fade-in">
+    <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50">
       <div className="max-w-md w-full mx-4 perspective-1000">
         <div
           className={`relative w-full transition-transform duration-700 transform-style-3d ${
@@ -42,18 +44,18 @@ const CardModal: React.FC<CardModalProps> = ({ card, onClose }) => {
         >
           {/* Рубашка карточки (задняя сторона) */}
           <div className="absolute inset-0 backface-hidden">
-            <div className="bg-gradient-to-br from-gray-700 to-gray-900 rounded-3xl shadow-2xl p-8 h-full">
+            <div className="bg-gray-800 border-4 border-black rounded-lg shadow-2xl p-8 h-full">
               <div className="flex items-center justify-center h-full">
                 <div className="text-center">
-                  <div className="text-8xl mb-4 opacity-30">
+                  <div className="text-8xl mb-4 opacity-30 text-white">
                     {getCardIcon(card.type)}
                   </div>
-                  <div className="text-white text-2xl font-bold opacity-50">
+                  <div className="text-white text-2xl font-bold opacity-50 uppercase">
                     {card.type === 'chance' ? 'ШАНС' : 'КАЗНА'}
                   </div>
                   <div className="mt-8 grid grid-cols-3 gap-2">
                     {[...Array(9)].map((_, i) => (
-                      <div key={i} className="w-8 h-8 bg-white opacity-10 rounded"></div>
+                      <div key={i} className="w-8 h-8 bg-white opacity-10"></div>
                     ))}
                   </div>
                 </div>
@@ -63,28 +65,29 @@ const CardModal: React.FC<CardModalProps> = ({ card, onClose }) => {
 
           {/* Лицевая сторона карточки */}
           <div className="backface-hidden rotate-y-180">
-            <div className="bg-white rounded-3xl shadow-2xl animate-scale-in">
-              <div className={`bg-gradient-to-br ${getCardColor(card.type)} p-8 rounded-t-3xl text-white`}>
+            <div className="bg-white rounded-lg shadow-2xl border-4 border-black">
+              <div className="p-8 text-white" style={{ backgroundColor: getCardColor(card.type) }}>
                 <div className="text-center">
-                  <div className="text-6xl mb-4 animate-bounce-soft">
+                  <div className="text-6xl mb-4">
                     {getCardIcon(card.type)}
                   </div>
-                  <h2 className="text-2xl font-bold">
+                  <h2 className="text-2xl font-bold uppercase">
                     {card.type === 'chance' ? 'Шанс' : 'Общественная казна'}
                   </h2>
                 </div>
               </div>
 
               <div className="p-8">
-                <div className="bg-gray-50 rounded-2xl p-6 mb-6">
-                  <p className="text-lg text-gray-800 text-center leading-relaxed">
+                <div className="bg-gray-100 border-2 border-gray-300 p-6 mb-6">
+                  <p className="text-lg text-gray-800 text-center leading-relaxed font-medium">
                     {card.text}
                   </p>
                 </div>
 
                 <button
                   onClick={onClose}
-                  className="w-full py-4 px-6 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-xl font-bold text-lg hover:shadow-xl transition-all transform hover:scale-105"
+                  className="w-full py-4 px-6 text-white rounded-lg font-bold text-lg uppercase transition-all shadow-lg"
+                  style={{ backgroundColor: '#dc3545' }}
                 >
                   Продолжить
                 </button>
