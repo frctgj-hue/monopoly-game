@@ -109,7 +109,7 @@ const Board: React.FC<BoardProps> = ({ board, players, onCellClick }) => {
         } ${isOwned && owner ? 'ring-2 ring-offset-0' : ''} ${
           isCorner
             ? getCornerStyle(index)
-            : (property.name.includes('Шанс') ? 'bg-red-300' : 'bg-[#F5F0E8]')
+            : 'bg-[#F5F0E8]'
         } group shadow-sm hover:shadow-md`}
         style={{
           ...(isOwned && owner ? { borderColor: owner.color, borderWidth: '3px' } : {}),
@@ -117,6 +117,11 @@ const Board: React.FC<BoardProps> = ({ board, players, onCellClick }) => {
         }}
         onClick={() => onCellClick?.(index)}
       >
+        {/* Светло-красный фон для клеток Шанс */}
+        {property.name.includes('Шанс') && (
+          <div className="absolute inset-0 bg-red-300 pointer-events-none"></div>
+        )}
+
         {/* Внутренняя тень для глубины */}
         <div className="absolute inset-0 pointer-events-none" style={{
           boxShadow: 'inset 0 1px 2px rgba(0,0,0,0.1)'
