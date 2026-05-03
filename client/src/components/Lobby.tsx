@@ -141,7 +141,7 @@ const Lobby: React.FC<LobbyProps> = ({ onCreateGame, onJoinGame }) => {
   }
 
   return (
-    <div className="min-h-screen gradient-monopoly flex items-center justify-center p-4 relative overflow-hidden">
+    <div className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden" style={{ backgroundColor: '#2d8659' }}>
       {/* Анимированный фон */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-20 right-10 text-6xl opacity-20 animate-float">🎲</div>
