@@ -161,14 +161,16 @@ const Board: React.FC<BoardProps> = ({ board, players, onCellClick }) => {
           <>
             {property.name.includes('Шанс') ? (
               // Иконка Шанс в центре с фоном
-              <div className="text-center text-3xl mb-1 relative">
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="w-12 h-12 bg-red-300 rounded-full opacity-40"></div>
-                </div>
-                <div className="relative z-10" style={{
-                  filter: 'drop-shadow(2px 2px 3px rgba(0,0,0,0.2))'
-                }}>
-                  {specialIcon}
+              <div className="absolute inset-0 flex items-center justify-center">
+                <div className="relative">
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <div className="w-12 h-12 bg-red-300 rounded-full opacity-40"></div>
+                  </div>
+                  <div className="relative z-10 text-3xl" style={{
+                    filter: 'drop-shadow(2px 2px 3px rgba(0,0,0,0.2))'
+                  }}>
+                    {specialIcon}
+                  </div>
                 </div>
               </div>
             ) : (
