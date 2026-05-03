@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faArrowRight, faEye, faParking, faHandcuffs, faQuestion, faMoneyBill, faTrain, faLightbulb, faDroplet } from '@fortawesome/free-solid-svg-icons';
 import type { Property, Player } from '../types/game.types';
 import TokenPiece from './TokenPiece';
 import BuildingAnimation from './BuildingAnimation';
@@ -67,17 +69,17 @@ const Board: React.FC<BoardProps> = ({ board, players, onCellClick }) => {
   };
 
   const getSpecialIcon = (property: Property) => {
-    if (property.id === 0) return '→'; // Старт - стрелка
-    if (property.id === 10) return '👁️'; // В гостях
-    if (property.id === 20) return '🅿️'; // Парковка
-    if (property.id === 30) return '👮'; // В тюрьму
-    if (property.name.includes('Шанс')) return '?';
-    if (property.name.includes('казна')) return '?';
-    if (property.name.includes('налог')) return '💵';
-    if (property.type === 'railroad') return '🚂';
+    if (property.id === 0) return <FontAwesomeIcon icon={faArrowRight} />; // Старт
+    if (property.id === 10) return <FontAwesomeIcon icon={faEye} />; // В гостях
+    if (property.id === 20) return <FontAwesomeIcon icon={faParking} />; // Парковка
+    if (property.id === 30) return <FontAwesomeIcon icon={faHandcuffs} />; // В тюрьму
+    if (property.name.includes('Шанс')) return <FontAwesomeIcon icon={faQuestion} />;
+    if (property.name.includes('казна')) return <FontAwesomeIcon icon={faQuestion} />;
+    if (property.name.includes('налог')) return <FontAwesomeIcon icon={faMoneyBill} />;
+    if (property.type === 'railroad') return <FontAwesomeIcon icon={faTrain} />;
     if (property.type === 'utility') {
-      if (property.name.includes('Электро')) return '💡';
-      if (property.name.includes('Водо')) return '💧';
+      if (property.name.includes('Электро')) return <FontAwesomeIcon icon={faLightbulb} />;
+      if (property.name.includes('Водо')) return <FontAwesomeIcon icon={faDroplet} />;
     }
     return null;
   };
@@ -135,7 +137,9 @@ const Board: React.FC<BoardProps> = ({ board, players, onCellClick }) => {
             <div className="absolute inset-0 bg-gradient-to-b from-white to-transparent opacity-20"></div>
             <span className="text-white text-xs relative z-10" style={{
               textShadow: '1px 1px 2px rgba(0,0,0,0.5)'
-            }}>🚂</span>
+            }}>
+              <FontAwesomeIcon icon={faTrain} />
+            </span>
           </div>
         )}
 
