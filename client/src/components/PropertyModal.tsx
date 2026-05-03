@@ -1,4 +1,6 @@
 import React from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faHouse, faTrain, faLightbulb, faTimes, faGavel } from '@fortawesome/free-solid-svg-icons';
 import type { Property } from '../types/game.types';
 
 interface PropertyModalProps {
@@ -35,22 +37,22 @@ const PropertyModal: React.FC<PropertyModalProps> = ({
   };
 
   const getPropertyIcon = () => {
-    if (property.type === 'railroad') return '🚂';
-    if (property.type === 'utility') return '💡';
-    return '🏠';
+    if (property.type === 'railroad') return <FontAwesomeIcon icon={faTrain} />;
+    if (property.type === 'utility') return <FontAwesomeIcon icon={faLightbulb} />;
+    return <FontAwesomeIcon icon={faHouse} />;
   };
 
   return (
-    <div className="animate-fade-in">
-      <div className="bg-white rounded-lg shadow-lg w-full animate-scale-in border-2 border-black" onClick={(e) => e.stopPropagation()}>
+    <div>
+      <div className="bg-white rounded-lg shadow-2xl w-full border-4 border-black" onClick={(e) => e.stopPropagation()}>
         {/* Заголовок с цветом */}
-        <div className={`${getColorClass(property.color)} text-white p-6 rounded-t-2xl`}>
+        <div className={`${getColorClass(property.color)} text-white p-6`}>
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <span className="text-4xl">{getPropertyIcon()}</span>
               <div>
-                <h2 className="text-2xl font-bold">{property.name}</h2>
-                <p className="text-sm opacity-90">
+                <h2 className="text-2xl font-bold uppercase">{property.name}</h2>
+                <p className="text-sm opacity-90 uppercase">
                   {property.type === 'railroad' ? 'Железная дорога' :
                    property.type === 'utility' ? 'Коммунальное предприятие' :
                    'Недвижимость'}
@@ -59,9 +61,9 @@ const PropertyModal: React.FC<PropertyModalProps> = ({
             </div>
             <button
               onClick={onClose}
-              className="text-white hover:text-gray-200 text-3xl font-bold transition-colors"
+              className="text-white hover:text-gray-200 transition-colors"
             >
-              ×
+              <FontAwesomeIcon icon={faTimes} className="text-3xl" />
             </button>
           </div>
         </div>
@@ -69,41 +71,41 @@ const PropertyModal: React.FC<PropertyModalProps> = ({
         {/* Информация */}
         <div className="p-6 space-y-4">
           {/* Цена */}
-          <div className="bg-gray-50 rounded-lg p-4">
+          <div className="bg-gray-100 border-2 border-gray-300 p-4">
             <div className="flex justify-between items-center">
-              <span className="text-gray-600 font-medium">Цена покупки:</span>
-              <span className="text-2xl font-bold text-green-600">${property.price}</span>
+              <span className="text-gray-700 font-bold uppercase">Цена покупки:</span>
+              <span className="text-2xl font-bold text-gray-900">${property.price}</span>
             </div>
           </div>
 
           {/* Аренда */}
           {property.rent.length > 0 && (
-            <div className="bg-gray-50 rounded-lg p-4">
-              <h3 className="font-semibold text-gray-700 mb-2">Аренда:</h3>
+            <div className="bg-gray-100 border-2 border-gray-300 p-4">
+              <h3 className="font-bold text-gray-800 mb-2 uppercase">Аренда:</h3>
               <div className="space-y-1 text-sm">
                 {property.type === 'property' ? (
                   <>
                     <div className="flex justify-between">
                       <span>Без домов:</span>
-                      <span className="font-semibold">${property.rent[0]}</span>
+                      <span className="font-bold">${property.rent[0]}</span>
                     </div>
                     {property.rent.slice(1, 5).map((rent, idx) => (
                       <div key={idx} className="flex justify-between">
                         <span>{idx + 1} {idx === 0 ? 'дом' : 'дома'}:</span>
-                        <span className="font-semibold">${rent}</span>
+                        <span className="font-bold">${rent}</span>
                       </div>
                     ))}
                     {property.rent[5] && (
                       <div className="flex justify-between">
                         <span>Отель:</span>
-                        <span className="font-semibold">${property.rent[5]}</span>
+                        <span className="font-bold">${property.rent[5]}</span>
                       </div>
                     )}
                   </>
                 ) : (
                   <div className="flex justify-between">
                     <span>Базовая аренда:</span>
-                    <span className="font-semibold">${property.rent[0]}</span>
+                    <span className="font-bold">${property.rent[0]}</span>
                   </div>
                 )}
               </div>
@@ -111,10 +113,10 @@ const PropertyModal: React.FC<PropertyModalProps> = ({
           )}
 
           {/* Баланс игрока */}
-          <div className="bg-blue-50 rounded-lg p-4 border border-blue-200">
+          <div className="bg-gray-100 border-2 border-gray-400 p-4">
             <div className="flex justify-between items-center">
-              <span className="text-gray-600 font-medium">Ваш баланс:</span>
-              <span className={`text-xl font-bold ${playerMoney >= property.price ? 'text-green-600' : 'text-red-600'}`}>
+              <span className="text-gray-700 font-bold uppercase">Ваш баланс:</span>
+              <span className={`text-xl font-bold ${playerMoney >= property.price ? 'text-gray-900' : 'text-red-600'}`}>
                 ${playerMoney}
               </span>
             </div>
@@ -125,11 +127,12 @@ const PropertyModal: React.FC<PropertyModalProps> = ({
             <button
               onClick={onBuy}
               disabled={!canBuy}
-              className={`flex-1 py-3 px-6 rounded-lg font-bold text-lg transition-all ${
+              className={`flex-1 py-3 px-6 rounded-lg font-bold text-lg transition-all uppercase ${
                 canBuy
-                  ? 'bg-green-600 hover:bg-green-700 text-white shadow-lg hover:shadow-xl transform hover:scale-105'
+                  ? 'text-white shadow-lg'
                   : 'bg-gray-300 text-gray-500 cursor-not-allowed'
               }`}
+              style={canBuy ? { backgroundColor: '#2d8659' } : {}}
             >
               {canBuy ? 'Купить' : 'Недостаточно средств'}
             </button>
@@ -139,14 +142,15 @@ const PropertyModal: React.FC<PropertyModalProps> = ({
                   onAuction();
                   onClose();
                 }}
-                className="flex-1 py-3 px-6 rounded-lg font-bold text-lg bg-orange-500 hover:bg-orange-600 text-white transition-all shadow-lg hover:shadow-xl transform hover:scale-105 active:scale-95"
+                className="flex-1 py-3 px-6 rounded-lg font-bold text-lg bg-orange-500 hover:bg-orange-600 text-white transition-all shadow-lg uppercase"
               >
-                🔨 Аукцион
+                <FontAwesomeIcon icon={faGavel} className="mr-2" />
+                Аукцион
               </button>
             )}
             <button
               onClick={onClose}
-              className="flex-1 py-3 px-6 rounded-lg font-bold text-lg bg-gray-200 hover:bg-gray-300 text-gray-700 transition-colors"
+              className="flex-1 py-3 px-6 rounded-lg font-bold text-lg bg-gray-200 hover:bg-gray-300 text-gray-700 transition-colors uppercase"
             >
               Отмена
             </button>
