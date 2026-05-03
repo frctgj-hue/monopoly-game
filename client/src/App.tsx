@@ -524,7 +524,7 @@ function App() {
 
   if (!connected) {
     return (
-      <div className="min-h-screen gradient-monopoly flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: '#2d8659' }}>
         <div className="backdrop-blur-glass rounded-3xl shadow-2xl p-10 animate-scale-in">
           <div className="text-center">
             <div className="text-6xl mb-4 animate-spin">🎲</div>
