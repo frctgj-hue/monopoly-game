@@ -140,7 +140,7 @@ const Board: React.FC<BoardProps> = ({ board, players, onCellClick }) => {
 
         {/* Иконка для железных дорог */}
         {property.type === 'railroad' && (
-          <div className="text-center text-2xl mb-1 relative">
+          <div className="text-center text-2xl mb-1 relative -mt-2">
             <div className="absolute inset-0 flex items-center justify-center">
               <div className="w-10 h-10 bg-gray-200 rounded-full opacity-30"></div>
             </div>
