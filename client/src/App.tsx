@@ -35,6 +35,7 @@ function App() {
     endTurn,
     payJailFine,
     useJailCard,
+    declareBankruptcy,
     drawCard,
     confirmCard,
     confirmGoToJail,
@@ -58,6 +59,7 @@ function App() {
   const [showGoToJail, setShowGoToJail] = useState(false);
   const [showTaxModal, setShowTaxModal] = useState<{ type: 'income' | 'luxury'; amount: number } | null>(null);
   const [showRentModal, setShowRentModal] = useState<{ propertyId: number; rent: number; diceTotal: number } | null>(null);
+  const [currentCreditor, setCurrentCreditor] = useState<string | null>(null);
   const [showPropertyInfo, setShowPropertyInfo] = useState<number | null>(null);
   const [showTradeModal, setShowTradeModal] = useState(false);
   const [showPropertyManagement, setShowPropertyManagement] = useState(false);
@@ -126,6 +128,8 @@ function App() {
     socket.on('show-rent', ({ playerId, propertyId, rent, game, diceTotal }: { playerId: string; propertyId: number; rent: number; game: GameState; diceTotal: number }) => {
       setGameState(game);
       if (playerId === socket.id) {
+        const property = game.board[propertyId];
+        setCurrentCreditor(property.owner); // Сохраняем владельца как кредитора
         setShowRentModal({ propertyId, rent, diceTotal: diceTotal || lastDiceRoll?.total || 0 });
       }
     });
@@ -370,6 +374,20 @@ function App() {
       if (data.success && data.game) {
         setGameState(data.game);
         showToast(`💸 Оплачена аренда: $${data.rent}`, 'warning');
+
+        // Проверяем банкротство после оплаты ренты
+        const currentPlayer = data.game.players.find(p => p.id === myPlayerId);
+        if (currentPlayer && currentPlayer.money < 0) {
+          // Игрок обанкротился - объявляем банкротство с кредитором
+          if (currentCreditor) {
+            declareBankruptcy(gameState.id, currentCreditor, (bankruptData) => {
+              if (bankruptData.success && bankruptData.game) {
+                setGameState(bankruptData.game);
+              }
+            });
+          }
+        }
+        setCurrentCreditor(null); // Очищаем кредитора
       }
     });
     setShowRentModal(null);
