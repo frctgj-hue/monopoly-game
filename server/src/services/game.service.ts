@@ -18,7 +18,6 @@ export class GameService {
       communityCards: shuffleCards(COMMUNITY_CARDS),
       chanceIndex: 0,
       communityIndex: 0,
-      auction: null,
       tradeOffers: [],
     };
     this.games.set(gameId, game);
@@ -532,116 +531,6 @@ export class GameService {
       darkblue: 200,
     };
     return costs[color] || 50;
-  }
-
-  // Аукционы
-  startAuction(gameId: string, propertyId: number, initiatorId: string): boolean {
-    const game = this.games.get(gameId);
-    if (!game) return false;
-
-    const property = game.board[propertyId];
-    if (!property || property.owner || game.auction) return false;
-
-    const auctionDuration = 30000; // 30 секунд
-    game.auction = {
-      propertyId,
-      startingBid: 10,
-      currentBid: 0,
-      currentBidder: null,
-      bids: [],
-      startTime: Date.now(),
-      endTime: Date.now() + auctionDuration,
-      active: true,
-      initiatorId,
-    };
-
-    return true;
-  }
-
-  placeBid(gameId: string, playerId: string, amount: number): { success: boolean; message?: string } {
-    const game = this.games.get(gameId);
-    if (!game || !game.auction || !game.auction.active) {
-      return { success: false, message: 'Нет активного аукциона' };
-    }
-
-    const player = game.players.find(p => p.id === playerId);
-    if (!player) {
-      return { success: false, message: 'Игрок не найден' };
-    }
-
-    if (player.money < amount) {
-      return { success: false, message: 'Недостаточно денег' };
-    }
-
-    if (amount <= game.auction.currentBid) {
-      return { success: false, message: `Ставка должна быть больше $${game.auction.currentBid}` };
-    }
-
-    if (amount < game.auction.startingBid) {
-      return { success: false, message: `Минимальная ставка: $${game.auction.startingBid}` };
-    }
-
-    if (Date.now() > game.auction.endTime) {
-      return { success: false, message: 'Аукцион завершен' };
-    }
-
-    game.auction.currentBid = amount;
-    game.auction.currentBidder = playerId;
-    game.auction.bids.push({
-      playerId,
-      amount,
-      timestamp: Date.now(),
-    });
-
-    return { success: true };
-  }
-
-  endAuction(gameId: string): { success: boolean; winner?: string; propertyId?: number; amount?: number } {
-    const game = this.games.get(gameId);
-    if (!game || !game.auction) {
-      return { success: false };
-    }
-
-    const auction = game.auction;
-    auction.active = false;
-
-    if (auction.currentBidder && auction.currentBid > 0) {
-      const winner = game.players.find(p => p.id === auction.currentBidder);
-      const property = game.board[auction.propertyId];
-
-      if (winner && property) {
-        winner.money -= auction.currentBid;
-        winner.properties.push(auction.propertyId);
-        property.owner = winner.id;
-
-        const result = {
-          success: true,
-          winner: winner.id,
-          propertyId: auction.propertyId,
-          amount: auction.currentBid,
-        };
-
-        game.auction = null;
-        return result;
-      }
-    }
-
-    game.auction = null;
-    return { success: true };
-  }
-
-  cancelAuction(gameId: string, playerId: string): { success: boolean; message?: string } {
-    const game = this.games.get(gameId);
-    if (!game || !game.auction) {
-      return { success: false, message: 'Нет активного аукциона' };
-    }
-
-    if (game.auction.initiatorId !== playerId) {
-      return { success: false, message: 'Только инициатор может отменить аукцион' };
-    }
-
-    game.auction = null;
-    return { success: true };
   }
 
   // Торговля

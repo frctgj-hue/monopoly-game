@@ -10,7 +10,6 @@ import PlayersList from './components/PlayersList';
 import CardModal from './components/CardModal';
 import PropertyModal from './components/PropertyModal';
 import PropertyManagement from './components/PropertyManagement';
-import AuctionModal from './components/AuctionModal';
 import TradeModal from './components/TradeModal';
 import TradeNotification from './components/TradeNotification';
 import VictoryAnimation from './components/VictoryAnimation';
@@ -40,9 +39,6 @@ function App() {
     confirmTax,
     buildHouse,
     sellHouse,
-    startAuction,
-    placeBid,
-    cancelAuction,
     createTrade,
     acceptTrade,
     rejectTrade,
@@ -170,34 +166,6 @@ function App() {
       setGameState(game);
     });
 
-    // Аукционы
-    socket.on('auction-started', ({ game }: { game: GameState }) => {
-      setGameState(game);
-      showToast('🔨 Аукцион начался!', 'info');
-    });
-
-    socket.on('bid-placed', ({ playerId, amount, game }: { playerId: string; amount: number; game: GameState }) => {
-      setGameState(game);
-      const player = game.players.find((p: Player) => p.id === playerId);
-      showToast(`💰 ${player?.name} поставил $${amount}`, 'info');
-    });
-
-    socket.on('auction-ended', ({ winner, propertyId, amount, game }: { winner?: string; propertyId?: number; amount?: number; game: GameState }) => {
-      setGameState(game);
-      if (winner && propertyId !== undefined && amount) {
-        const player = game.players.find((p: Player) => p.id === winner);
-        const property = game.board[propertyId];
-        showToast(`🔨 ${player?.name} выиграл ${property?.name} за $${amount}!`, 'success');
-      } else {
-        showToast('🔨 Аукцион завершен без ставок', 'info');
-      }
-    });
-
-    socket.on('auction-cancelled', ({ game }: { game: GameState }) => {
-      setGameState(game);
-      showToast('🚫 Аукцион отменен', 'info');
-    });
-
     // Торговля
     socket.on('trade-created', ({ game }) => {
       setGameState(game);
@@ -251,10 +219,6 @@ function App() {
       socket.off('game-finished');
       socket.off('card-drawn');
       socket.off('card-executed');
-      socket.off('auction-started');
-      socket.off('bid-placed');
-      socket.off('auction-ended');
-      socket.off('auction-cancelled');
       socket.off('trade-created');
       socket.off('trade-accepted');
       socket.off('trade-rejected');
@@ -439,41 +403,6 @@ function App() {
         setSelectedProperty(null);
       } else {
         showToast(data.message || 'Не удалось купить', 'error');
-      }
-    });
-  };
-
-  const handleStartAuction = (propertyId: number) => {
-    if (!gameState) return;
-    startAuction(gameState.id, propertyId, (data) => {
-      if (data.success && data.game) {
-        setGameState(data.game);
-        showToast('🔨 Аукцион начался!', 'success');
-      } else {
-        showToast(data.message || 'Не удалось начать аукцион', 'error');
-      }
-    });
-  };
-
-  const handlePlaceBid = (amount: number) => {
-    if (!gameState) return;
-    placeBid(gameState.id, amount, (data) => {
-      if (data.success && data.game) {
-        setGameState(data.game);
-      } else {
-        showToast(data.message || 'Не удалось сделать ставку', 'error');
-      }
-    });
-  };
-
-  const handleCancelAuction = () => {
-    if (!gameState) return;
-    cancelAuction(gameState.id, (data) => {
-      if (data.success && data.game) {
-        setGameState(data.game);
-        showToast('🚫 Аукцион отменен', 'info');
-      } else {
-        showToast(data.message || 'Не удалось отменить аукцион', 'error');
       }
     });
   };
@@ -738,26 +667,8 @@ function App() {
                       property={gameState.board[selectedProperty]}
                       playerMoney={gameState.players.find(p => p.id === myPlayerId)?.money || 0}
                       onBuy={handleBuyProperty}
-                      onAuction={() => {
-                        handleStartAuction(selectedProperty);
-                        setSelectedProperty(null);
-                      }}
                       onClose={() => setSelectedProperty(null)}
                       canBuy={(gameState.players.find(p => p.id === myPlayerId)?.money || 0) >= gameState.board[selectedProperty].price}
-                    />
-                  </div>
-                )}
-
-                {/* Модальное окно аукциона */}
-                {gameState.auction && (
-                  <div className="bg-white rounded-lg shadow-2xl border-4 border-black">
-                    <AuctionModal
-                      auction={gameState.auction}
-                      property={gameState.board[gameState.auction.propertyId]}
-                      players={gameState.players}
-                      myPlayerId={myPlayerId}
-                      onPlaceBid={handlePlaceBid}
-                      onClose={handleCancelAuction}
                     />
                   </div>
                 )}

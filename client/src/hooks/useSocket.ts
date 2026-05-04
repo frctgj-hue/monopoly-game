@@ -147,36 +147,6 @@ export const useSocket = () => {
     socket?.emit('sell-house', { gameId, propertyId }, callback);
   };
 
-  const startAuction = (
-    gameId: string,
-    propertyId: number,
-    callback: (data: { success: boolean; message?: string; game?: GameState }) => void
-  ) => {
-    socket?.emit('start-auction', { gameId, propertyId }, callback);
-  };
-
-  const placeBid = (
-    gameId: string,
-    amount: number,
-    callback: (data: { success: boolean; message?: string; game?: GameState }) => void
-  ) => {
-    socket?.emit('place-bid', { gameId, amount }, callback);
-  };
-
-  const cancelAuction = (
-    gameId: string,
-    callback: (data: { success: boolean; message?: string; game?: GameState }) => void
-  ) => {
-    socket?.emit('cancel-auction', { gameId }, callback);
-  };
-
-  const endAuction = (
-    gameId: string,
-    callback: (data: { success: boolean; message?: string; game?: GameState }) => void
-  ) => {
-    socket?.emit('end-auction', { gameId }, callback);
-  };
-
   const createTrade = (
     gameId: string,
     toPlayerId: string,
@@ -247,10 +217,6 @@ export const useSocket = () => {
     confirmTax,
     buildHouse,
     sellHouse,
-    startAuction,
-    placeBid,
-    cancelAuction,
-    endAuction,
     createTrade,
     acceptTrade,
     rejectTrade,

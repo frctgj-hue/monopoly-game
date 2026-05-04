@@ -38,24 +38,6 @@ export type Property = {
   type: 'property' | 'railroad' | 'utility' | 'special';
 };
 
-export type AuctionBid = {
-  playerId: string;
-  amount: number;
-  timestamp: number;
-};
-
-export type Auction = {
-  propertyId: number;
-  startingBid: number;
-  currentBid: number;
-  currentBidder: string | null;
-  bids: AuctionBid[];
-  startTime: number;
-  endTime: number;
-  active: boolean;
-  initiatorId: string; // ID игрока, который начал аукцион
-};
-
 export type TradeOffer = {
   id: string;
   fromPlayerId: string;
@@ -85,7 +67,6 @@ export type GameState = {
   started: boolean;
   finished: boolean;
   winner: string | null;
-  auction: Auction | null;
   tradeOffers: TradeOffer[];
   chanceCards?: Card[];
   communityCards?: Card[];

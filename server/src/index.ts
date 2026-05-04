@@ -340,76 +340,8 @@ io.on('connection', (socket) => {
     callback({ success: true, game });
   });
 
-  // Аукционы
-  socket.on('start-auction', ({ gameId, propertyId }, callback) => {
-    const success = gameService.startAuction(gameId, propertyId, socket.id);
-    if (!success) {
-      callback({ success: false, message: 'Не удалось начать аукцион' });
-      return;
-    }
-
-    const game = gameService.getGame(gameId);
-    io.to(gameId).emit('auction-started', { propertyId, game });
-    callback({ success: true, game });
-
-    // Автоматическое завершение аукциона через 30 секунд
-    setTimeout(() => {
-      const result = gameService.endAuction(gameId);
-      if (result.success) {
-        const updatedGame = gameService.getGame(gameId);
-        io.to(gameId).emit('auction-ended', {
-          winner: result.winner,
-          propertyId: result.propertyId,
-          amount: result.amount,
-          game: updatedGame
-        });
-      }
-    }, 30000);
-  });
-
-  socket.on('place-bid', ({ gameId, amount }, callback) => {
-    const result = gameService.placeBid(gameId, socket.id, amount);
-    if (!result.success) {
-      callback({ success: false, message: result.message });
-      return;
-    }
-
-    const game = gameService.getGame(gameId);
-    io.to(gameId).emit('bid-placed', { playerId: socket.id, amount, game });
-    callback({ success: true, game });
-  });
-
-  socket.on('cancel-auction', ({ gameId }, callback) => {
-    const result = gameService.cancelAuction(gameId, socket.id);
-    if (!result.success) {
-      callback({ success: false, message: result.message });
-      return;
-    }
-
-    const game = gameService.getGame(gameId);
-    io.to(gameId).emit('auction-cancelled', { game });
-    callback({ success: true, game });
-  });
-
-  socket.on('end-auction', ({ gameId }, callback) => {
-    const result = gameService.endAuction(gameId);
-    if (!result.success) {
-      callback({ success: false, message: 'Не удалось завершить аукцион' });
-      return;
-    }
-
-    const game = gameService.getGame(gameId);
-    io.to(gameId).emit('auction-ended', {
-      winner: result.winner,
-      propertyId: result.propertyId,
-      amount: result.amount,
-      game
-    });
-    callback({ success: true, game });
-  });
-
-  // Торговля
-  socket.on('create-trade', ({ gameId, toPlayerId, offeredProperties, offeredMoney, requestedProperties, requestedMoney }, callback) => {
+  // Строительство дома
+  socket.on('build-house', ({ gameId, propertyId }, callback) => {
     const result = gameService.createTradeOffer(
       gameId,
       socket.id,

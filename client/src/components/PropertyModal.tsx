@@ -1,13 +1,12 @@
 import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faHouse, faTrain, faLightbulb, faTimes, faGavel } from '@fortawesome/free-solid-svg-icons';
+import { faHouse, faTrain, faLightbulb, faTimes } from '@fortawesome/free-solid-svg-icons';
 import type { Property } from '../types/game.types';
 
 interface PropertyModalProps {
   property: Property;
   playerMoney: number;
   onBuy: () => void;
-  onAuction?: () => void;
   onClose: () => void;
   canBuy: boolean;
 }
@@ -16,7 +15,6 @@ const PropertyModal: React.FC<PropertyModalProps> = ({
   property,
   playerMoney,
   onBuy,
-  onAuction,
   onClose,
   canBuy,
 }) => {
@@ -136,18 +134,6 @@ const PropertyModal: React.FC<PropertyModalProps> = ({
             >
               {canBuy ? 'Купить' : 'Недостаточно средств'}
             </button>
-            {onAuction && (
-              <button
-                onClick={() => {
-                  onAuction();
-                  onClose();
-                }}
-                className="flex-1 py-3 px-6 rounded-lg font-bold text-lg bg-orange-500 hover:bg-orange-600 text-white transition-all shadow-lg uppercase"
-              >
-                <FontAwesomeIcon icon={faGavel} className="mr-2" />
-                Аукцион
-              </button>
-            )}
             <button
               onClick={onClose}
               className="flex-1 py-3 px-6 rounded-lg font-bold text-lg bg-gray-200 hover:bg-gray-300 text-gray-700 transition-colors uppercase"
