@@ -156,6 +156,22 @@ export const useSocket = () => {
     socket?.emit('sell-house', { gameId, propertyId }, callback);
   };
 
+  const mortgageProperty = (
+    gameId: string,
+    propertyId: number,
+    callback: (data: { success: boolean; message?: string; game?: GameState }) => void
+  ) => {
+    socket?.emit('mortgage-property', { gameId, propertyId }, callback);
+  };
+
+  const unmortgageProperty = (
+    gameId: string,
+    propertyId: number,
+    callback: (data: { success: boolean; message?: string; game?: GameState }) => void
+  ) => {
+    socket?.emit('unmortgage-property', { gameId, propertyId }, callback);
+  };
+
   const createTrade = (
     gameId: string,
     toPlayerId: string,
@@ -227,6 +243,8 @@ export const useSocket = () => {
     confirmRent,
     buildHouse,
     sellHouse,
+    mortgageProperty,
+    unmortgageProperty,
     createTrade,
     acceptTrade,
     rejectTrade,

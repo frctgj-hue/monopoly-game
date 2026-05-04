@@ -42,6 +42,8 @@ function App() {
     confirmRent,
     buildHouse,
     sellHouse,
+    mortgageProperty,
+    unmortgageProperty,
     createTrade,
     acceptTrade,
     rejectTrade,
@@ -215,6 +217,20 @@ function App() {
       showToast(`💰 ${player?.name} продал дом на ${property?.name}`, 'info');
     });
 
+    socket.on('property-mortgaged', ({ playerId, propertyId, game }) => {
+      setGameState(game);
+      const player = game.players.find((p: Player) => p.id === playerId);
+      const property = game.board[propertyId];
+      showToast(`🏦 ${player?.name} заложил ${property?.name}`, 'info');
+    });
+
+    socket.on('property-unmortgaged', ({ playerId, propertyId, game }) => {
+      setGameState(game);
+      const player = game.players.find((p: Player) => p.id === playerId);
+      const property = game.board[propertyId];
+      showToast(`✅ ${player?.name} выкупил ${property?.name}`, 'success');
+    });
+
     return () => {
       socket.off('player-joined');
       socket.off('game-started');
@@ -239,6 +255,8 @@ function App() {
       socket.off('trade-cancelled');
       socket.off('house-built');
       socket.off('house-sold');
+      socket.off('property-mortgaged');
+      socket.off('property-unmortgaged');
       socket.off('chat-message');
     };
   }, [socket]);
@@ -498,6 +516,30 @@ function App() {
     });
   };
 
+  const handleMortgageProperty = (propertyId: number) => {
+    if (!gameState) return;
+    mortgageProperty(gameState.id, propertyId, (data) => {
+      if (data.success && data.game) {
+        setGameState(data.game);
+        showToast('🏦 Недвижимость заложена!', 'success');
+      } else {
+        showToast(data.message || 'Не удалось заложить недвижимость', 'error');
+      }
+    });
+  };
+
+  const handleUnmortgageProperty = (propertyId: number) => {
+    if (!gameState) return;
+    unmortgageProperty(gameState.id, propertyId, (data) => {
+      if (data.success && data.game) {
+        setGameState(data.game);
+        showToast('✅ Недвижимость выкуплена!', 'success');
+      } else {
+        showToast(data.message || 'Не удалось выкупить недвижимость', 'error');
+      }
+    });
+  };
+
   if (!connected) {
     return (
       <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: '#2d8659' }}>
@@ -732,8 +774,7 @@ function App() {
                     <PropertyInfoModal
                       property={gameState.board[showPropertyInfo]}
                       onMortgage={() => {
-                        // TODO: Реализовать логику залога
-                        console.log('Заложить недвижимость:', showPropertyInfo);
+                        handleMortgageProperty(showPropertyInfo);
                         setShowPropertyInfo(null);
                       }}
                       onClose={() => setShowPropertyInfo(null)}

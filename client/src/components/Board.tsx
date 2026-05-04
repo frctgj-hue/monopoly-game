@@ -266,6 +266,17 @@ const Board: React.FC<BoardProps> = ({ board, players, onCellClick }) => {
           </div>
         )}
 
+        {/* Красный крест для заложенной недвижимости */}
+        {property.mortgaged && (
+          <div className="absolute inset-0 flex items-center justify-center z-[115] pointer-events-none">
+            <div className="text-red-600 text-6xl font-bold" style={{
+              textShadow: '2px 2px 4px rgba(0,0,0,0.5), -2px -2px 4px rgba(0,0,0,0.5)'
+            }}>
+              ✕
+            </div>
+          </div>
+        )}
+
         {/* Цветная полоска снизу для недвижимости - INLINE STYLES */}
         {property.type === 'property' && (
           <div

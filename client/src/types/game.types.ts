@@ -36,6 +36,7 @@ export type Property = {
   houses: number;
   owner: string | null;
   type: 'property' | 'railroad' | 'utility' | 'special';
+  mortgaged: boolean;
 };
 
 export type TradeOffer = {

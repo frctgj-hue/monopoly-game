@@ -20,6 +20,7 @@ export interface Property {
   houses: number;
   owner: string | null;
   type: 'property' | 'railroad' | 'utility' | 'special';
+  mortgaged: boolean;
 }
 
 export interface DiceRoll {

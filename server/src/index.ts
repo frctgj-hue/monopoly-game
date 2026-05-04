@@ -358,6 +358,32 @@ io.on('connection', (socket) => {
     callback({ success: true, game });
   });
 
+  // Залог недвижимости
+  socket.on('mortgage-property', ({ gameId, propertyId }, callback) => {
+    const success = gameService.mortgageProperty(gameId, socket.id, propertyId);
+    if (!success) {
+      callback({ success: false, message: 'Не удалось заложить недвижимость' });
+      return;
+    }
+
+    const game = gameService.getGame(gameId);
+    io.to(gameId).emit('property-mortgaged', { playerId: socket.id, propertyId, game });
+    callback({ success: true, game });
+  });
+
+  // Выкуп недвижимости
+  socket.on('unmortgage-property', ({ gameId, propertyId }, callback) => {
+    const success = gameService.unmortgageProperty(gameId, socket.id, propertyId);
+    if (!success) {
+      callback({ success: false, message: 'Не удалось выкупить недвижимость' });
+      return;
+    }
+
+    const game = gameService.getGame(gameId);
+    io.to(gameId).emit('property-unmortgaged', { playerId: socket.id, propertyId, game });
+    callback({ success: true, game });
+  });
+
   // Строительство дома
   socket.on('build-house', ({ gameId, propertyId }, callback) => {
     const result = gameService.createTradeOffer(

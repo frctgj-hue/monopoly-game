@@ -560,6 +560,53 @@ export class GameService {
     return costs[color] || 50;
   }
 
+  mortgageProperty(gameId: string, playerId: string, propertyId: number): boolean {
+    const game = this.games.get(gameId);
+    if (!game) return false;
+
+    const player = game.players.find(p => p.id === playerId);
+    const property = game.board[propertyId];
+
+    if (!player || !property || property.owner !== playerId || property.mortgaged) {
+      return false;
+    }
+
+    // Нельзя заложить недвижимость с домами
+    if (property.houses > 0) {
+      return false;
+    }
+
+    const mortgageValue = Math.floor(property.price / 2);
+    player.money += mortgageValue;
+    property.mortgaged = true;
+
+    return true;
+  }
+
+  unmortgageProperty(gameId: string, playerId: string, propertyId: number): boolean {
+    const game = this.games.get(gameId);
+    if (!game) return false;
+
+    const player = game.players.find(p => p.id === playerId);
+    const property = game.board[propertyId];
+
+    if (!player || !property || property.owner !== playerId || !property.mortgaged) {
+      return false;
+    }
+
+    // Стоимость выкупа = 110% от залоговой стоимости
+    const unmortgageCost = Math.floor((property.price / 2) * 1.1);
+
+    if (player.money < unmortgageCost) {
+      return false;
+    }
+
+    player.money -= unmortgageCost;
+    property.mortgaged = false;
+
+    return true;
+  }
+
   // Торговля
   createTradeOffer(
     gameId: string,
