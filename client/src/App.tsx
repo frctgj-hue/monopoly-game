@@ -15,6 +15,7 @@ import TradeNotification from './components/TradeNotification';
 import VictoryAnimation from './components/VictoryAnimation';
 import BankruptcyAnimation from './components/BankruptcyAnimation';
 import RentModal from './components/RentModal';
+import PropertyInfoModal from './components/PropertyInfoModal';
 import GoToJailModal from './components/GoToJailModal';
 import TaxModal from './components/TaxModal';
 import { soundManager } from './utils/sounds';
@@ -55,6 +56,7 @@ function App() {
   const [showGoToJail, setShowGoToJail] = useState(false);
   const [showTaxModal, setShowTaxModal] = useState<{ type: 'income' | 'luxury'; amount: number } | null>(null);
   const [showRentModal, setShowRentModal] = useState<{ propertyId: number; rent: number; diceTotal: number } | null>(null);
+  const [showPropertyInfo, setShowPropertyInfo] = useState<number | null>(null);
   const [showTradeModal, setShowTradeModal] = useState(false);
   const [showPropertyManagement, setShowPropertyManagement] = useState(false);
   const [selectedProperty, setSelectedProperty] = useState<number | null>(null);
@@ -555,6 +557,12 @@ function App() {
                     const property = gameState.board[propertyId];
                     const currentPlayer = gameState.players[gameState.currentPlayerIndex];
 
+                    // Если клик на свою недвижимость - показываем информацию
+                    if (property.owner === myPlayerId && property.price > 0) {
+                      setShowPropertyInfo(propertyId);
+                      return;
+                    }
+
                     // Показываем модальное окно покупки только если:
                     // 1. Это ход текущего игрока
                     // 2. Игрок стоит на этой клетке
@@ -717,6 +725,21 @@ function App() {
                   currentPlayerId={gameState.players[gameState.currentPlayerIndex]?.id || ''}
                   myPlayerId={myPlayerId}
                 />
+
+                {/* Модальное окно информации о недвижимости */}
+                {showPropertyInfo !== null && (
+                  <div className="bg-white rounded-lg shadow-2xl border-4 border-black">
+                    <PropertyInfoModal
+                      property={gameState.board[showPropertyInfo]}
+                      onMortgage={() => {
+                        // TODO: Реализовать логику залога
+                        console.log('Заложить недвижимость:', showPropertyInfo);
+                        setShowPropertyInfo(null);
+                      }}
+                      onClose={() => setShowPropertyInfo(null)}
+                    />
+                  </div>
+                )}
 
                 {/* Панель управления для текущего игрока */}
                 {gameState.players[gameState.currentPlayerIndex]?.id === myPlayerId && (
