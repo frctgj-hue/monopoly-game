@@ -9,7 +9,12 @@ export const useSocket = () => {
   const [connected, setConnected] = useState(false);
 
   useEffect(() => {
-    const socketInstance = io(SOCKET_URL);
+    const socketInstance = io(SOCKET_URL, {
+      reconnection: true,
+      reconnectionDelay: 1000,
+      reconnectionDelayMax: 5000,
+      reconnectionAttempts: 5
+    });
 
     socketInstance.on('connect', () => {
       console.log('Подключено к серверу');
@@ -19,6 +24,13 @@ export const useSocket = () => {
     socketInstance.on('disconnect', () => {
       console.log('Отключено от сервера');
       setConnected(false);
+    });
+
+    socketInstance.on('reconnect', (attemptNumber) => {
+      console.log('Переподключено к серверу, попытка:', attemptNumber);
+      setConnected(true);
+      // После переподключения нужно обновить состояние игры
+      window.location.reload();
     });
 
     setSocket(socketInstance);
