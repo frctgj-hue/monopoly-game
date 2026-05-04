@@ -11,9 +11,15 @@ export const useSocket = () => {
   useEffect(() => {
     const socketInstance = io(SOCKET_URL, {
       reconnection: true,
-      reconnectionDelay: 1000,
-      reconnectionDelayMax: 5000,
-      reconnectionAttempts: 5
+      reconnectionDelay: 500,
+      reconnectionDelayMax: 2000,
+      reconnectionAttempts: Infinity,
+      timeout: 20000,
+      transports: ['websocket', 'polling'],
+      upgrade: true,
+      rememberUpgrade: true,
+      pingTimeout: 60000,
+      pingInterval: 25000
     });
 
     socketInstance.on('connect', () => {
@@ -21,16 +27,22 @@ export const useSocket = () => {
       setConnected(true);
     });
 
-    socketInstance.on('disconnect', () => {
-      console.log('Отключено от сервера');
+    socketInstance.on('disconnect', (reason) => {
+      console.log('Отключено от сервера:', reason);
       setConnected(false);
     });
 
     socketInstance.on('reconnect', (attemptNumber) => {
       console.log('Переподключено к серверу, попытка:', attemptNumber);
       setConnected(true);
-      // После переподключения нужно обновить состояние игры
-      window.location.reload();
+      // Перезагружаем только если это не первое подключение
+      if (attemptNumber > 1) {
+        window.location.reload();
+      }
+    });
+
+    socketInstance.on('connect_error', (error) => {
+      console.error('Ошибка подключения:', error);
     });
 
     setSocket(socketInstance);
