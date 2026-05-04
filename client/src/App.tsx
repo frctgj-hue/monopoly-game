@@ -715,7 +715,8 @@ function App() {
                       {!canRoll && (
                         <button
                           onClick={handleEndTurn}
-                          className="w-full py-3 px-4 rounded-lg font-bold text-sm text-white transition-all shadow-md uppercase"
+                          disabled={currentCard !== null || showGoToJail || showTaxModal !== null}
+                          className="w-full py-3 px-4 rounded-lg font-bold text-sm text-white transition-all shadow-md uppercase disabled:opacity-50 disabled:cursor-not-allowed"
                           style={{ backgroundColor: '#2d8659' }}
                         >
                           <FontAwesomeIcon icon={faCheck} className="mr-2" />
