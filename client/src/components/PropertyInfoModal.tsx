@@ -190,8 +190,8 @@ const PropertyInfoModal: React.FC<PropertyInfoModalProps> = ({
             <button
               onClick={onMortgage}
               disabled={property.houses > 0}
-              className="flex-1 py-2 px-4 rounded-lg font-bold text-sm text-white transition-all uppercase shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
-              style={{ backgroundColor: '#dc3545' }}
+              className="flex-1 py-2 px-4 rounded-lg font-bold text-sm text-white transition-all uppercase shadow-lg disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-gray-400"
+              style={property.houses === 0 ? { backgroundColor: '#dc3545' } : {}}
             >
               {property.houses > 0 ? 'Продайте дома' : 'Заложить'}
             </button>
