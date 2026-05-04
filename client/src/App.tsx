@@ -540,6 +540,49 @@ function App() {
     });
   };
 
+  const canBuildHouseOnProperty = (propertyId: number): boolean => {
+    if (!gameState) return false;
+    const property = gameState.board[propertyId];
+    const player = gameState.players.find(p => p.id === myPlayerId);
+
+    if (!player || !property || property.owner !== myPlayerId || property.type !== 'property') {
+      return false;
+    }
+
+    // Проверка на монополию
+    const colorGroup = gameState.board.filter(p => p.color === property.color && p.type === 'property');
+    const ownsAll = colorGroup.every(p => p.owner === myPlayerId);
+
+    if (!ownsAll) return false;
+
+    // Нельзя строить больше 5 домов
+    if (property.houses >= 5) return false;
+
+    // Нельзя строить на заложенной недвижимости
+    if (property.mortgaged) return false;
+
+    // Проверка равномерности застройки
+    const maxHouses = Math.max(...colorGroup.map(p => p.houses));
+    if (property.houses < maxHouses) return true;
+
+    return property.houses === maxHouses;
+  };
+
+  const canSellHouseOnProperty = (propertyId: number): boolean => {
+    if (!gameState) return false;
+    const property = gameState.board[propertyId];
+
+    if (!property || property.owner !== myPlayerId || property.houses === 0) {
+      return false;
+    }
+
+    // Проверка равномерности продажи
+    const colorGroup = gameState.board.filter(p => p.color === property.color && p.type === 'property');
+    const minHouses = Math.min(...colorGroup.map(p => p.houses));
+
+    return property.houses === minHouses || property.houses > minHouses;
+  };
+
   if (!connected) {
     return (
       <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: '#2d8659' }}>
@@ -714,8 +757,6 @@ function App() {
                     <PropertyManagement
                       properties={gameState.board}
                       player={gameState.players.find(p => p.id === myPlayerId)!}
-                      onBuildHouse={handleBuildHouse}
-                      onSellHouse={handleSellHouse}
                       onClose={() => setShowPropertyManagement(false)}
                     />
                   </div>
@@ -781,6 +822,14 @@ function App() {
                         handleUnmortgageProperty(showPropertyInfo);
                         setShowPropertyInfo(null);
                       }}
+                      onBuildHouse={() => {
+                        handleBuildHouse(showPropertyInfo);
+                      }}
+                      onSellHouse={() => {
+                        handleSellHouse(showPropertyInfo);
+                      }}
+                      canBuildHouse={canBuildHouseOnProperty(showPropertyInfo)}
+                      canSellHouse={canSellHouseOnProperty(showPropertyInfo)}
                       onClose={() => setShowPropertyInfo(null)}
                     />
                   </div>

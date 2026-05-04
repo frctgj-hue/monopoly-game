@@ -7,6 +7,10 @@ interface PropertyInfoModalProps {
   property: Property;
   onMortgage: () => void;
   onUnmortgage: () => void;
+  onBuildHouse: () => void;
+  onSellHouse: () => void;
+  canBuildHouse: boolean;
+  canSellHouse: boolean;
   onClose: () => void;
 }
 
@@ -14,6 +18,10 @@ const PropertyInfoModal: React.FC<PropertyInfoModalProps> = ({
   property,
   onMortgage,
   onUnmortgage,
+  onBuildHouse,
+  onSellHouse,
+  canBuildHouse,
+  canSellHouse,
   onClose,
 }) => {
   const getColorClass = (color: string) => {
@@ -139,6 +147,29 @@ const PropertyInfoModal: React.FC<PropertyInfoModalProps> = ({
           <div className="bg-red-50 border-2 border-red-400 p-3">
             <div className="text-center text-red-700 font-bold uppercase text-sm">
               ⚠️ Недвижимость заложена
+            </div>
+          </div>
+        )}
+
+        {/* Управление домами - только для обычной недвижимости */}
+        {property.type === 'property' && !property.mortgaged && (
+          <div className="bg-blue-50 border-2 border-blue-300 p-3">
+            <h3 className="font-bold text-blue-800 mb-2 uppercase text-sm text-center">Управление домами</h3>
+            <div className="flex gap-2">
+              <button
+                onClick={onSellHouse}
+                disabled={!canSellHouse}
+                className="flex-1 py-2 px-4 rounded-lg font-bold text-lg bg-red-500 text-white transition-all shadow-md disabled:opacity-50 disabled:cursor-not-allowed hover:bg-red-600"
+              >
+                - Продать
+              </button>
+              <button
+                onClick={onBuildHouse}
+                disabled={!canBuildHouse}
+                className="flex-1 py-2 px-4 rounded-lg font-bold text-lg bg-green-600 text-white transition-all shadow-md disabled:opacity-50 disabled:cursor-not-allowed hover:bg-green-700"
+              >
+                + Построить
+              </button>
             </div>
           </div>
         )}
