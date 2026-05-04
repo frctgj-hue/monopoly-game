@@ -11,6 +11,7 @@ interface PropertyInfoModalProps {
   onSellHouse: () => void;
   canBuildHouse: boolean;
   canSellHouse: boolean;
+  hasMonopoly: boolean;
   onClose: () => void;
 }
 
@@ -22,6 +23,7 @@ const PropertyInfoModal: React.FC<PropertyInfoModalProps> = ({
   onSellHouse,
   canBuildHouse,
   canSellHouse,
+  hasMonopoly,
   onClose,
 }) => {
   const getColorClass = (color: string) => {
@@ -151,8 +153,8 @@ const PropertyInfoModal: React.FC<PropertyInfoModalProps> = ({
           </div>
         )}
 
-        {/* Управление домами - только для обычной недвижимости */}
-        {property.type === 'property' && !property.mortgaged && (
+        {/* Управление домами - только для обычной недвижимости с монополией */}
+        {property.type === 'property' && !property.mortgaged && hasMonopoly && (
           <div className="bg-blue-50 border-2 border-blue-300 p-3">
             <h3 className="font-bold text-blue-800 mb-2 uppercase text-sm text-center">Управление домами</h3>
             <div className="flex gap-2">

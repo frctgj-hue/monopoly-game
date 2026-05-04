@@ -583,6 +583,21 @@ function App() {
     return property.houses === minHouses || property.houses > minHouses;
   };
 
+  const hasMonopolyOnProperty = (propertyId: number): boolean => {
+    if (!gameState) return false;
+    const property = gameState.board[propertyId];
+
+    if (!property || property.type !== 'property') {
+      return false;
+    }
+
+    // Проверка на монополию
+    const colorGroup = gameState.board.filter(p => p.color === property.color && p.type === 'property');
+    const ownsAll = colorGroup.every(p => p.owner === myPlayerId);
+
+    return ownsAll;
+  };
+
   if (!connected) {
     return (
       <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: '#2d8659' }}>
@@ -830,6 +845,7 @@ function App() {
                       }}
                       canBuildHouse={canBuildHouseOnProperty(showPropertyInfo)}
                       canSellHouse={canSellHouseOnProperty(showPropertyInfo)}
+                      hasMonopoly={hasMonopolyOnProperty(showPropertyInfo)}
                       onClose={() => setShowPropertyInfo(null)}
                     />
                   </div>
