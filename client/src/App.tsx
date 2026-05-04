@@ -777,6 +777,10 @@ function App() {
                         handleMortgageProperty(showPropertyInfo);
                         setShowPropertyInfo(null);
                       }}
+                      onUnmortgage={() => {
+                        handleUnmortgageProperty(showPropertyInfo);
+                        setShowPropertyInfo(null);
+                      }}
                       onClose={() => setShowPropertyInfo(null)}
                     />
                   </div>

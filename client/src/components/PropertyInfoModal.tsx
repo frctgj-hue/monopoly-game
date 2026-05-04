@@ -6,12 +6,14 @@ import type { Property } from '../types/game.types';
 interface PropertyInfoModalProps {
   property: Property;
   onMortgage: () => void;
+  onUnmortgage: () => void;
   onClose: () => void;
 }
 
 const PropertyInfoModal: React.FC<PropertyInfoModalProps> = ({
   property,
   onMortgage,
+  onUnmortgage,
   onClose,
 }) => {
   const getColorClass = (color: string) => {
@@ -37,6 +39,7 @@ const PropertyInfoModal: React.FC<PropertyInfoModalProps> = ({
   };
 
   const mortgageValue = Math.floor(property.price / 2);
+  const unmortgageValue = Math.floor(mortgageValue * 1.1);
 
   return (
     <div className="bg-white rounded-lg shadow-2xl w-full border-4 border-black">
@@ -122,20 +125,44 @@ const PropertyInfoModal: React.FC<PropertyInfoModalProps> = ({
         {/* Стоимость залога */}
         <div className="bg-yellow-50 border-2 border-yellow-400 p-3">
           <div className="flex justify-between items-center">
-            <span className="text-yellow-800 font-bold uppercase text-sm">Стоимость залога:</span>
-            <span className="text-xl font-bold text-yellow-900">${mortgageValue}</span>
+            <span className="text-yellow-800 font-bold uppercase text-sm">
+              {property.mortgaged ? 'Стоимость выкупа:' : 'Стоимость залога:'}
+            </span>
+            <span className="text-xl font-bold text-yellow-900">
+              ${property.mortgaged ? unmortgageValue : mortgageValue}
+            </span>
           </div>
         </div>
 
+        {/* Индикатор залога */}
+        {property.mortgaged && (
+          <div className="bg-red-50 border-2 border-red-400 p-3">
+            <div className="text-center text-red-700 font-bold uppercase text-sm">
+              ⚠️ Недвижимость заложена
+            </div>
+          </div>
+        )}
+
         {/* Кнопки */}
         <div className="flex gap-2 pt-2">
-          <button
-            onClick={onMortgage}
-            className="flex-1 py-2 px-4 rounded-lg font-bold text-sm text-white transition-all uppercase shadow-lg"
-            style={{ backgroundColor: '#dc3545' }}
-          >
-            Заложить
-          </button>
+          {property.mortgaged ? (
+            <button
+              onClick={onUnmortgage}
+              className="flex-1 py-2 px-4 rounded-lg font-bold text-sm text-white transition-all uppercase shadow-lg"
+              style={{ backgroundColor: '#2d8659' }}
+            >
+              Выкупить
+            </button>
+          ) : (
+            <button
+              onClick={onMortgage}
+              disabled={property.houses > 0}
+              className="flex-1 py-2 px-4 rounded-lg font-bold text-sm text-white transition-all uppercase shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+              style={{ backgroundColor: '#dc3545' }}
+            >
+              {property.houses > 0 ? 'Продайте дома' : 'Заложить'}
+            </button>
+          )}
           <button
             onClick={onClose}
             className="flex-1 py-2 px-4 rounded-lg font-bold text-sm bg-gray-200 hover:bg-gray-300 text-gray-700 transition-colors uppercase"
