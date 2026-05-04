@@ -170,15 +170,24 @@ io.on('connection', (socket) => {
       }
     }
 
-    // Автоматическая оплата аренды при попадании на чужую недвижимость
+    // Проверка на аренду при попадании на чужую недвижимость
     let updatedGame = gameService.getGame(gameId);
     if (updatedGame) {
       const property = updatedGame.board[newPosition];
       if (property && property.owner && property.owner !== socket.id && property.price > 0) {
-        const rent = gameService.payRent(gameId, socket.id, newPosition, diceRoll.total);
-        updatedGame = gameService.getGame(gameId);
+        // Вычисляем аренду, но НЕ списываем её
+        const rent = gameService.calculateRent(gameId, socket.id, newPosition, diceRoll.total);
         if (rent > 0) {
-          io.to(gameId).emit('rent-paid', { playerId: socket.id, propertyId: newPosition, rent, game: updatedGame });
+          // Показываем модальное окно только игроку, который должен платить
+          socket.emit('show-rent', {
+            playerId: socket.id,
+            propertyId: newPosition,
+            rent,
+            diceTotal: diceRoll.total,
+            game: updatedGame
+          });
+          callback({ success: true, diceRoll, newPosition, game: updatedGame, showRent: true });
+          return;
         }
       }
     }
@@ -208,6 +217,15 @@ io.on('connection', (socket) => {
 
   // Оплата аренды
   socket.on('pay-rent', ({ gameId, propertyId, diceTotal }, callback) => {
+    const rent = gameService.payRent(gameId, socket.id, propertyId, diceTotal);
+    const game = gameService.getGame(gameId);
+
+    io.to(gameId).emit('rent-paid', { playerId: socket.id, propertyId, rent, game });
+    callback({ success: true, rent, game });
+  });
+
+  // Подтверждение оплаты ренты
+  socket.on('confirm-rent', ({ gameId, propertyId, diceTotal }, callback) => {
     const rent = gameService.payRent(gameId, socket.id, propertyId, diceTotal);
     const game = gameService.getGame(gameId);
 

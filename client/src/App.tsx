@@ -14,6 +14,7 @@ import TradeModal from './components/TradeModal';
 import TradeNotification from './components/TradeNotification';
 import VictoryAnimation from './components/VictoryAnimation';
 import BankruptcyAnimation from './components/BankruptcyAnimation';
+import RentModal from './components/RentModal';
 import GoToJailModal from './components/GoToJailModal';
 import TaxModal from './components/TaxModal';
 import { soundManager } from './utils/sounds';
@@ -37,6 +38,7 @@ function App() {
     confirmCard,
     confirmGoToJail,
     confirmTax,
+    confirmRent,
     buildHouse,
     sellHouse,
     createTrade,
@@ -52,6 +54,7 @@ function App() {
   const [currentCard, setCurrentCard] = useState<Card | null>(null);
   const [showGoToJail, setShowGoToJail] = useState(false);
   const [showTaxModal, setShowTaxModal] = useState<{ type: 'income' | 'luxury'; amount: number } | null>(null);
+  const [showRentModal, setShowRentModal] = useState<{ propertyId: number; rent: number; diceTotal: number } | null>(null);
   const [showTradeModal, setShowTradeModal] = useState(false);
   const [showPropertyManagement, setShowPropertyManagement] = useState(false);
   const [selectedProperty, setSelectedProperty] = useState<number | null>(null);
@@ -113,6 +116,13 @@ function App() {
       setGameState(game);
       if (playerId === socket.id) {
         setShowTaxModal({ type: taxType, amount });
+      }
+    });
+
+    socket.on('show-rent', ({ playerId, propertyId, rent, game, diceTotal }: { playerId: string; propertyId: number; rent: number; game: GameState; diceTotal: number }) => {
+      setGameState(game);
+      if (playerId === socket.id) {
+        setShowRentModal({ propertyId, rent, diceTotal: diceTotal || lastDiceRoll?.total || 0 });
       }
     });
 
@@ -212,6 +222,8 @@ function App() {
       socket.off('turn-ended');
       socket.off('sent-to-jail');
       socket.off('show-go-to-jail');
+      socket.off('show-tax');
+      socket.off('show-rent');
       socket.off('jail-turn');
       socket.off('jail-paid');
       socket.off('jail-card-used');
@@ -330,6 +342,17 @@ function App() {
       }
     });
     setShowTaxModal(null);
+  };
+
+  const handleConfirmRent = () => {
+    if (!gameState || !showRentModal) return;
+    confirmRent(gameState.id, showRentModal.propertyId, showRentModal.diceTotal, (data) => {
+      if (data.success && data.game) {
+        setGameState(data.game);
+        showToast(`💸 Оплачена аренда: $${data.rent}`, 'warning');
+      }
+    });
+    setShowRentModal(null);
   };
 
   // Временно не используются, но нужны для будущего
@@ -580,6 +603,18 @@ function App() {
                   </div>
                 )}
 
+                {/* Модальное окно ренты */}
+                {showRentModal && gameState && (
+                  <div className="bg-white rounded-lg shadow-2xl border-4 border-red-600">
+                    <RentModal
+                      property={gameState.board[showRentModal.propertyId]}
+                      rent={showRentModal.rent}
+                      owner={gameState.players.find(p => p.id === gameState.board[showRentModal.propertyId].owner)!}
+                      onConfirm={handleConfirmRent}
+                    />
+                  </div>
+                )}
+
                 {/* Модальное окно карточки */}
                 {currentCard && (
                   <div className="bg-white rounded-lg shadow-2xl border-4 border-black">
@@ -715,7 +750,7 @@ function App() {
                       {!canRoll && (
                         <button
                           onClick={handleEndTurn}
-                          disabled={currentCard !== null || showGoToJail || showTaxModal !== null}
+                          disabled={currentCard !== null || showGoToJail || showTaxModal !== null || showRentModal !== null}
                           className="w-full py-3 px-4 rounded-lg font-bold text-sm text-white transition-all shadow-md uppercase disabled:opacity-50 disabled:cursor-not-allowed"
                           style={{ backgroundColor: '#2d8659' }}
                         >

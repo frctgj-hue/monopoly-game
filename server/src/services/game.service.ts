@@ -217,6 +217,33 @@ export class GameService {
     return actualRent;
   }
 
+  calculateRent(gameId: string, playerId: string, propertyId: number, diceTotal?: number): number {
+    const game = this.games.get(gameId);
+    if (!game) return 0;
+
+    const player = game.players.find(p => p.id === playerId);
+    const property = game.board[propertyId];
+
+    if (!player || !property || !property.owner || property.owner === playerId) {
+      return 0;
+    }
+
+    const owner = game.players.find(p => p.id === property.owner);
+    if (!owner) return 0;
+
+    let rent = 0;
+
+    if (property.type === 'railroad') {
+      rent = this.calculateRailroadRent(gameId, property.owner);
+    } else if (property.type === 'utility') {
+      rent = this.calculateUtilityRent(gameId, property.owner, diceTotal || 0);
+    } else {
+      rent = property.rent[property.houses] || property.rent[0] || 0;
+    }
+
+    return Math.min(rent, player.money);
+  }
+
   removeGame(gameId: string): void {
     this.games.delete(gameId);
   }
