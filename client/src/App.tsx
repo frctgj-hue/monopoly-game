@@ -374,19 +374,6 @@ function App() {
       if (data.success && data.game) {
         setGameState(data.game);
         showToast(`💸 Оплачена аренда: $${data.rent}`, 'warning');
-
-        // Проверяем банкротство после оплаты ренты
-        const currentPlayer = data.game.players.find(p => p.id === myPlayerId);
-        if (currentPlayer && currentPlayer.money < 0) {
-          // Игрок обанкротился - объявляем банкротство с кредитором
-          if (currentCreditor) {
-            declareBankruptcy(gameState.id, currentCreditor, (bankruptData) => {
-              if (bankruptData.success && bankruptData.game) {
-                setGameState(bankruptData.game);
-              }
-            });
-          }
-        }
         setCurrentCreditor(null); // Очищаем кредитора
       }
     });
@@ -736,7 +723,27 @@ function App() {
                       property={gameState.board[showRentModal.propertyId]}
                       rent={showRentModal.rent}
                       owner={gameState.players.find(p => p.id === gameState.board[showRentModal.propertyId].owner)!}
+                      playerMoney={gameState.players.find(p => p.id === myPlayerId)?.money || 0}
                       onConfirm={handleConfirmRent}
+                      onBankruptcy={() => {
+                        if (currentCreditor) {
+                          declareBankruptcy(gameState.id, currentCreditor, (data) => {
+                            if (data.success && data.game) {
+                              setGameState(data.game);
+                              setShowRentModal(null);
+                              setCurrentCreditor(null);
+                              // Автоматически завершаем ход после банкротства
+                              endTurn(gameState.id, (turnData) => {
+                                if (turnData.success && turnData.game) {
+                                  setGameState(turnData.game);
+                                  setCanRoll(true);
+                                  setLastDiceRoll(undefined);
+                                }
+                              });
+                            }
+                          });
+                        }
+                      }}
                     />
                   </div>
                 )}

@@ -7,15 +7,21 @@ interface RentModalProps {
   property: Property;
   rent: number;
   owner: Player;
+  playerMoney: number;
   onConfirm: () => void;
+  onBankruptcy: () => void;
 }
 
 const RentModal: React.FC<RentModalProps> = ({
   property,
   rent,
   owner,
+  playerMoney,
   onConfirm,
+  onBankruptcy,
 }) => {
+  const canPay = playerMoney >= rent;
+
   return (
     <div className="p-6">
       <div className="text-center mb-6">
@@ -40,13 +46,39 @@ const RentModal: React.FC<RentModalProps> = ({
         </div>
       </div>
 
-      <button
-        onClick={onConfirm}
-        className="w-full py-3 px-6 rounded-lg font-bold text-lg text-white transition-all uppercase shadow-lg"
-        style={{ backgroundColor: '#dc3545' }}
-      >
-        Оплатить
-      </button>
+      <div className="bg-gray-100 border-2 border-gray-300 p-4 mb-4">
+        <div className="flex justify-between items-center">
+          <span className="text-gray-700 font-bold uppercase">Ваш баланс:</span>
+          <span className={`text-2xl font-bold ${canPay ? 'text-gray-900' : 'text-red-600'}`}>
+            ${playerMoney}
+          </span>
+        </div>
+      </div>
+
+      <div className="space-y-2">
+        <button
+          onClick={onConfirm}
+          disabled={!canPay}
+          className="w-full py-3 px-6 rounded-lg font-bold text-lg text-white transition-all uppercase shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+          style={canPay ? { backgroundColor: '#dc3545' } : { backgroundColor: '#999' }}
+        >
+          Оплатить
+        </button>
+        {!canPay && (
+          <div className="text-center text-sm text-red-600 font-bold">
+            ⚠️ Недостаточно средств
+          </div>
+        )}
+        {!canPay && (
+          <button
+            onClick={onBankruptcy}
+            className="w-full py-3 px-6 rounded-lg font-bold text-lg text-white transition-all uppercase shadow-lg"
+            style={{ backgroundColor: '#000' }}
+          >
+            Объявить банкротство
+          </button>
+        )}
+      </div>
     </div>
   );
 };
