@@ -56,7 +56,7 @@ const Lobby: React.FC<LobbyProps> = ({ onCreateGame, onJoinGame }) => {
           <div className="space-y-5 flex flex-col items-center mb-8">
             <button
               onClick={() => setMode('create')}
-              className="max-w-md w-full bg-gradient-to-r from-[#c92a3a] to-[#b01f2e] text-white font-black px-10 py-6 rounded-lg transition-all text-2xl uppercase tracking-wide hover:from-[#b01f2e] hover:to-[#9a1a27] hover:scale-105 active:scale-95 transform duration-200"
+              className="max-w-xl w-full bg-gradient-to-r from-[#c92a3a] to-[#b01f2e] text-white font-black px-10 py-6 rounded-lg transition-all text-2xl uppercase tracking-wide hover:from-[#b01f2e] hover:to-[#9a1a27] hover:scale-105 active:scale-95 transform duration-200"
             >
               <span className="flex items-center justify-center gap-4">
                 <FontAwesomeIcon icon={faPlus} className="text-3xl" />
@@ -66,7 +66,7 @@ const Lobby: React.FC<LobbyProps> = ({ onCreateGame, onJoinGame }) => {
 
             <button
               onClick={() => setMode('join')}
-              className="max-w-md w-full bg-gradient-to-r from-[#2d6b4a] to-[#357a55] text-white font-black px-10 py-6 rounded-lg transition-all text-2xl uppercase tracking-wide hover:from-[#357a55] hover:to-[#3d8960] hover:scale-105 active:scale-95 transform duration-200"
+              className="max-w-xl w-full bg-gradient-to-r from-[#2d6b4a] to-[#357a55] text-white font-black px-10 py-6 rounded-lg transition-all text-2xl uppercase tracking-wide hover:from-[#357a55] hover:to-[#3d8960] hover:scale-105 active:scale-95 transform duration-200"
             >
               <span className="flex items-center justify-center gap-4">
                 <FontAwesomeIcon icon={faDoorOpen} className="text-3xl" />
