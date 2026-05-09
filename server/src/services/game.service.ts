@@ -121,6 +121,9 @@ export class GameService {
     const player = game.players.find(p => p.id === playerId);
     if (!player) return false;
 
+    // Проверяем, что у игрока достаточно денег
+    if (player.money < amount) return false;
+
     player.money -= amount;
     return true;
   }
@@ -214,12 +217,16 @@ export class GameService {
       rent = property.rent[property.houses] || property.rent[0] || 0;
     }
 
-    const actualRent = Math.min(rent, player.money);
+    // Проверяем, что у игрока достаточно денег
+    // Если нет - игрок должен объявить банкротство через UI
+    if (player.money < rent) {
+      return rent; // Возвращаем полную сумму, но не списываем
+    }
 
-    player.money -= actualRent;
-    owner.money += actualRent;
+    player.money -= rent;
+    owner.money += rent;
 
-    return actualRent;
+    return rent;
   }
 
   calculateRent(gameId: string, playerId: string, propertyId: number, diceTotal?: number): number {
@@ -251,7 +258,8 @@ export class GameService {
       rent = property.rent[property.houses] || property.rent[0] || 0;
     }
 
-    return Math.min(rent, player.money);
+    // Возвращаем полную сумму аренды, не уменьшая её под баланс игрока
+    return rent;
   }
 
   removeGame(gameId: string): void {
@@ -458,17 +466,26 @@ export class GameService {
             }
           }
         });
-        player.money -= totalCost;
+        // Проверяем, что у игрока достаточно денег
+        // Если нет - игрок должен объявить банкротство через UI
+        if (player.money >= totalCost) {
+          player.money -= totalCost;
+        }
         break;
 
       case 'players':
-        game.players.forEach(p => {
-          if (p.id !== playerId) {
-            const amount = card.value || 0;
-            player.money -= amount;
-            p.money += amount;
-          }
-        });
+        const amountPerPlayer = card.value || 0;
+        const otherPlayers = game.players.filter(p => p.id !== playerId);
+        const totalAmount = amountPerPlayer * otherPlayers.length;
+        
+        // Проверяем, что у игрока достаточно денег
+        // Если нет - игрок должен объявить банкротство через UI
+        if (player.money >= totalAmount) {
+          otherPlayers.forEach(p => {
+            player.money -= amountPerPlayer;
+            p.money += amountPerPlayer;
+          });
+        }
         break;
     }
 
