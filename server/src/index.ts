@@ -63,6 +63,30 @@ io.on('connection', (socket) => {
     console.log(`${playerName} присоединился к игре ${gameId}`);
   });
 
+  // Переподключение к игре после разрыва соединения
+  socket.on('rejoin-game', ({ gameId }, callback) => {
+    console.log(`🔄 Попытка переподключения к игре ${gameId} от ${socket.id}`);
+    const game = gameService.getGame(gameId);
+    if (!game) {
+      console.log(`❌ Игра ${gameId} не найдена`);
+      callback({ success: false, message: 'Игра не найдена' });
+      return;
+    }
+
+    // Проверяем, есть ли игрок в игре
+    const player = game.players.find(p => p.id === socket.id);
+    if (!player) {
+      console.log(`❌ Игрок ${socket.id} не найден в игре ${gameId}`);
+      callback({ success: false, message: 'Игрок не найден в игре' });
+      return;
+    }
+
+    // Переподключаем к комнате
+    socket.join(gameId);
+    console.log(`✅ Игрок ${player.name} переподключен к игре ${gameId}`);
+    callback({ success: true, game });
+  });
+
   // Начало игры
   socket.on('start-game', ({ gameId }, callback) => {
     const success = gameService.startGame(gameId);

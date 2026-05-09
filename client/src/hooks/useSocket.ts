@@ -35,10 +35,7 @@ export const useSocket = () => {
     socketInstance.on('reconnect', (attemptNumber) => {
       console.log('Переподключено к серверу, попытка:', attemptNumber);
       setConnected(true);
-      // Перезагружаем только если это не первое подключение
-      if (attemptNumber > 1) {
-        window.location.reload();
-      }
+      // НЕ перезагружаем страницу - сохраняем состояние игры
     });
 
     socketInstance.on('connect_error', (error) => {

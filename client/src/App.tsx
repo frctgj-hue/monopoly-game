@@ -72,6 +72,29 @@ function App() {
   useEffect(() => {
     if (!socket) return;
 
+    // Обработчик переподключения - восстанавливаем состояние игры
+    socket.on('connect', () => {
+      console.log('✅ Подключено к серверу');
+      // Если у нас есть gameState, пытаемся переподключиться к игре
+      if (gameState && gameState.id) {
+        console.log('🔄 Восстанавливаем состояние игры:', gameState.id);
+        // Запрашиваем актуальное состояние игры с сервера
+        socket.emit('rejoin-game', { gameId: gameState.id }, (response: any) => {
+          if (response.success && response.game) {
+            console.log('✅ Состояние игры восстановлено');
+            setGameState(response.game);
+            setPhase('playing');
+          } else {
+            console.error('❌ Не удалось восстановить игру:', response.message);
+          }
+        });
+      }
+    });
+
+    socket.on('disconnect', (reason) => {
+      console.log('⚠️ Отключено от сервера:', reason);
+    });
+
     // Обработчики событий от сервера
     socket.on('player-joined', ({ game }) => {
       setGameState(game);
@@ -610,7 +633,14 @@ function App() {
         <div className="backdrop-blur-glass rounded-3xl shadow-2xl p-10 animate-scale-in">
           <div className="text-center">
             <div className="text-6xl mb-4 animate-spin">🎲</div>
-            <div className="text-2xl font-bold text-gray-800">Подключение к серверу...</div>
+            <div className="text-2xl font-bold text-gray-800">
+              {gameState ? 'Переподключение...' : 'Подключение к серверу...'}
+            </div>
+            {gameState && (
+              <div className="text-sm text-gray-600 mt-2">
+                Восстанавливаем состояние игры...
+              </div>
+            )}
           </div>
         </div>
       </div>
