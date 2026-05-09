@@ -95,6 +95,11 @@ const Lobby: React.FC<LobbyProps> = ({ onCreateGame, onJoinGame }) => {
               </p>
             </div>
           </div>
+
+          {/* Версия для проверки деплоя */}
+          <div className="mt-4 text-center">
+            <p className="text-xs text-gray-500 font-mono">v2.0 - Classic Style</p>
+          </div>
         </div>
       </div>
     );
