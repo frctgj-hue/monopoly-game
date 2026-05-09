@@ -236,9 +236,9 @@ const Board: React.FC<BoardProps> = ({ board, players, onCellClick }) => {
           </div>
         )}
 
-        {/* Дома с анимацией - накладываются поверх цветной полоски как стикеры */}
+        {/* Дома с анимацией - накладываются поверх всех элементов как стикеры */}
         {property.houses > 0 && (
-          <div className="absolute top-6 left-0 right-0 z-[105] pointer-events-none">
+          <div className="absolute top-6 left-0 right-0 z-[250] pointer-events-none">
             <BuildingAnimation
               houses={property.houses}
               previousHouses={previousBoard[index]?.houses || 0}
