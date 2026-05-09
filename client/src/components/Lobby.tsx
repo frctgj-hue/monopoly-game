@@ -26,50 +26,41 @@ const Lobby: React.FC<LobbyProps> = ({ onCreateGame, onJoinGame }) => {
 
   if (mode === 'menu') {
     return (
-      <div className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden bg-[#CDE6D0]">
-        {/* Декоративный паттерн фона */}
-        <div className="absolute inset-0 opacity-5">
-          <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
-            <defs>
-              <pattern id="grid" patternUnits="userSpaceOnUse" width="40" height="40">
-                <path d="M0,20 l40,0 M20,0 l0,40" stroke="#000" strokeWidth="1"/>
-              </pattern>
-            </defs>
-            <rect width="100%" height="100%" fill="url(#grid)" />
-          </svg>
+      <div className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden bg-gradient-to-br from-[#2d8659] via-[#3a9d6f] to-[#2d8659]">
+        {/* Декоративные элементы фона */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none opacity-10">
+          <div className="absolute top-20 left-10 text-6xl animate-float"><FontAwesomeIcon icon={faHouse} /></div>
+          <div className="absolute top-40 right-20 text-5xl animate-float-delayed"><FontAwesomeIcon icon={faDice} /></div>
+          <div className="absolute bottom-32 left-1/4 text-7xl animate-float"><FontAwesomeIcon icon={faUserTie} /></div>
+          <div className="absolute bottom-20 right-1/3 text-6xl animate-float-delayed"><FontAwesomeIcon icon={faHouse} /></div>
         </div>
 
         {/* Главная карточка меню */}
-        <div className="bg-[#F5F0E8] rounded-lg shadow-[8px_8px_0px_rgba(0,0,0,1)] border-4 border-black p-12 max-w-2xl w-full relative z-10 animate-scale-in">
-          {/* Заголовок с зеленой полосой */}
-          <div className="bg-[#2d8659] border-4 border-black rounded-lg p-6 mb-8 shadow-[4px_4px_0px_rgba(0,0,0,1)] relative overflow-hidden">
-            <div className="absolute inset-0 bg-gradient-to-b from-white to-transparent opacity-10"></div>
-            <h1 className="font-black text-6xl text-white text-center uppercase tracking-wider relative z-10" style={{
-              textShadow: '4px 4px 0px rgba(0,0,0,0.5)'
+        <div className="bg-white/95 backdrop-blur-sm rounded-3xl p-12 max-w-2xl w-full relative z-10 animate-scale-in">
+          {/* Заголовок */}
+          <div className="text-center mb-10">
+            <h1 className="font-black text-7xl text-[#2d8659] mb-4 uppercase tracking-wider" style={{
+              textShadow: '2px 2px 0px rgba(45,134,89,0.2)'
             }}>
               МОНОПОЛИЯ
             </h1>
-            <div className="flex items-center justify-center gap-4 text-4xl mt-3 text-white relative z-10">
+            <div className="flex items-center justify-center gap-4 text-5xl text-[#2d8659] mb-4">
               <FontAwesomeIcon icon={faUserTie} />
               <FontAwesomeIcon icon={faDice} />
               <FontAwesomeIcon icon={faHouse} />
             </div>
-          </div>
-
-          {/* Подзаголовок */}
-          <div className="text-center mb-8">
-            <div className="inline-block bg-white border-4 border-black px-6 py-3 shadow-[4px_4px_0px_rgba(0,0,0,1)]">
-              <p className="text-gray-800 text-xl font-black uppercase tracking-wide">Онлайн игра</p>
+            <div className="inline-block bg-gradient-to-r from-[#2d8659] to-[#3a9d6f] text-white px-8 py-3 rounded-full">
+              <p className="text-xl font-black uppercase tracking-wide">Онлайн игра</p>
             </div>
           </div>
 
           {/* Кнопки */}
-          <div className="space-y-6 flex flex-col items-center">
+          <div className="space-y-5 flex flex-col items-center mb-8">
             <button
               onClick={() => setMode('create')}
-              className="max-w-md w-full bg-[#dc3545] text-white font-black px-8 py-5 rounded-lg border-4 border-black shadow-[6px_6px_0px_rgba(0,0,0,1)] transition-all text-2xl uppercase tracking-wide hover:shadow-[8px_8px_0px_rgba(0,0,0,1)] hover:translate-x-[-2px] hover:translate-y-[-2px] active:shadow-[2px_2px_0px_rgba(0,0,0,1)] active:translate-x-[4px] active:translate-y-[4px]"
+              className="max-w-md w-full bg-gradient-to-r from-[#dc3545] to-[#c82333] text-white font-black px-10 py-6 rounded-2xl transition-all text-2xl uppercase tracking-wide hover:from-[#c82333] hover:to-[#bd2130] hover:scale-105 active:scale-95 transform duration-200"
             >
-              <span className="flex items-center justify-center gap-3">
+              <span className="flex items-center justify-center gap-4">
                 <FontAwesomeIcon icon={faPlus} className="text-3xl" />
                 <span>Создать игру</span>
               </span>
@@ -77,9 +68,9 @@ const Lobby: React.FC<LobbyProps> = ({ onCreateGame, onJoinGame }) => {
 
             <button
               onClick={() => setMode('join')}
-              className="max-w-md w-full bg-[#2d8659] text-white font-black px-8 py-5 rounded-lg border-4 border-black shadow-[6px_6px_0px_rgba(0,0,0,1)] transition-all text-2xl uppercase tracking-wide hover:shadow-[8px_8px_0px_rgba(0,0,0,1)] hover:translate-x-[-2px] hover:translate-y-[-2px] active:shadow-[2px_2px_0px_rgba(0,0,0,1)] active:translate-x-[4px] active:translate-y-[4px]"
+              className="max-w-md w-full bg-gradient-to-r from-[#2d8659] to-[#3a9d6f] text-white font-black px-10 py-6 rounded-2xl transition-all text-2xl uppercase tracking-wide hover:from-[#3a9d6f] hover:to-[#47b085] hover:scale-105 active:scale-95 transform duration-200"
             >
-              <span className="flex items-center justify-center gap-3">
+              <span className="flex items-center justify-center gap-4">
                 <FontAwesomeIcon icon={faDoorOpen} className="text-3xl" />
                 <span>Присоединиться</span>
               </span>
@@ -87,18 +78,16 @@ const Lobby: React.FC<LobbyProps> = ({ onCreateGame, onJoinGame }) => {
           </div>
 
           {/* Информация о количестве игроков */}
-          <div className="mt-10 text-center">
-            <div className="inline-block bg-white border-4 border-black rounded-lg px-8 py-3 shadow-[4px_4px_0px_rgba(0,0,0,1)]">
-              <p className="text-lg text-gray-800 font-black uppercase flex items-center gap-2">
-                <FontAwesomeIcon icon={faUser} />
-                <span>2-4 игрока</span>
-              </p>
+          <div className="text-center">
+            <div className="inline-flex items-center gap-3 bg-gray-100 rounded-full px-8 py-4">
+              <FontAwesomeIcon icon={faUser} className="text-2xl text-[#2d8659]" />
+              <p className="text-lg text-gray-800 font-black uppercase">2-4 игрока</p>
             </div>
           </div>
 
           {/* Версия для проверки деплоя */}
-          <div className="mt-4 text-center">
-            <p className="text-xs text-gray-500 font-mono">v2.0 - Classic Style</p>
+          <div className="mt-6 text-center">
+            <p className="text-xs text-gray-400 font-mono">v3.0 - Modern Style</p>
           </div>
         </div>
       </div>
@@ -107,24 +96,18 @@ const Lobby: React.FC<LobbyProps> = ({ onCreateGame, onJoinGame }) => {
 
   if (mode === 'create') {
     return (
-      <div className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden bg-[#CDE6D0]">
-        {/* Декоративный паттерн фона */}
-        <div className="absolute inset-0 opacity-5">
-          <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
-            <defs>
-              <pattern id="grid" patternUnits="userSpaceOnUse" width="40" height="40">
-                <path d="M0,20 l40,0 M20,0 l0,40" stroke="#000" strokeWidth="1"/>
-              </pattern>
-            </defs>
-            <rect width="100%" height="100%" fill="url(#grid)" />
-          </svg>
+      <div className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden bg-gradient-to-br from-[#2d8659] via-[#3a9d6f] to-[#2d8659]">
+        {/* Декоративные элементы фона */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none opacity-10">
+          <div className="absolute top-20 left-10 text-6xl animate-float"><FontAwesomeIcon icon={faHouse} /></div>
+          <div className="absolute bottom-20 right-20 text-5xl animate-float-delayed"><FontAwesomeIcon icon={faDice} /></div>
         </div>
 
-        <div className="bg-[#F5F0E8] rounded-lg shadow-[8px_8px_0px_rgba(0,0,0,1)] border-4 border-black p-12 max-w-2xl w-full relative z-10 animate-scale-in">
+        <div className="bg-white/95 backdrop-blur-sm rounded-3xl p-12 max-w-2xl w-full relative z-10 animate-scale-in">
           {/* Кнопка назад */}
           <button
             onClick={() => setMode('menu')}
-            className="mb-6 bg-white border-4 border-black px-6 py-3 rounded-lg shadow-[4px_4px_0px_rgba(0,0,0,1)] hover:shadow-[6px_6px_0px_rgba(0,0,0,1)] hover:translate-x-[-2px] hover:translate-y-[-2px] active:shadow-[2px_2px_0px_rgba(0,0,0,1)] active:translate-x-[2px] active:translate-y-[2px] transition-all font-black uppercase text-gray-800"
+            className="mb-8 bg-gray-100 hover:bg-gray-200 px-6 py-3 rounded-xl transition-all font-black uppercase text-gray-700 hover:scale-105 active:scale-95"
           >
             <span className="flex items-center gap-2">
               <span className="text-2xl">←</span>
@@ -133,26 +116,25 @@ const Lobby: React.FC<LobbyProps> = ({ onCreateGame, onJoinGame }) => {
           </button>
 
           {/* Заголовок */}
-          <div className="bg-[#2d8659] border-4 border-black rounded-lg p-6 mb-8 shadow-[4px_4px_0px_rgba(0,0,0,1)]">
-            <h2 className="font-black text-5xl text-white text-center uppercase tracking-wider" style={{
-              textShadow: '3px 3px 0px rgba(0,0,0,0.5)'
-            }}>
+          <div className="text-center mb-10">
+            <h2 className="font-black text-6xl bg-gradient-to-r from-[#2d8659] to-[#3a9d6f] bg-clip-text text-transparent mb-4 uppercase tracking-wider">
               Создать игру
             </h2>
+            <p className="text-gray-600 text-lg">Введите ваше имя для начала</p>
           </div>
 
           <div className="space-y-6">
             <div>
-              <label className="block text-xl font-black text-gray-800 mb-4 uppercase tracking-wide flex items-center gap-3">
-                <FontAwesomeIcon icon={faUser} className="text-2xl" />
+              <label className="block text-xl font-black text-gray-700 mb-4 uppercase tracking-wide flex items-center gap-3">
+                <FontAwesomeIcon icon={faUser} className="text-2xl text-[#2d8659]" />
                 <span>Ваше имя</span>
               </label>
               <input
                 type="text"
                 value={playerName}
                 onChange={(e) => setPlayerName(e.target.value)}
-                placeholder="ВВЕДИТЕ ИМЯ"
-                className="w-full px-6 py-5 border-4 border-black rounded-lg focus:outline-none text-xl font-black uppercase transition-all shadow-[4px_4px_0px_rgba(0,0,0,1)] focus:shadow-[6px_6px_0px_rgba(0,0,0,1)] focus:translate-x-[-2px] focus:translate-y-[-2px] bg-white"
+                placeholder="Введите имя"
+                className="w-full px-6 py-5 border-2 border-gray-200 rounded-2xl focus:outline-none focus:border-[#2d8659] text-xl font-bold transition-all bg-white"
                 maxLength={20}
                 autoFocus
               />
@@ -161,10 +143,10 @@ const Lobby: React.FC<LobbyProps> = ({ onCreateGame, onJoinGame }) => {
             <button
               onClick={handleCreateGame}
               disabled={!playerName.trim()}
-              className={`w-full font-black py-5 px-8 rounded-lg border-4 border-black transition-all text-2xl uppercase tracking-wide ${
+              className={`w-full font-black py-6 px-10 rounded-2xl transition-all text-2xl uppercase tracking-wide ${
                 playerName.trim()
-                  ? 'bg-[#dc3545] text-white shadow-[6px_6px_0px_rgba(0,0,0,1)] hover:shadow-[8px_8px_0px_rgba(0,0,0,1)] hover:translate-x-[-2px] hover:translate-y-[-2px] active:shadow-[2px_2px_0px_rgba(0,0,0,1)] active:translate-x-[4px] active:translate-y-[4px]'
-                  : 'bg-gray-300 text-gray-500 cursor-not-allowed shadow-[4px_4px_0px_rgba(0,0,0,0.3)]'
+                  ? 'bg-gradient-to-r from-[#dc3545] to-[#c82333] text-white hover:from-[#c82333] hover:to-[#bd2130] hover:scale-105 active:scale-95 transform'
+                  : 'bg-gray-200 text-gray-400 cursor-not-allowed'
               }`}
             >
               Создать игру
@@ -176,24 +158,18 @@ const Lobby: React.FC<LobbyProps> = ({ onCreateGame, onJoinGame }) => {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden bg-[#CDE6D0]">
-      {/* Декоративный паттерн фона */}
-      <div className="absolute inset-0 opacity-5">
-        <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
-          <defs>
-            <pattern id="grid" patternUnits="userSpaceOnUse" width="40" height="40">
-              <path d="M0,20 l40,0 M20,0 l0,40" stroke="#000" strokeWidth="1"/>
-            </pattern>
-          </defs>
-          <rect width="100%" height="100%" fill="url(#grid)" />
-        </svg>
+    <div className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden bg-gradient-to-br from-[#2d8659] via-[#3a9d6f] to-[#2d8659]">
+      {/* Декоративные элементы фона */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none opacity-10">
+        <div className="absolute top-20 right-10 text-6xl animate-float"><FontAwesomeIcon icon={faDice} /></div>
+        <div className="absolute bottom-20 left-20 text-5xl animate-float-delayed"><FontAwesomeIcon icon={faUserTie} /></div>
       </div>
 
-      <div className="bg-[#F5F0E8] rounded-lg shadow-[8px_8px_0px_rgba(0,0,0,1)] border-4 border-black p-12 max-w-2xl w-full relative z-10 animate-scale-in">
+      <div className="bg-white/95 backdrop-blur-sm rounded-3xl p-12 max-w-2xl w-full relative z-10 animate-scale-in">
         {/* Кнопка назад */}
         <button
           onClick={() => setMode('menu')}
-          className="mb-6 bg-white border-4 border-black px-6 py-3 rounded-lg shadow-[4px_4px_0px_rgba(0,0,0,1)] hover:shadow-[6px_6px_0px_rgba(0,0,0,1)] hover:translate-x-[-2px] hover:translate-y-[-2px] active:shadow-[2px_2px_0px_rgba(0,0,0,1)] active:translate-x-[2px] active:translate-y-[2px] transition-all font-black uppercase text-gray-800"
+          className="mb-8 bg-gray-100 hover:bg-gray-200 px-6 py-3 rounded-xl transition-all font-black uppercase text-gray-700 hover:scale-105 active:scale-95"
         >
           <span className="flex items-center gap-2">
             <span className="text-2xl">←</span>
@@ -202,52 +178,51 @@ const Lobby: React.FC<LobbyProps> = ({ onCreateGame, onJoinGame }) => {
         </button>
 
         {/* Заголовок */}
-        <div className="bg-[#2d8659] border-4 border-black rounded-lg p-6 mb-8 shadow-[4px_4px_0px_rgba(0,0,0,1)]">
-          <h2 className="font-black text-5xl text-white text-center uppercase tracking-wider" style={{
-            textShadow: '3px 3px 0px rgba(0,0,0,0.5)'
-          }}>
+        <div className="text-center mb-10">
+          <h2 className="font-black text-6xl bg-gradient-to-r from-[#2d8659] to-[#3a9d6f] bg-clip-text text-transparent mb-4 uppercase tracking-wider">
             Присоединиться
           </h2>
+          <p className="text-gray-600 text-lg">Введите данные для входа в игру</p>
         </div>
 
         <div className="space-y-6">
           <div>
-            <label className="block text-xl font-black text-gray-800 mb-4 uppercase tracking-wide flex items-center gap-3">
-              <FontAwesomeIcon icon={faUser} className="text-2xl" />
+            <label className="block text-xl font-black text-gray-700 mb-4 uppercase tracking-wide flex items-center gap-3">
+              <FontAwesomeIcon icon={faUser} className="text-2xl text-[#2d8659]" />
               <span>Ваше имя</span>
             </label>
             <input
               type="text"
               value={playerName}
               onChange={(e) => setPlayerName(e.target.value)}
-              placeholder="ВВЕДИТЕ ИМЯ"
-              className="w-full px-6 py-5 border-4 border-black rounded-lg focus:outline-none text-xl font-black uppercase transition-all shadow-[4px_4px_0px_rgba(0,0,0,1)] focus:shadow-[6px_6px_0px_rgba(0,0,0,1)] focus:translate-x-[-2px] focus:translate-y-[-2px] bg-white"
+              placeholder="Введите имя"
+              className="w-full px-6 py-5 border-2 border-gray-200 rounded-2xl focus:outline-none focus:border-[#2d8659] text-xl font-bold transition-all bg-white"
               maxLength={20}
               autoFocus
             />
           </div>
 
           <div>
-            <label className="block text-xl font-black text-gray-800 mb-4 uppercase tracking-wide flex items-center gap-3">
-              <FontAwesomeIcon icon={faKey} className="text-2xl" />
+            <label className="block text-xl font-black text-gray-700 mb-4 uppercase tracking-wide flex items-center gap-3">
+              <FontAwesomeIcon icon={faKey} className="text-2xl text-[#2d8659]" />
               <span>ID игры</span>
             </label>
             <input
               type="text"
               value={gameId}
               onChange={(e) => setGameId(e.target.value)}
-              placeholder="ВВЕДИТЕ ID"
-              className="w-full px-6 py-5 border-4 border-black rounded-lg focus:outline-none text-xl font-black uppercase font-mono transition-all shadow-[4px_4px_0px_rgba(0,0,0,1)] focus:shadow-[6px_6px_0px_rgba(0,0,0,1)] focus:translate-x-[-2px] focus:translate-y-[-2px] bg-white"
+              placeholder="Введите ID"
+              className="w-full px-6 py-5 border-2 border-gray-200 rounded-2xl focus:outline-none focus:border-[#2d8659] text-xl font-bold font-mono transition-all bg-white"
             />
           </div>
 
           <button
             onClick={handleJoinGame}
             disabled={!playerName.trim() || !gameId.trim()}
-            className={`w-full font-black py-5 px-8 rounded-lg border-4 border-black transition-all text-2xl uppercase tracking-wide ${
+            className={`w-full font-black py-6 px-10 rounded-2xl transition-all text-2xl uppercase tracking-wide ${
               playerName.trim() && gameId.trim()
-                ? 'bg-[#2d8659] text-white shadow-[6px_6px_0px_rgba(0,0,0,1)] hover:shadow-[8px_8px_0px_rgba(0,0,0,1)] hover:translate-x-[-2px] hover:translate-y-[-2px] active:shadow-[2px_2px_0px_rgba(0,0,0,1)] active:translate-x-[4px] active:translate-y-[4px]'
-                : 'bg-gray-300 text-gray-500 cursor-not-allowed shadow-[4px_4px_0px_rgba(0,0,0,0.3)]'
+                ? 'bg-gradient-to-r from-[#2d8659] to-[#3a9d6f] text-white hover:from-[#3a9d6f] hover:to-[#47b085] hover:scale-105 active:scale-95 transform'
+                : 'bg-gray-200 text-gray-400 cursor-not-allowed'
             }`}
           >
             Присоединиться
