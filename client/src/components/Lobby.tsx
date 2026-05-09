@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faDice, faHouse, faCar, faMoneyBill, faUserTie, faPlus, faDoorOpen, faUser, faKey } from '@fortawesome/free-solid-svg-icons';
+import { faDice, faHouse, faUserTie, faPlus, faDoorOpen, faUser, faKey } from '@fortawesome/free-solid-svg-icons';
 
 interface LobbyProps {
   onCreateGame: (playerName: string) => void;

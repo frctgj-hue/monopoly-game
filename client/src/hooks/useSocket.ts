@@ -17,9 +17,7 @@ export const useSocket = () => {
       timeout: 20000,
       transports: ['websocket', 'polling'],
       upgrade: true,
-      rememberUpgrade: true,
-      pingTimeout: 60000,
-      pingInterval: 25000
+      rememberUpgrade: true
     });
 
     socketInstance.on('connect', () => {
