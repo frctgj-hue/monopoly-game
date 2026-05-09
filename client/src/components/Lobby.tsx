@@ -36,10 +36,10 @@ const Lobby: React.FC<LobbyProps> = ({ onCreateGame, onJoinGame }) => {
         </div>
 
         {/* Главная карточка меню */}
-        <div className="bg-white/95 backdrop-blur-sm rounded-2xl p-12 max-w-2xl w-full relative z-10 animate-scale-in">
+        <div className="bg-white backdrop-blur-sm rounded-2xl p-12 max-w-2xl w-full relative z-10 animate-scale-in">
           {/* Заголовок */}
           <div className="text-center mb-10">
-            <h1 className="font-black text-7xl text-[#2d6b4a] mb-4 uppercase tracking-wider">
+            <h1 className="font-black text-8xl text-[#2d6b4a] mb-4 uppercase tracking-wider">
               МОНОПОЛИЯ
             </h1>
             <div className="flex items-center justify-center gap-4 text-5xl text-[#2d6b4a] mb-4">
@@ -101,7 +101,7 @@ const Lobby: React.FC<LobbyProps> = ({ onCreateGame, onJoinGame }) => {
           <div className="absolute bottom-20 right-20 text-5xl animate-float-delayed"><FontAwesomeIcon icon={faDice} /></div>
         </div>
 
-        <div className="bg-white/95 backdrop-blur-sm rounded-2xl p-12 max-w-2xl w-full relative z-10 animate-scale-in">
+        <div className="bg-white backdrop-blur-sm rounded-2xl p-12 max-w-2xl w-full relative z-10 animate-scale-in">
           {/* Кнопка назад */}
           <button
             onClick={() => setMode('menu')}
