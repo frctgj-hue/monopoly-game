@@ -400,14 +400,16 @@ function App() {
 
   const handleBankruptcy = () => {
     if (!gameState) return;
-    // При банкротстве из-за налога, кредитор - банк (undefined)
+    // При банкротстве из-за налога или карточки, кредитор - банк (undefined)
     declareBankruptcy(gameState.id, undefined, (data) => {
       if (data.success && data.game) {
         setGameState(data.game);
         showToast('💀 Вы объявили банкротство', 'error');
       }
     });
+    // Закрываем все модальные окна
     setShowTaxModal(null);
+    setCurrentCard(null);
   };
 
   const handleConfirmRent = () => {
