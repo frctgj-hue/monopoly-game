@@ -30,16 +30,16 @@ const BuildingAnimation: React.FC<BuildingAnimationProps> = ({
 
   const renderHouses = () => {
     if (houses === 5) {
-      // Отель - оранжевый дом-стикер
+      // Отель - красный дом-стикер
       return (
         <div className={`relative inline-block ${animatingHouse === 4 ? 'animate-build-house' : ''}`}>
-          {/* Оранжевый дом-стикер */}
-          <div className="w-6 h-6 bg-[#FF8C00] border-2 border-black relative rounded-sm" style={{ 
+          {/* Красный дом-стикер */}
+          <div className="w-6 h-6 bg-[#DC143C] border-2 border-black relative rounded-sm" style={{ 
             boxShadow: '0 3px 6px rgba(0,0,0,0.4), 0 1px 3px rgba(0,0,0,0.3), inset 0 1px 2px rgba(255,255,255,0.4)',
             transform: 'rotate(-2deg)'
           }}>
             {/* Крыша */}
-            <div className="absolute -top-2.5 left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-[7px] border-r-[7px] border-b-[7px] border-l-transparent border-r-transparent border-b-[#FF8C00]" style={{
+            <div className="absolute -top-2.5 left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-[7px] border-r-[7px] border-b-[7px] border-l-transparent border-r-transparent border-b-[#DC143C]" style={{
               filter: 'drop-shadow(0 1px 2px rgba(0,0,0,0.4))'
             }}></div>
             {/* Блик на доме */}
