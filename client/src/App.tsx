@@ -398,6 +398,18 @@ function App() {
     setShowTaxModal(null);
   };
 
+  const handleBankruptcy = () => {
+    if (!gameState) return;
+    // При банкротстве из-за налога, кредитор - банк (undefined)
+    declareBankruptcy(gameState.id, undefined, (data) => {
+      if (data.success && data.game) {
+        setGameState(data.game);
+        showToast('💀 Вы объявили банкротство', 'error');
+      }
+    });
+    setShowTaxModal(null);
+  };
+
   const handleConfirmRent = () => {
     if (!gameState || !showRentModal) return;
     confirmRent(gameState.id, showRentModal.propertyId, showRentModal.diceTotal, (data) => {
@@ -743,12 +755,14 @@ function App() {
                 )}
 
                 {/* Модальное окно налога */}
-                {showTaxModal && (
+                {showTaxModal && gameState && (
                   <div className="bg-white rounded-lg shadow-2xl border-4 border-red-600 p-6">
                     <TaxModal
                       taxType={showTaxModal.type}
                       amount={showTaxModal.amount}
+                      playerMoney={gameState.players.find(p => p.id === myPlayerId)?.money || 0}
                       onConfirm={handleConfirmTax}
+                      onBankruptcy={handleBankruptcy}
                     />
                   </div>
                 )}
