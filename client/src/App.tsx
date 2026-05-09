@@ -222,6 +222,7 @@ function App() {
     });
 
     socket.on('property-mortgaged', ({ playerId, propertyId, game }) => {
+      console.log('🟣 property-mortgaged событие получено:', { playerId, propertyId, mortgaged: game.board[propertyId].mortgaged });
       setGameState(game);
       const player = game.players.find((p: Player) => p.id === playerId);
       const property = game.board[propertyId];

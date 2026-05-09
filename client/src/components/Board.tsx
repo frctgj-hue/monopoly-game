@@ -100,6 +100,11 @@ const Board: React.FC<BoardProps> = ({ board, players, onCellClick }) => {
     const isCorner = [0, 10, 20, 30].includes(index);
     const isTopOrBottomRow = (index >= 0 && index <= 10) || (index >= 20 && index <= 30);
 
+    // Логирование для отладки залога
+    if (property.mortgaged) {
+      console.log(`🔴 Заложенная недвижимость: ${property.name} (ID: ${index}), mortgaged: ${property.mortgaged}`);
+    }
+
     return (
       <div
         key={index}
@@ -268,11 +273,12 @@ const Board: React.FC<BoardProps> = ({ board, players, onCellClick }) => {
 
         {/* Красный крест для заложенной недвижимости */}
         {property.mortgaged && (
-          <div className="absolute inset-0 flex items-center justify-center z-[115] pointer-events-none">
-            <div className="text-red-600 text-6xl font-bold" style={{
-              textShadow: '2px 2px 4px rgba(0,0,0,0.5), -2px -2px 4px rgba(0,0,0,0.5)'
+          <div className="absolute inset-0 flex items-center justify-center z-[200] pointer-events-none bg-black/20">
+            <div className="text-red-600 text-7xl font-black rotate-45" style={{
+              textShadow: '0 0 10px rgba(255,0,0,0.8), 2px 2px 8px rgba(0,0,0,0.9), -2px -2px 8px rgba(0,0,0,0.9)',
+              WebkitTextStroke: '2px black'
             }}>
-              ✕
+              +
             </div>
           </div>
         )}
