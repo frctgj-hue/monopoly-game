@@ -391,6 +391,19 @@ io.on('connection', (socket) => {
 
   // Строительство дома
   socket.on('build-house', ({ gameId, propertyId }, callback) => {
+    const success = gameService.buildHouse(gameId, socket.id, propertyId);
+    if (!success) {
+      callback({ success: false, message: 'Не удалось построить дом' });
+      return;
+    }
+
+    const game = gameService.getGame(gameId);
+    io.to(gameId).emit('house-built', { playerId: socket.id, propertyId, game });
+    callback({ success: true, game });
+  });
+
+  // Торговля
+  socket.on('create-trade', ({ gameId, toPlayerId, offeredProperties, offeredMoney, requestedProperties, requestedMoney }, callback) => {
     const result = gameService.createTradeOffer(
       gameId,
       socket.id,

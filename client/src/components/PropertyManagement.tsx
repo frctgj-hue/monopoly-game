@@ -5,12 +5,16 @@ interface PropertyManagementProps {
   properties: Property[];
   player: Player;
   onClose: () => void;
+  onMortgage: (propertyId: number) => void;
+  onUnmortgage: (propertyId: number) => void;
 }
 
 const PropertyManagement: React.FC<PropertyManagementProps> = ({
   properties,
   player,
   onClose,
+  onMortgage,
+  onUnmortgage,
 }) => {
   const getColorClass = (color: string) => {
     const colorMap: { [key: string]: string } = {
@@ -76,30 +80,69 @@ const PropertyManagement: React.FC<PropertyManagementProps> = ({
                     </div>
 
                     <div className="space-y-2">
-                      {props.map(prop => (
-                        <div
-                          key={prop.id}
-                          className="bg-white rounded-lg p-3 border-2 border-gray-300"
-                        >
-                          <div className="flex items-center justify-between">
-                            <div>
-                              <div className="font-bold text-gray-800 text-sm">{prop.name}</div>
-                              <div className="text-xs text-gray-600">
-                                {prop.mortgaged && '🏦 Заложена'}
-                                {!prop.mortgaged && prop.houses === 0 && 'Без построек'}
-                                {!prop.mortgaged && prop.houses > 0 && prop.houses < 5 && `🏠 ${prop.houses} ${prop.houses === 1 ? 'дом' : 'дома'}`}
-                                {!prop.mortgaged && prop.houses === 5 && '🏨 Отель'}
+                      {props.map(prop => {
+                        const mortgageValue = Math.floor(prop.price / 2);
+                        const unmortgageCost = Math.floor((prop.price / 2) * 1.1);
+                        const canMortgage = !prop.mortgaged && prop.houses === 0;
+                        const canUnmortgage = prop.mortgaged && player.money >= unmortgageCost;
+
+                        return (
+                          <div
+                            key={prop.id}
+                            className="bg-white rounded-lg p-3 border-2 border-gray-300"
+                          >
+                            <div className="flex items-center justify-between mb-2">
+                              <div>
+                                <div className="font-bold text-gray-800 text-sm">{prop.name}</div>
+                                <div className="text-xs text-gray-600">
+                                  {prop.mortgaged && '🏦 Заложена'}
+                                  {!prop.mortgaged && prop.houses === 0 && 'Без построек'}
+                                  {!prop.mortgaged && prop.houses > 0 && prop.houses < 5 && `🏠 ${prop.houses} ${prop.houses === 1 ? 'дом' : 'дома'}`}
+                                  {!prop.mortgaged && prop.houses === 5 && '🏨 Отель'}
+                                </div>
+                              </div>
+                              <div className="text-right">
+                                <div className="text-xs text-gray-600">Цена</div>
+                                <div className="font-bold text-sm" style={{ color: '#2d8659' }}>
+                                  ${prop.price}
+                                </div>
                               </div>
                             </div>
-                            <div className="text-right">
-                              <div className="text-xs text-gray-600">Цена</div>
-                              <div className="font-bold text-sm" style={{ color: '#2d8659' }}>
-                                ${prop.price}
-                              </div>
+
+                            {/* Кнопки залога/выкупа */}
+                            <div className="flex gap-2 mt-2">
+                              {!prop.mortgaged && (
+                                <button
+                                  onClick={() => onMortgage(prop.id)}
+                                  disabled={!canMortgage}
+                                  className={`flex-1 px-3 py-2 rounded text-xs font-bold transition-all ${
+                                    canMortgage
+                                      ? 'bg-yellow-500 hover:bg-yellow-600 text-white'
+                                      : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                                  }`}
+                                  title={prop.houses > 0 ? 'Сначала продайте все постройки' : `Получить $${mortgageValue}`}
+                                >
+                                  💰 Заложить (+${mortgageValue})
+                                </button>
+                              )}
+                              {prop.mortgaged && (
+                                <button
+                                  onClick={() => onUnmortgage(prop.id)}
+                                  disabled={!canUnmortgage}
+                                  className={`flex-1 px-3 py-2 rounded text-xs font-bold transition-all ${
+                                    canUnmortgage
+                                      ? 'bg-green-600 hover:bg-green-700 text-white'
+                                      : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                                  }`}
+                                  title={player.money < unmortgageCost ? 'Недостаточно денег' : `Выкупить за $${unmortgageCost}`}
+                                >
+                                  🏦 Выкупить (-${unmortgageCost})
+                                </button>
+                              )}
                             </div>
                           </div>
-                        </div>
-                      ))}
+                        );
+                      })}
                     </div>
                   </div>
                 );

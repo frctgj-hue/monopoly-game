@@ -196,6 +196,11 @@ export class GameService {
       return 0;
     }
 
+    // Заложенная недвижимость не приносит аренду
+    if (property.mortgaged) {
+      return 0;
+    }
+
     const owner = game.players.find(p => p.id === property.owner);
     if (!owner) return 0;
 
@@ -225,6 +230,11 @@ export class GameService {
     const property = game.board[propertyId];
 
     if (!player || !property || !property.owner || property.owner === playerId) {
+      return 0;
+    }
+
+    // Заложенная недвижимость не приносит аренду
+    if (property.mortgaged) {
       return 0;
     }
 

@@ -798,6 +798,28 @@ function App() {
                       properties={gameState.board}
                       player={gameState.players.find(p => p.id === myPlayerId)!}
                       onClose={() => setShowPropertyManagement(false)}
+                      onMortgage={(propertyId) => {
+                        if (!gameState) return;
+                        mortgageProperty(gameState.id, propertyId, (data) => {
+                          if (data.success && data.game) {
+                            setGameState(data.game);
+                            showToast('💰 Недвижимость заложена!', 'success');
+                          } else {
+                            showToast(data.message || 'Не удалось заложить недвижимость', 'error');
+                          }
+                        });
+                      }}
+                      onUnmortgage={(propertyId) => {
+                        if (!gameState) return;
+                        unmortgageProperty(gameState.id, propertyId, (data) => {
+                          if (data.success && data.game) {
+                            setGameState(data.game);
+                            showToast('🏦 Недвижимость выкуплена!', 'success');
+                          } else {
+                            showToast(data.message || 'Не удалось выкупить недвижимость', 'error');
+                          }
+                        });
+                      }}
                     />
                   </div>
                 )}
