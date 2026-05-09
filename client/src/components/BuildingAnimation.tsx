@@ -34,12 +34,12 @@ const BuildingAnimation: React.FC<BuildingAnimationProps> = ({
       return (
         <div className={`relative inline-block ${animatingHouse === 4 ? 'animate-build-house' : ''}`}>
           {/* Красный кружок с эффектом стикера */}
-          <div className="w-8 h-8 bg-red-600 rounded-full border-3 border-white flex items-center justify-center" style={{ 
+          <div className="w-8 h-8 bg-red-600 rounded-full border-3 border-black flex items-center justify-center" style={{ 
             boxShadow: '0 3px 6px rgba(0,0,0,0.4), 0 1px 3px rgba(0,0,0,0.3), inset 0 1px 2px rgba(255,255,255,0.3)',
             transform: 'rotate(-2deg)'
           }}>
             {/* Темно-зеленый дом-стикер внутри */}
-            <div className="w-5 h-5 bg-[#1a7a3e] border-2 border-white relative rounded-sm" style={{ 
+            <div className="w-5 h-5 bg-[#1a7a3e] border-2 border-black relative rounded-sm" style={{ 
               boxShadow: '0 2px 3px rgba(0,0,0,0.4), inset 0 1px 1px rgba(255,255,255,0.4)',
               transform: 'rotate(2deg)'
             }}>
@@ -70,7 +70,7 @@ const BuildingAnimation: React.FC<BuildingAnimationProps> = ({
           >
             {/* Дом-стикер с небольшим поворотом */}
             <div 
-              className="w-5 h-5 bg-[#1a7a3e] border-2 border-white relative rounded-sm" 
+              className="w-5 h-5 bg-[#1a7a3e] border-2 border-black relative rounded-sm" 
               style={{ 
                 boxShadow: '0 3px 5px rgba(0,0,0,0.4), 0 1px 2px rgba(0,0,0,0.3), inset 0 1px 2px rgba(255,255,255,0.4)',
                 transform: `rotate(${index % 2 === 0 ? '-3deg' : '3deg'})`
