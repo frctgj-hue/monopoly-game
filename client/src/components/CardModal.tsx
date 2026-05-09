@@ -1,14 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faQuestion, faMoneyBill } from '@fortawesome/free-solid-svg-icons';
+import { faQuestion, faMoneyBill, faSkull } from '@fortawesome/free-solid-svg-icons';
 import type { Card } from '../types/game.types';
 
 interface CardModalProps {
   card: Card | null;
+  playerMoney: number;
   onClose: () => void;
+  onBankruptcy: () => void;
 }
 
-const CardModal: React.FC<CardModalProps> = ({ card, onClose }) => {
+const CardModal: React.FC<CardModalProps> = ({ card, playerMoney, onClose, onBankruptcy }) => {
   const [isFlipped, setIsFlipped] = useState(false);
 
   useEffect(() => {
@@ -23,6 +25,11 @@ const CardModal: React.FC<CardModalProps> = ({ card, onClose }) => {
   }, [card]);
 
   if (!card) return null;
+
+  // Проверяем, требует ли карточка оплаты (отрицательное значение)
+  const requiresPayment = card.action === 'money' && card.value !== undefined && card.value < 0;
+  const paymentAmount = card.value ? Math.abs(card.value) : 0;
+  const canAfford = !requiresPayment || playerMoney >= paymentAmount;
 
   const getCardIcon = (type: string) => {
     return type === 'chance' ? <FontAwesomeIcon icon={faQuestion} /> : <FontAwesomeIcon icon={faMoneyBill} />;
@@ -83,13 +90,42 @@ const CardModal: React.FC<CardModalProps> = ({ card, onClose }) => {
                   </p>
                 </div>
 
-                <button
-                  onClick={onClose}
-                  className="w-full py-4 px-6 text-white rounded-lg font-bold text-lg uppercase transition-all shadow-lg"
-                  style={{ backgroundColor: '#dc3545' }}
-                >
-                  Продолжить
-                </button>
+                {/* Предупреждение о недостатке средств */}
+                {requiresPayment && !canAfford && (
+                  <div className="bg-red-100 border-2 border-red-600 rounded-lg p-3 mb-4">
+                    <p className="text-red-800 font-black text-sm uppercase text-center">
+                      ⚠️ Недостаточно средств!
+                    </p>
+                    <p className="text-red-700 text-xs mt-1 text-center">
+                      Вы должны объявить банкротство
+                    </p>
+                  </div>
+                )}
+
+                {/* Кнопки */}
+                <div className="space-y-3">
+                  <button
+                    onClick={onClose}
+                    disabled={!canAfford}
+                    className={`w-full py-4 px-6 rounded-lg font-bold text-lg uppercase transition-all ${
+                      canAfford
+                        ? 'bg-[#2d6b4a] text-white hover:bg-[#357a55] hover:scale-105 active:scale-95'
+                        : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                    }`}
+                  >
+                    Продолжить
+                  </button>
+
+                  {requiresPayment && (
+                    <button
+                      onClick={onBankruptcy}
+                      className="w-full py-4 px-6 bg-gradient-to-r from-[#c92a3a] to-[#b01f2e] text-white rounded-lg font-bold text-lg transition-all hover:from-[#b01f2e] hover:to-[#9a1a27] hover:scale-105 active:scale-95 uppercase flex items-center justify-center gap-2"
+                    >
+                      <FontAwesomeIcon icon={faSkull} />
+                      <span>Объявить банкротство</span>
+                    </button>
+                  )}
+                </div>
               </div>
             </div>
           </div>

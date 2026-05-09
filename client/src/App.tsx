@@ -800,10 +800,11 @@ function App() {
                 )}
 
                 {/* Модальное окно карточки */}
-                {currentCard && (
+                {currentCard && gameState && (
                   <div className="bg-white rounded-lg shadow-2xl border-4 border-black">
                     <CardModal
                       card={currentCard}
+                      playerMoney={gameState.players.find(p => p.id === myPlayerId)?.money || 0}
                       onClose={() => {
                         if (currentCard && gameState) {
                           confirmCard(gameState.id, currentCard, (data) => {
@@ -814,6 +815,7 @@ function App() {
                         }
                         setCurrentCard(null);
                       }}
+                      onBankruptcy={handleBankruptcy}
                     />
                   </div>
                 )}
