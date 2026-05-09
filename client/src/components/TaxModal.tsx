@@ -28,13 +28,8 @@ const TaxModal: React.FC<TaxModalProps> = ({ taxType, amount, playerMoney, onCon
         </h2>
 
         {/* Описание */}
-        <p className="text-base text-gray-800 mb-2 font-medium">
+        <p className="text-base text-gray-800 mb-6 font-medium">
           Вы должны заплатить налог в размере ${amount}
-        </p>
-
-        {/* Информация о балансе */}
-        <p className={`text-sm mb-6 font-bold ${canAfford ? 'text-green-600' : 'text-red-600'}`}>
-          Ваш баланс: ${playerMoney}
         </p>
 
         {/* Предупреждение о недостатке средств */}
