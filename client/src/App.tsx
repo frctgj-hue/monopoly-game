@@ -53,6 +53,7 @@ function App() {
   const [phase, setPhase] = useState<GamePhase>('lobby');
   const [gameState, setGameState] = useState<GameState | null>(null);
   const [myPlayerId, setMyPlayerId] = useState<string>('');
+  const [originalPlayerId, setOriginalPlayerId] = useState<string>(''); // Сохраняем оригинальный ID
   const [lastDiceRoll, setLastDiceRoll] = useState<DiceRoll | undefined>();
   const [canRoll, setCanRoll] = useState(true);
   const [currentCard, setCurrentCard] = useState<Card | null>(null);
@@ -74,15 +75,16 @@ function App() {
 
     // Обработчик переподключения - восстанавливаем состояние игры
     socket.on('connect', () => {
-      console.log('✅ Подключено к серверу');
-      // Если у нас есть gameState, пытаемся переподключиться к игре
-      if (gameState && gameState.id) {
-        console.log('🔄 Восстанавливаем состояние игры:', gameState.id);
+      console.log('✅ Подключено к серверу, socket.id:', socket.id);
+      // Если у нас есть gameState и оригинальный ID игрока, пытаемся переподключиться
+      if (gameState && gameState.id && originalPlayerId) {
+        console.log('🔄 Восстанавливаем состояние игры:', gameState.id, 'для игрока:', originalPlayerId);
         // Запрашиваем актуальное состояние игры с сервера
-        socket.emit('rejoin-game', { gameId: gameState.id }, (response: any) => {
+        socket.emit('rejoin-game', { gameId: gameState.id, oldPlayerId: originalPlayerId }, (response: any) => {
           if (response.success && response.game) {
-            console.log('✅ Состояние игры восстановлено');
+            console.log('✅ Состояние игры восстановлено, новый socket.id:', socket.id);
             setGameState(response.game);
+            setMyPlayerId(originalPlayerId); // Используем оригинальный ID
             setPhase('playing');
           } else {
             console.error('❌ Не удалось восстановить игру:', response.message);
@@ -300,7 +302,9 @@ function App() {
         joinGame(data.gameId, playerName, (joinData) => {
           if (joinData.success && joinData.game) {
             setGameState(joinData.game);
-            setMyPlayerId(socket?.id || '');
+            const playerId = socket?.id || '';
+            setMyPlayerId(playerId);
+            setOriginalPlayerId(playerId); // Сохраняем оригинальный ID
             setPhase('waiting');
             showToast(`✓ Игра создана! ID: ${data.gameId}`, 'success');
           }
@@ -313,7 +317,9 @@ function App() {
     joinGame(gameId, playerName, (data) => {
       if (data.success && data.game) {
         setGameState(data.game);
-        setMyPlayerId(socket?.id || '');
+        const playerId = socket?.id || '';
+        setMyPlayerId(playerId);
+        setOriginalPlayerId(playerId); // Сохраняем оригинальный ID
         setPhase('waiting');
         showToast('✓ Вы присоединились к игре!', 'success');
       } else {

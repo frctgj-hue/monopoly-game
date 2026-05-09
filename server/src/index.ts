@@ -64,8 +64,8 @@ io.on('connection', (socket) => {
   });
 
   // Переподключение к игре после разрыва соединения
-  socket.on('rejoin-game', ({ gameId }, callback) => {
-    console.log(`🔄 Попытка переподключения к игре ${gameId} от ${socket.id}`);
+  socket.on('rejoin-game', ({ gameId, oldPlayerId }, callback) => {
+    console.log(`🔄 Попытка переподключения к игре ${gameId} от ${socket.id}, старый ID: ${oldPlayerId}`);
     const game = gameService.getGame(gameId);
     if (!game) {
       console.log(`❌ Игра ${gameId} не найдена`);
@@ -73,17 +73,25 @@ io.on('connection', (socket) => {
       return;
     }
 
-    // Проверяем, есть ли игрок в игре
-    const player = game.players.find(p => p.id === socket.id);
+    // Ищем игрока по старому ID
+    const player = game.players.find(p => p.id === oldPlayerId);
     if (!player) {
-      console.log(`❌ Игрок ${socket.id} не найден в игре ${gameId}`);
+      console.log(`❌ Игрок ${oldPlayerId} не найден в игре ${gameId}`);
       callback({ success: false, message: 'Игрок не найден в игре' });
       return;
     }
 
+    // Обновляем socket.id игрока на новый
+    player.id = socket.id;
+    console.log(`🔄 Обновлен ID игрока ${player.name}: ${oldPlayerId} → ${socket.id}`);
+
     // Переподключаем к комнате
     socket.join(gameId);
     console.log(`✅ Игрок ${player.name} переподключен к игре ${gameId}`);
+    
+    // Уведомляем всех игроков об обновлении состояния
+    io.to(gameId).emit('game-updated', { game });
+    
     callback({ success: true, game });
   });
 
