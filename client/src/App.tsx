@@ -18,6 +18,7 @@ import RentModal from './components/RentModal';
 import PropertyInfoModal from './components/PropertyInfoModal';
 import GoToJailModal from './components/GoToJailModal';
 import TaxModal from './components/TaxModal';
+import JailDecisionModal from './components/JailDecisionModal';
 import { soundManager } from './utils/sounds';
 
 type GamePhase = 'lobby' | 'waiting' | 'playing';
@@ -66,9 +67,12 @@ function App() {
   const [showPropertyManagement, setShowPropertyManagement] = useState(false);
   const [selectedProperty, setSelectedProperty] = useState<number | null>(null);
 
-  // Состояния для новых анимаций
+  // Состояния для новых анимаций и модальных окон
   const [winner, setWinner] = useState<Player | null>(null);
   const [bankruptPlayer, setBankruptPlayer] = useState<Player | null>(null);
+  
+  // 🔥 Состояние для модального окна тюрьмы (пропуск хода)
+  const [showJailDecision, setShowJailDecision] = useState(false);
 
   useEffect(() => {
     if (!socket) return;
@@ -170,7 +174,11 @@ function App() {
 
     socket.on('jail-turn', ({ game }) => {
       setGameState(game);
-      showToast('🔒 Остаетесь в тюрьме', 'warning');
+      // 🔥 Показываем модальное окно выбора действий в тюрьме
+      const currentPlayer = game.players[game.currentPlayerIndex];
+      if (currentPlayer?.id === myPlayerId && currentPlayer.inJail) {
+        setShowJailDecision(true);
+      }
     });
 
     socket.on('jail-paid', ({ game }) => {
@@ -377,6 +385,51 @@ function App() {
         showToast('🎫 Карточка использована!', 'success');
       } else {
         showToast(data.message || 'Не удалось использовать карточку', 'error');
+      }
+    });
+  };
+
+  // 🔥 Обработчики для модального окна тюрьмы (пропуск хода)
+  
+  const handleJailPayFine = () => {
+    if (!gameState) return;
+    // Игрок платит 50 и пропускает ход — сервер сам завершит ход после оплаты штрафа за пропуск
+    payJailFine(gameState.id, (data) => {
+      if (data.success && data.game) {
+        setGameState(data.game);
+        setShowJailDecision(false);
+        showToast('💵 Штраф $50 оплачен, ход пропущен', 'info');
+        // После оплаты штрафа сервер должен завершить ход игрока, но на всякий случай обновляем UI
+        setCanRoll(true);
+      } else {
+        showToast(data.message || 'Не удалось оплатить штраф', 'error');
+      }
+    });
+  };
+
+  const handleJailTryLuck = () => {
+    if (!gameState) return;
+    setShowJailDecision(false);
+    // Автоматически бросаем кубики для попытки выйти на дубле
+    rollDice(gameState.id, (data) => {
+      if (data.success && data.game && data.diceRoll) {
+        setGameState(data.game);
+        const { die1, die2 } = data.diceRoll;
+        
+        if (die1 === die2) {
+          // 🎉 Дубль! Игрок вышел из тюрьмы, ход продолжается (но пропущенный ход уже учтен сервером)
+          showToast(`🎲 ${die1}+${die2} = дубль! Вы свободны!`, 'success');
+          setCanRoll(true);
+        } else {
+          // ❌ Не дубль — штраф $50 списывается и ход завершается автоматически сервером
+          showToast(`🎲 ${die1}+${die2} — не дубль. $50 списано, ход завершён`, 'warning');
+          // Сервер должен сам завершить ход, но обновляем UI на всякий случай
+          setCanRoll(true);
+          setLastDiceRoll(undefined);
+        }
+      } else {
+        showToast(data.message || 'Ошибка броска кубиков', 'error');
+        setCanRoll(true);
       }
     });
   };
@@ -801,6 +854,20 @@ function App() {
                   </div>
                 )}
 
+                {/* 🔥 Модальное окно тюрьмы (пропуск хода) */}
+                {showJailDecision && gameState && (
+                  <div className="game-modal-fixed">
+                    <JailDecisionModal
+                      playerName={gameState.players.find(p => p.id === myPlayerId)?.name || 'Игрок'}
+                      playerMoney={gameState.players.find(p => p.id === myPlayerId)?.money || 0}
+                      jailTurns={gameState.players.find(p => p.id === myPlayerId)?.jailTurns || 0}
+                      onPayFine={handleJailPayFine}
+                      onTryLuck={handleJailTryLuck}
+                      canPay={(gameState.players.find(p => p.id === myPlayerId)?.money || 0) >= 50}
+                    />
+                  </div>
+                )}
+
                 {/* Модальное окно ренты */}
                 {showRentModal && gameState && (
                   <div className="game-modal-fixed">
@@ -1021,7 +1088,7 @@ function App() {
                       {!canRoll && (
                         <button
                           onClick={handleEndTurn}
-                          disabled={currentCard !== null || showGoToJail || showTaxModal !== null || showRentModal !== null}
+                          disabled={currentCard !== null || showGoToJail || showTaxModal !== null || showRentModal !== null || showJailDecision}
                           className="w-full py-3 px-4 rounded-lg font-bold text-sm text-white transition-all shadow-md uppercase disabled:opacity-50 disabled:cursor-not-allowed"
                           style={{ backgroundColor: '#2d8659' }}
                         >
@@ -1032,7 +1099,8 @@ function App() {
 
                       <button
                         onClick={() => setShowTradeModal(true)}
-                        className="w-full py-2 px-4 rounded-lg font-bold text-xs text-white transition-all shadow-md uppercase"
+                        disabled={showJailDecision}
+                        className="w-full py-2 px-4 rounded-lg font-bold text-xs text-white transition-all shadow-md uppercase disabled:opacity-50 disabled:cursor-not-allowed"
                         style={{ backgroundColor: '#dc3545' }}
                       >
                         <FontAwesomeIcon icon={faHandshake} className="mr-2" />
@@ -1041,7 +1109,8 @@ function App() {
 
                       <button
                         onClick={() => setShowPropertyManagement(true)}
-                        className="w-full py-2 px-4 rounded-lg font-bold text-xs text-white transition-all shadow-md uppercase"
+                        disabled={showJailDecision}
+                        className="w-full py-2 px-4 rounded-lg font-bold text-xs text-white transition-all shadow-md uppercase disabled:opacity-50 disabled:cursor-not-allowed"
                         style={{ backgroundColor: '#dc3545' }}
                       >
                         🏠 Недвижимость
