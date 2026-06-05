@@ -651,61 +651,43 @@ function App() {
     return ownsAll;
   };
 
-  if (!connected) {
+  // Показываем блокирующий экран ТОЛЬКО при первичном подключении (нет gameState)
+  if (!connected && !gameState) {
     return (
-      <div 
-        className="min-h-screen flex items-center justify-center"
-        style={{ background: '#1c1c1e' }}
-      >
-        <div 
-          className="rounded-2xl p-10 animate-scale-in"
-          style={{
-            background: '#252528',
-            boxShadow: '12px 12px 24px rgba(0,0,0,0.4), -12px -12px 24px rgba(60,60,60,0.1)',
-          }}
-        >
+      <div className="min-h-screen flex items-center justify-center" style={{ background: '#1c1c1e' }}>
+        <div className="rounded-2xl p-10 animate-scale-in" style={{ background: '#252528', boxShadow: '12px 12px 24px rgba(0,0,0,0.4), -12px -12px 24px rgba(60,60,60,0.1)' }}>
           <div className="text-center">
-            {/* Текст */}
-            <div 
-              className="text-2xl font-light tracking-widest mb-2"
-              style={{ color: '#d4af37' }}
-            >
-              {gameState ? 'RECONNECTING' : 'CONNECTING'}
-            </div>
-            
-            {gameState && (
-              <div className="text-sm text-gray-500 mt-2 tracking-wider">
-                Restoring game state...
-              </div>
-            )}
-            
-            {/* Анимированные точки */}
+            <div className="text-2xl font-light tracking-widest mb-2" style={{ color: '#d4af37' }}>CONNECTING</div>
             <div className="flex justify-center gap-2 mt-6">
-              <div 
-                className="w-2 h-2 rounded-full animate-pulse"
-                style={{ 
-                  background: '#d4af37',
-                  animationDelay: '0s'
-                }}
-              ></div>
-              <div 
-                className="w-2 h-2 rounded-full animate-pulse"
-                style={{ 
-                  background: '#d4af37',
-                  animationDelay: '0.2s'
-                }}
-              ></div>
-              <div 
-                className="w-2 h-2 rounded-full animate-pulse"
-                style={{ 
-                  background: '#d4af37',
-                  animationDelay: '0.4s'
-                }}
-              ></div>
+              <div className="w-2 h-2 rounded-full animate-pulse" style={{ background: '#d4af37', animationDelay: '0s' }}></div>
+              <div className="w-2 h-2 rounded-full animate-pulse" style={{ background: '#d4af37', animationDelay: '0.2s' }}></div>
+              <div className="w-2 h-2 rounded-full animate-pulse" style={{ background: '#d4af37', animationDelay: '0.4s' }}></div>
             </div>
           </div>
         </div>
       </div>
+    );
+  }
+
+  // НЕБЛОКИРУЮЩИЙ индикатор переподключения В ПРОЦЕССЕ игры (Render sleep recovery)
+  if (!connected && gameState) {
+    return (
+      <>
+        {/* Плашка сверху — не перекрывает игру */}
+        <div className="fixed top-0 left-0 right-0 z-[1000] bg-[#dc3545]/95 text-white text-center py-2.5 text-sm font-semibold backdrop-blur-sm shadow-lg">
+          🔌 Переподключение... <span className="opacity-80">(сервер просыпается)</span>
+        </div>
+        {/* Игра видна, но интерактив временно отключён */}
+        <div className="min-h-screen pt-10" style={{ background: 'var(--color-bg-primary)', pointerEvents: 'none', filter: 'blur(1px)', transition: 'filter 0.3s' }}>
+          {phase === 'lobby' && <Lobby onCreateGame={handleCreateGame} onJoinGame={handleJoinGame} />}
+          {phase === 'waiting' && gameState && <WaitingRoom gameId={gameState.id} players={gameState.players} myPlayerId={myPlayerId} onStartGame={handleStartGame} canStart={gameState.players.length >= 2} />}
+          {phase === 'playing' && gameState && (
+            <div className="flex justify-center" style={{ paddingTop: '20px', paddingBottom: '20px', minHeight: '1250px' }}>
+              <Board board={gameState.board} players={gameState.players} onCellClick={handleCellClick} />
+            </div>
+          )}
+        </div>
+      </>
     );
   }
 
