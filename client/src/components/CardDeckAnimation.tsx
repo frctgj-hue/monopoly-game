@@ -28,25 +28,34 @@ const CardDeckAnimation: React.FC<CardDeckAnimationProps> = ({ onComplete, class
     >
       {Array.from({ length: CARD_COUNT }).map((_, index) => {
         const center = (CARD_COUNT - 1) / 2;
+        const totalSpread = 50; // общий угол разворота веера в градусах
+        const angleStep = totalSpread / (CARD_COUNT - 1);
+        const rotation = (index - center) * angleStep; // угол поворота для этой карты
         
-        // 🔥 ТОЛЬКО ГОРИЗОНТАЛЬНОЕ ПОЗИЦИОНИРОВАНИЕ через left:
-        // 50% - 70px = центр экрана минус половина карты = точка отсчёта
-        // + (index - center) * 75 = разлёт влево/вправо
-        const leftPos = `calc(50% - ${CARD_WIDTH / 2}px + ${(index - center) * 75}px)`;
+        // Позиция центра веера (точка, из которой карты "растут")
+        const fanCenterX = '50%';
+        const fanCenterY = '25%';
         
-        // Анимация: только opacity и scale, никаких translate!
-        const delay = index * 0.08;
-        const opacity = animated ? 0.35 : 0;
-        const scale = animated ? 1 : 0.5;
+        // Смещение карты от центра веера (чтобы они не перекрывались полностью)
+        const spreadRadius = 30; // пиксели радиального смещения
+        const angleRad = (rotation * Math.PI) / 180;
+        const offsetX = Math.sin(angleRad) * spreadRadius;
+        const offsetY = -Math.cos(angleRad) * spreadRadius * 0.3; // меньше смещения по Y для компактности
+        
+        // Анимация: opacity, scale и rotation
+        const delay = index * 0.06;
+        const opacity = animated ? 0.4 : 0;
+        const scale = animated ? 1 : 0.3;
+        const currentRotation = animated ? rotation : rotation * 0.3;
 
         return (
           <div
             key={`chance-${index}`}
             className="absolute rounded-lg"
             style={{
-              // 🔥 Позиция: только left и top, никаких margin!
-              left: leftPos,
-              top: '15%',
+              // Позиция: центрируем + смещаем по радиусу веера
+              left: `calc(${fanCenterX} - ${CARD_WIDTH / 2}px + ${offsetX}px)`,
+              top: `calc(${fanCenterY} - ${CARD_HEIGHT / 2}px + ${offsetY}px)`,
               width: CARD_WIDTH,
               height: CARD_HEIGHT,
               zIndex: CARD_COUNT - index,
@@ -62,10 +71,11 @@ const CardDeckAnimation: React.FC<CardDeckAnimationProps> = ({ onComplete, class
               boxSizing: 'border-box',
               position: 'relative',
               overflow: 'hidden',
-              // 🔥 Анимация: только opacity и scale — НИКАКОГО transform: translate!
+              // 🔥 ВЕЕР: вращение вокруг центра карты + масштабирование + прозрачность
+              transformOrigin: 'center center',
               opacity: opacity,
-              transform: `scale(${scale})`,
-              transition: `opacity 0.7s ease-out ${delay}s, transform 0.7s ease-out ${delay}s`,
+              transform: `scale(${scale}) rotate(${currentRotation}deg)`,
+              transition: `opacity 0.8s ease-out ${delay}s, transform 0.8s ease-out ${delay}s`,
             }}
           >
             {/* Декоративная рамка */}
