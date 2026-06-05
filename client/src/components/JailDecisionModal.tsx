@@ -20,64 +20,80 @@ const JailDecisionModal: React.FC<JailDecisionModalProps> = ({
   canPay,
 }) => {
   return (
-    <div className="w-full max-w-md mx-auto">
-      <div className="text-center">
+    <div className="p-6">
+      <div className="text-center mb-6">
         {/* Иконка */}
-        <div className="text-6xl mb-4 text-[var(--color-accent-red)] animate-pulse">
-          <FontAwesomeIcon icon={faHandcuffs} />
+        <div className="text-6xl mb-4">
+          <FontAwesomeIcon icon={faHandcuffs} className="text-[var(--color-accent-red)]" />
         </div>
-
+        
         {/* Заголовок */}
         <h2 className="theme-title text-2xl mb-2">
-          🚔 Тюрьма
+          🚔 Тюрьма — ход пропущен!
         </h2>
-
+        
         {/* Имя игрока */}
-        <p className="text-lg text-[var(--color-text-primary)] mb-4 font-semibold">
-          {playerName}, ваш ход пропущен!
-        </p>
-
-        {/* Статус */}
-        <div className="theme-panel-inset p-4 mb-6 rounded-lg">
-          <p className="text-sm text-[var(--color-text-secondary)] mb-2">
-            Попытка выйти: <span className="font-bold text-[var(--color-accent-gold)]">{jailTurns + 1} из 3</span>
-          </p>
-          <p className="text-sm text-[var(--color-text-secondary)]">
-            Ваш баланс: <span className="font-bold">${playerMoney}</span>
-          </p>
-        </div>
-
-        {/* Кнопки */}
-        <div className="space-y-3">
-          {/* Кнопка: Заплатить 50 */}
-          <button
-            onClick={onPayFine}
-            disabled={!canPay}
-            className={`w-full py-4 px-6 rounded-xl font-bold text-lg transition-all shadow-lg flex items-center justify-center gap-3 uppercase ${
-              canPay
-                ? 'bg-gradient-to-r from-[var(--color-accent-blue)] to-[var(--color-accent-green)] text-white hover:scale-105 active:scale-95 hover:shadow-xl'
-                : 'bg-gray-600 text-gray-400 cursor-not-allowed opacity-50'
-            }`}
-          >
-            <FontAwesomeIcon icon={faMoneyBillWave} />
-            <span>Заплатить $50 и пропустить ход</span>
-          </button>
-
-          {/* Кнопка: Попытать удачу */}
-          <button
-            onClick={onTryLuck}
-            className="w-full py-4 px-6 rounded-xl font-bold text-lg transition-all shadow-lg flex items-center justify-center gap-3 uppercase bg-gradient-to-r from-[var(--color-accent-gold)] to-[var(--color-accent-orange)] text-[var(--color-text-dark)] hover:scale-105 active:scale-95 hover:shadow-xl"
-          >
-            <FontAwesomeIcon icon={faDice} />
-            <span>Попытать удачу (бросить на дубль)</span>
-          </button>
-        </div>
-
-        {/* Подсказка */}
-        <p className="text-xs text-[var(--color-text-muted)] mt-4 italic">
-          💡 Если выпадет дубль — вы свободны! Иначе $50 спишется автоматически.
+        <p className="theme-text-muted mb-4">
+          <span className="font-bold" style={{ color: 'var(--color-accent-red)' }}>{playerName}</span>, выберите действие:
         </p>
       </div>
+
+      {/* Статус */}
+      <div className="theme-panel-inset p-4 mb-4">
+        <div className="flex justify-between items-center mb-2">
+          <span className="theme-text-label font-bold">Попытка выхода:</span>
+          <span className="text-xl font-bold text-[var(--color-accent-gold)]">
+            {jailTurns + 1} из 3
+          </span>
+        </div>
+        <div className="flex justify-between items-center">
+          <span className="theme-text-label font-bold">Ваш баланс:</span>
+          <span className={`text-xl font-bold ${canPay ? 'text-[var(--color-text-gold)]' : 'text-[var(--color-accent-red)]'}`}>
+            ${playerMoney}
+          </span>
+        </div>
+      </div>
+
+      {/* Кнопки */}
+      <div className="space-y-2">
+        {/* Кнопка: Заплатить 50 */}
+        <button
+          onClick={onPayFine}
+          disabled={!canPay}
+          className={`theme-btn w-full py-3 px-6 rounded-lg font-bold text-lg uppercase transition-all shadow-lg ${
+            canPay
+              ? 'hover:scale-105 active:scale-95'
+              : 'opacity-50 cursor-not-allowed theme-panel-inset'
+          }`}
+          style={canPay ? {
+            background: 'linear-gradient(135deg, #0d9488 0%, #0f766e 100%)',
+            color: '#fff',
+            boxShadow: '0 4px 16px rgba(13, 148, 136, 0.3)'
+          } : {}}
+        >
+          <FontAwesomeIcon icon={faMoneyBillWave} className="mr-2" />
+          Заплатить $50 и пропустить ход
+        </button>
+
+        {/* Кнопка: Попытать удачу */}
+        <button
+          onClick={onTryLuck}
+          className="theme-btn w-full py-3 px-6 rounded-lg font-bold text-lg text-white transition-all uppercase shadow-lg hover:scale-105 active:scale-95"
+          style={{
+            background: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)',
+            color: '#fff',
+            boxShadow: '0 4px 16px rgba(245, 158, 11, 0.3)'
+          }}
+        >
+          <FontAwesomeIcon icon={faDice} className="mr-2" />
+          Попытать удачу (бросить на дубль)
+        </button>
+      </div>
+
+      {/* Подсказка */}
+      <p className="theme-text-muted text-xs text-center mt-4 italic">
+        💡 Если выпадет дубль — вы свободны! Иначе $50 спишется автоматически.
+      </p>
     </div>
   );
 };
