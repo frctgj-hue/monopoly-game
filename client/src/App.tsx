@@ -174,9 +174,17 @@ function App() {
 
     socket.on('jail-turn', ({ game }) => {
       setGameState(game);
-      // 🔥 Показываем модальное окно выбора действий в тюрьме
+      // 🔥 Показываем модальное окно только если:
+      // 1. Это мой игрок в тюрьме
+      // 2. Он должен пропустить ход (jailTurns: 0, 1 или 2 — первые 3 хода в тюрьме)
+      // 3. Ход ещё не завершён (canRoll === false)
       const currentPlayer = game.players[game.currentPlayerIndex];
-      if (currentPlayer?.id === myPlayerId && currentPlayer.inJail) {
+      const myPlayer = game.players.find(p => p.id === myPlayerId);
+      
+      if (currentPlayer?.id === myPlayerId && 
+          myPlayer?.inJail && 
+          myPlayer.jailTurns < 3 && 
+          !canRoll) {
         setShowJailDecision(true);
       }
     });
@@ -399,8 +407,9 @@ function App() {
         setGameState(data.game);
         setShowJailDecision(false);
         showToast('💵 Штраф $50 оплачен, ход пропущен', 'info');
-        // После оплаты штрафа сервер должен завершить ход игрока, но на всякий случай обновляем UI
-        setCanRoll(true);
+        // ❗️ НЕ меняем canRoll — сервер сам завершит ход и передаст ход следующему игроку,
+        // после чего canRoll станет true для нового игрока. Если мы установим true сейчас,
+        // текущий игрок сможет снова бросить кубики и пропустит ещё один ход.
       } else {
         showToast(data.message || 'Не удалось оплатить штраф', 'error');
       }
@@ -417,19 +426,17 @@ function App() {
         const { die1, die2 } = data.diceRoll;
         
         if (die1 === die2) {
-          // 🎉 Дубль! Игрок вышел из тюрьмы, ход продолжается (но пропущенный ход уже учтен сервером)
+          // 🎉 Дубль! Игрок вышел из тюрьмы — сервер должен дать возможность бросить кубики для хода,
+          // но пропущенный ход уже учтён. Не меняем canRoll, ждём обновления от сервера.
           showToast(`🎲 ${die1}+${die2} = дубль! Вы свободны!`, 'success');
-          setCanRoll(true);
         } else {
-          // ❌ Не дубль — штраф $50 списывается и ход завершается автоматически сервером
+          // ❌ Не дубль — штраф $50 списывается и ход завершается автоматически сервером.
+          // Не меняем canRoll, сервер сам передаст ход следующему.
           showToast(`🎲 ${die1}+${die2} — не дубль. $50 списано, ход завершён`, 'warning');
-          // Сервер должен сам завершить ход, но обновляем UI на всякий случай
-          setCanRoll(true);
           setLastDiceRoll(undefined);
         }
       } else {
         showToast(data.message || 'Ошибка броска кубиков', 'error');
-        setCanRoll(true);
       }
     });
   };
