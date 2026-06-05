@@ -165,7 +165,7 @@ const Board: React.FC<BoardProps> = ({ board, players, onCellClick }) => {
             top: '50%',
             left: '50%',
             transform: 'translate(-50%, -50%) rotate(45deg)',
-            zIndex: 200,
+            zIndex: 10,
             pointerEvents: 'none'
           }}>
             <span className="font-black border-[3px] px-2 py-1 rounded" style={{ color: '#dc143c', borderColor: '#dc143c', backgroundColor: 'rgba(255,255,255,0.92)', fontSize: 'clamp(8px, 1.6vw, 14px)', letterSpacing: '0.1em', textTransform: 'uppercase' }}>
