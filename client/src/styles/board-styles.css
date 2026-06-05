@@ -267,9 +267,7 @@
 
 /* Подсветка клетки при наведении */
 .board-cell.highlighted {
-  outline: 2px solid #d4af37;
-  outline-offset: -2px;
-  background: #fff;
+  /* Золотая обводка убрана по запросу */
 }
 
 /* Анимация движения фишки */
