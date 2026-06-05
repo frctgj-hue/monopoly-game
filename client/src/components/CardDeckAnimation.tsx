@@ -8,7 +8,7 @@ const CARD_HEIGHT = 238;
 const FAN_MIN_ANGLE = -70;
 const FAN_MAX_ANGLE = 70;
 const FAN_ANCHOR_X = '50%';
-const FAN_ANCHOR_Y = '80%';
+const FAN_ANCHOR_Y = '65%'; // 🔥 Подняли веер чуть выше
 
 interface CardDeckAnimationProps {
   onComplete?: () => void;
