@@ -11,7 +11,6 @@ const Lobby: React.FC<LobbyProps> = ({ onCreateGame, onJoinGame }) => {
   const [gameId, setGameId] = useState('');
   const [mode, setMode] = useState<'menu' | 'create' | 'join'>('menu');
   const [animating, setAnimating] = useState(false);
-  const [deckAnimDone, setDeckAnimDone] = useState(false);
 
   const switchMode = useCallback((newMode: 'menu' | 'create' | 'join') => {
     if (animating) return;
@@ -59,7 +58,7 @@ const Lobby: React.FC<LobbyProps> = ({ onCreateGame, onJoinGame }) => {
              WebkitBackdropFilter: 'blur(24px)',
            }}>
         {/* Анимация раскладывающейся колоды карт-улиц (фоновая) */}
-        <CardDeckAnimation onComplete={() => setDeckAnimDone(true)} />
+        <CardDeckAnimation />
         {/* Центрированный контент */}
         <div className="flex flex-col items-center justify-center relative z-10 w-full max-w-4xl px-4">
           {/* Логотип */}
