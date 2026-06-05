@@ -27,27 +27,29 @@ const CardDeckAnimation: React.FC<CardDeckAnimationProps> = ({ onComplete, class
       style={{ zIndex: 1, overflow: 'visible' }}
     >
       {Array.from({ length: CARD_COUNT }).map((_, index) => {
-        const center = (CARD_COUNT - 1) / 2;
-        const spacing = 55; // px между центрами карт
-        const angleStep = 8; // градусов поворота на карту
+        // 🔥 FAN LAYOUT (Claude's approach):
+        // - Все карты из одной точки (якорь: низ-центр)
+        // - Равномерный разворот: -40° до +40°
+        const totalSpread = 80; // общий угол веера в градусах
+        const angleStep = totalSpread / (CARD_COUNT - 1); // шаг между картами
+        const rotation = -totalSpread / 2 + index * angleStep; // от -40° до +40°
         
-        const horizontalOffset = (index - center) * spacing;
-        const rotation = (index - center) * angleStep;
-        
-        const delay = index * 0.05;
-        const opacity = animated ? 0.5 : 0;
-        const scale = animated ? 1 : 0.5;
+        const delay = index * 0.06;
+        const opacity = animated ? 0.45 : 0;
+        const scale = animated ? 1 : 0.4;
         const currentRotation = animated ? rotation : 0;
-        const currentOffset = animated ? horizontalOffset : 0;
+        
+        // Небольшой подъём карт от точки якоря для эффекта "веера в руке"
+        const liftY = animated ? -25 : 0;
 
         return (
           <div
             key={`chance-${index}`}
             className="absolute rounded-lg"
             style={{
-              // 🔥 ПОЗИЦИОНИРОВАНИЕ: чистые пиксели от центра экрана (50vw)
-              left: `calc(50vw - ${CARD_WIDTH / 2}px + ${currentOffset}px)`,
-              top: '28%',
+              // 🔥 ВСЕ карты в ОДНОЙ точке — якорь веера (центр экрана, 30% сверху)
+              left: '50%',
+              top: '30%',
               width: CARD_WIDTH,
               height: CARD_HEIGHT,
               zIndex: CARD_COUNT - index,
@@ -63,11 +65,12 @@ const CardDeckAnimation: React.FC<CardDeckAnimationProps> = ({ onComplete, class
               boxSizing: 'border-box',
               position: 'relative',
               overflow: 'hidden',
-              // 🔥 ТРАНСФОРМАЦИЯ: только масштаб + вращение (никаких translate!)
-              transformOrigin: 'bottom center',
+              // 🔥 КЛЮЧ К ВЕЕРУ: точка вращения — НИЗ карты (50% 100%)
+              transformOrigin: 'center bottom',
               opacity: opacity,
-              transform: `scale(${scale}) rotate(${currentRotation}deg)`,
-              transition: `opacity 0.7s ease-out ${delay}s, transform 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) ${delay}s`,
+              // 🔥 Порядок трансформов: центрируем → поднимаем → масштабируем → вращаем вокруг низа
+              transform: `translateX(-50%) translateY(${liftY}px) scale(${scale}) rotate(${currentRotation}deg)`,
+              transition: `opacity 0.8s ease-out ${delay}s, transform 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) ${delay}s`,
             }}
           >
             {/* Декоративная рамка */}
