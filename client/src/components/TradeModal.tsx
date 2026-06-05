@@ -115,9 +115,9 @@ export default function TradeModal({
                   myProperties.map(prop => (
                     <label
                       key={prop.id}
-                      className={`flex items-center p-3 rounded-lg cursor-pointer transition-all transform hover:scale-105 ${
+                      className={`flex items-center p-3 rounded-lg cursor-pointer transition-colors ${
                         offeredProperties.includes(prop.id)
-                          ? 'theme-panel border-2 border-[var(--color-accent-blue)] animate-trade-shake'
+                          ? 'theme-panel border-2 border-[var(--color-accent-blue)]'
                           : 'theme-panel-inset border-2 border-transparent hover:border-[var(--color-accent-blue)]'
                       }`}
                     >
@@ -175,9 +175,9 @@ export default function TradeModal({
                   theirProperties.map(prop => (
                     <label
                       key={prop.id}
-                      className={`flex items-center p-3 rounded-lg cursor-pointer transition-all transform hover:scale-105 ${
+                      className={`flex items-center p-3 rounded-lg cursor-pointer transition-colors ${
                         requestedProperties.includes(prop.id)
-                          ? 'theme-panel border-2 border-[var(--color-accent-green)] animate-trade-shake'
+                          ? 'theme-panel border-2 border-[var(--color-accent-green)]'
                           : 'theme-panel-inset border-2 border-transparent hover:border-[var(--color-accent-green)]'
                       }`}
                     >
