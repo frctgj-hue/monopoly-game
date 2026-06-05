@@ -1,9 +1,14 @@
 import React, { useEffect, useState } from 'react';
 
 const CHANCE_COLOR = '#ff183d';
-const CARD_COUNT = 8;
-const CARD_WIDTH = 140;
-const CARD_HEIGHT = 195;
+const CARD_COUNT = 15;
+const CARD_WIDTH = 170;
+const CARD_HEIGHT = 238;
+
+const FAN_MIN_ANGLE = -70;
+const FAN_MAX_ANGLE = 70;
+const FAN_ANCHOR_X = '50%';
+const FAN_ANCHOR_Y = '80%';
 
 interface CardDeckAnimationProps {
   onComplete?: () => void;
@@ -14,10 +19,8 @@ const CardDeckAnimation: React.FC<CardDeckAnimationProps> = ({ onComplete, class
   const [animated, setAnimated] = useState(false);
 
   useEffect(() => {
-    // Запускаем анимацию после монтирования
     const t1 = setTimeout(() => setAnimated(true), 10);
-    // Сообщаем о завершении после последней карты (~1.2 сек)
-    const t2 = setTimeout(() => onComplete?.(), 1300);
+    const t2 = setTimeout(() => onComplete?.(), 2200);
     return () => { clearTimeout(t1); clearTimeout(t2); };
   }, [onComplete]);
 
@@ -27,66 +30,70 @@ const CardDeckAnimation: React.FC<CardDeckAnimationProps> = ({ onComplete, class
       style={{ zIndex: 1, overflow: 'visible' }}
     >
       {Array.from({ length: CARD_COUNT }).map((_, index) => {
-        // 🔥 FAN LAYOUT (Claude's approach):
-        // - Все карты из одной точки (якорь: низ-центр)
-        // - Равномерный разворот: -40° до +40°
-        const totalSpread = 80; // общий угол веера в градусах
-        const angleStep = totalSpread / (CARD_COUNT - 1); // шаг между картами
-        const rotation = -totalSpread / 2 + index * angleStep; // от -40° до +40°
-        
-        const delay = index * 0.06;
-        const opacity = animated ? 0.45 : 0;
-        const scale = animated ? 1 : 0.4;
-        const currentRotation = animated ? rotation : 0;
-        
-        // Небольшой подъём карт от точки якоря для эффекта "веера в руке"
-        const liftY = animated ? -25 : 0;
+        const angle = FAN_MIN_ANGLE + (index / (CARD_COUNT - 1)) * (FAN_MAX_ANGLE - FAN_MIN_ANGLE);
+
+        const normalizedPos = (index / (CARD_COUNT - 1)) * 2 - 1;
+        const arcLift = -Math.pow(normalizedPos, 2) * 30;
+
+        const delay = index * 0.045;
+        const currentAngle = animated ? angle : 0;
+        const opacity = animated ? 1 : 0;
+        const scale = animated ? 1 : 0.5;
+        const liftY = animated ? (-40 + arcLift) : 0;
+
+        const edgeDim = 1 - Math.abs(normalizedPos) * 0.18;
+        const shadowAngleOffset = angle * 0.3;
 
         return (
           <div
             key={`chance-${index}`}
-            className="absolute rounded-lg"
             style={{
-              // 🔥 ВСЕ карты в ОДНОЙ точке — якорь веера (центр экрана, 30% сверху)
-              left: '50%',
-              top: '30%',
+              position: 'absolute',
+              left: FAN_ANCHOR_X,
+              top: FAN_ANCHOR_Y,
               width: CARD_WIDTH,
               height: CARD_HEIGHT,
-              zIndex: CARD_COUNT - index,
+              zIndex: index,
               backgroundColor: CHANCE_COLOR,
               border: '2px solid rgba(255,255,255,0.3)',
-              borderRadius: '10px',
-              boxShadow: '0 6px 25px rgba(0,0,0,0.35), inset 0 0 30px rgba(0,0,0,0.1)',
+              borderRadius: '12px',
+              boxShadow: `${shadowAngleOffset}px 8px 30px rgba(0,0,0,0.5), inset 0 0 40px rgba(0,0,0,0.12)`,
               display: 'flex',
               flexDirection: 'column',
               alignItems: 'center',
               justifyContent: 'center',
-              padding: '12px',
+              padding: '14px',
               boxSizing: 'border-box',
-              position: 'relative',
               overflow: 'hidden',
-              // 🔥 КЛЮЧ К ВЕЕРУ: точка вращения — НИЗ карты (50% 100%)
               transformOrigin: 'center bottom',
-              opacity: opacity,
-              // 🔥 Порядок трансформов: центрируем → поднимаем → масштабируем → вращаем вокруг низа
-              transform: `translateX(-50%) translateY(${liftY}px) scale(${scale}) rotate(${currentRotation}deg)`,
-              transition: `opacity 0.8s ease-out ${delay}s, transform 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) ${delay}s`,
+              opacity: opacity * edgeDim,
+              transform: `translateX(-50%) translateY(${liftY}px) scale(${scale}) rotate(${currentAngle}deg)`,
+              transition: [
+                `opacity 0.5s ease-out ${delay}s`,
+                `transform 0.75s cubic-bezier(0.34, 1.35, 0.64, 1) ${delay}s`,
+              ].join(', '),
             }}
           >
-            {/* Декоративная рамка */}
-            <div style={{ position: 'absolute', inset: '8px', border: '1px solid rgba(255,255,255,0.25)', borderRadius: '6px', pointerEvents: 'none' }} />
-            {/* Заголовок */}
-            <span style={{ position: 'absolute', top: '12px', fontSize: '9px', fontWeight: 'bold', color: 'rgba(255,255,255,0.9)', fontFamily: 'Georgia, serif', letterSpacing: '2px', textTransform: 'uppercase', textShadow: '0 1px 2px rgba(0,0,0,0.3)' }}>
+            <div style={{ position: 'absolute', inset: '9px', border: '1px solid rgba(255,255,255,0.28)', borderRadius: '7px', pointerEvents: 'none' }} />
+
+            <span style={{ position: 'absolute', top: '13px', fontSize: '10px', fontWeight: 'bold', color: 'rgba(255,255,255,0.92)', fontFamily: 'Georgia, serif', letterSpacing: '2.5px', textTransform: 'uppercase', textShadow: '0 1px 3px rgba(0,0,0,0.4)' }}>
               CHANCE
             </span>
-            {/* Знак вопроса */}
-            <span style={{ fontSize: '72px', fontWeight: '300', color: 'rgba(255,255,255,0.95)', fontFamily: '"Times New Roman", Georgia, serif', lineHeight: '1', textShadow: '0 4px 12px rgba(0,0,0,0.25)' }}>
+
+            <span style={{ position: 'absolute', bottom: '13px', fontSize: '10px', fontWeight: 'bold', color: 'rgba(255,255,255,0.92)', fontFamily: 'Georgia, serif', letterSpacing: '2.5px', textTransform: 'uppercase', textShadow: '0 1px 3px rgba(0,0,0,0.4)', transform: 'rotate(180deg)' }}>
+              CHANCE
+            </span>
+
+            <span style={{ fontSize: '90px', fontWeight: '300', color: 'rgba(255,255,255,0.95)', fontFamily: '"Times New Roman", Georgia, serif', lineHeight: '1', textShadow: '0 5px 16px rgba(0,0,0,0.3)', userSelect: 'none' }}>
               ?
             </span>
-            {/* Полоска снизу */}
-            <div style={{ position: 'absolute', bottom: '12px', width: '40px', height: '3px', background: 'rgba(255,255,255,0.4)', borderRadius: '2px' }} />
-            {/* Блик */}
-            <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(135deg, rgba(255,255,255,0.15) 0%, transparent 50%, rgba(0,0,0,0.1) 100%)', pointerEvents: 'none', borderRadius: '10px' }} />
+
+            <div style={{ position: 'absolute', top: '10px', left: '10px', width: '14px', height: '14px', borderTop: '2px solid rgba(255,255,255,0.4)', borderLeft: '2px solid rgba(255,255,255,0.4)', borderRadius: '2px 0 0 0' }} />
+            <div style={{ position: 'absolute', top: '10px', right: '10px', width: '14px', height: '14px', borderTop: '2px solid rgba(255,255,255,0.4)', borderRight: '2px solid rgba(255,255,255,0.4)', borderRadius: '0 2px 0 0' }} />
+            <div style={{ position: 'absolute', bottom: '10px', left: '10px', width: '14px', height: '14px', borderBottom: '2px solid rgba(255,255,255,0.4)', borderLeft: '2px solid rgba(255,255,255,0.4)', borderRadius: '0 0 0 2px' }} />
+            <div style={{ position: 'absolute', bottom: '10px', right: '10px', width: '14px', height: '14px', borderBottom: '2px solid rgba(255,255,255,0.4)', borderRight: '2px solid rgba(255,255,255,0.4)', borderRadius: '0 0 2px 0' }} />
+
+            <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(135deg, rgba(255,255,255,0.18) 0%, transparent 45%, rgba(0,0,0,0.12) 100%)', pointerEvents: 'none', borderRadius: '12px' }} />
           </div>
         );
       })}
