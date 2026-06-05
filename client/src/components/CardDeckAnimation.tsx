@@ -28,23 +28,25 @@ const CardDeckAnimation: React.FC<CardDeckAnimationProps> = ({ onComplete, class
     >
       {Array.from({ length: CARD_COUNT }).map((_, index) => {
         const center = (CARD_COUNT - 1) / 2;
-        const totalSpread = 60; // общий угол разворота веера в градусах
-        const angleStep = totalSpread / (CARD_COUNT - 1);
-        const rotation = (index - center) * angleStep; // угол: от -30° до +30°
+        const spacing = 55; // px между центрами карт
+        const angleStep = 8; // градусов поворота на карту
         
-        // Анимация: opacity, scale и rotation
+        const horizontalOffset = (index - center) * spacing;
+        const rotation = (index - center) * angleStep;
+        
         const delay = index * 0.05;
-        const opacity = animated ? 0.45 : 0;
-        const scale = animated ? 1 : 0.4;
+        const opacity = animated ? 0.5 : 0;
+        const scale = animated ? 1 : 0.5;
         const currentRotation = animated ? rotation : 0;
+        const currentOffset = animated ? horizontalOffset : 0;
 
         return (
           <div
             key={`chance-${index}`}
             className="absolute rounded-lg"
             style={{
-              // 🔥 ВСЕ карты в одной точке центра — веер создаётся ТОЛЬКО через transform + transform-origin
-              left: '50%',
+              // 🔥 ПОЗИЦИОНИРОВАНИЕ: чистые пиксели от центра экрана (50vw)
+              left: `calc(50vw - ${CARD_WIDTH / 2}px + ${currentOffset}px)`,
               top: '28%',
               width: CARD_WIDTH,
               height: CARD_HEIGHT,
@@ -61,11 +63,10 @@ const CardDeckAnimation: React.FC<CardDeckAnimationProps> = ({ onComplete, class
               boxSizing: 'border-box',
               position: 'relative',
               overflow: 'hidden',
-              // 🔥 Ключ к вееру: точка вращения — НИЗ карты, чтобы они "раскрывались" из одной точки
+              // 🔥 ТРАНСФОРМАЦИЯ: только масштаб + вращение (никаких translate!)
               transformOrigin: 'bottom center',
               opacity: opacity,
-              // 🔥 Порядок трансформов ВАЖЕН: сначала центрируем, потом вращаем вокруг низа
-              transform: `translate(-50%, -100%) scale(${scale}) rotate(${currentRotation}deg)`,
+              transform: `scale(${scale}) rotate(${currentRotation}deg)`,
               transition: `opacity 0.7s ease-out ${delay}s, transform 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) ${delay}s`,
             }}
           >
