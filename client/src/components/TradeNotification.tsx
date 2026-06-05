@@ -30,15 +30,15 @@ export default function TradeNotification({
   const requestedProps = trade.requestedProperties.map(id => board[id]);
 
   return (
-    <div className="fixed top-20 right-4 z-40 bg-white rounded-xl shadow-2xl border-2 border-blue-300 p-4 max-w-md animate-slide-in animate-trade-glow">
+    <div className="fixed top-20 right-4 z-40 theme-panel p-4 max-w-md animate-slide-in-right">
       <div className="flex items-start justify-between mb-3">
         <div className="flex items-center gap-2">
           <span className="text-2xl animate-bounce">🤝</span>
           <div>
-            <h3 className="font-bold text-gray-800">
+            <h3 className="font-bold text-[var(--color-text-primary)]">
               {isForMe ? 'Предложение обмена' : 'Ваше предложение'}
             </h3>
-            <p className="text-sm text-gray-600">
+            <p className="text-sm theme-text-muted">
               {isForMe ? `От: ${fromPlayer?.name}` : `Для: ${toPlayer?.name}`}
             </p>
           </div>
@@ -47,20 +47,20 @@ export default function TradeNotification({
 
       <div className="space-y-3 mb-4">
         {/* Что предлагают */}
-        <div className="bg-blue-50 rounded-lg p-3">
-          <p className="text-xs font-semibold text-blue-800 mb-2">
+        <div className="theme-panel-inset p-3 border-l-4 border-[var(--color-accent-blue)]">
+          <p className="text-xs font-semibold text-[var(--color-accent-blue)] mb-2">
             {isForMe ? 'Вам предлагают:' : 'Вы предлагаете:'}
           </p>
           {trade.offeredMoney > 0 && (
-            <div className="text-sm text-gray-700 mb-1">💰 ${trade.offeredMoney}</div>
+            <div className="text-sm text-[var(--color-text-primary)] mb-1">💰 ${trade.offeredMoney}</div>
           )}
           {offeredProps.length > 0 && (
             <div className="space-y-1">
               {offeredProps.map(prop => (
-                <div key={prop.id} className="text-sm text-gray-700 flex items-center gap-2">
+                <div key={prop.id} className="text-sm text-[var(--color-text-primary)] flex items-center gap-2">
                   <div
                     className="w-3 h-3 rounded-full"
-                    style={{ backgroundColor: prop.color === 'special' ? '#gray' : prop.color }}
+                    style={{ backgroundColor: prop.color === 'special' ? '#888' : prop.color }}
                   />
                   {prop.name}
                 </div>
@@ -68,25 +68,25 @@ export default function TradeNotification({
             </div>
           )}
           {trade.offeredMoney === 0 && offeredProps.length === 0 && (
-            <p className="text-sm text-gray-500">Ничего</p>
+            <p className="text-sm theme-text-muted">Ничего</p>
           )}
         </div>
 
         {/* Что запрашивают */}
-        <div className="bg-green-50 rounded-lg p-3">
-          <p className="text-xs font-semibold text-green-800 mb-2">
+        <div className="theme-panel-inset p-3 border-l-4 border-[var(--color-accent-green)]">
+          <p className="text-xs font-semibold text-[var(--color-accent-green)] mb-2">
             {isForMe ? 'За:' : 'Вы запрашиваете:'}
           </p>
           {trade.requestedMoney > 0 && (
-            <div className="text-sm text-gray-700 mb-1">💰 ${trade.requestedMoney}</div>
+            <div className="text-sm text-[var(--color-text-primary)] mb-1">💰 ${trade.requestedMoney}</div>
           )}
           {requestedProps.length > 0 && (
             <div className="space-y-1">
               {requestedProps.map(prop => (
-                <div key={prop.id} className="text-sm text-gray-700 flex items-center gap-2">
+                <div key={prop.id} className="text-sm text-[var(--color-text-primary)] flex items-center gap-2">
                   <div
                     className="w-3 h-3 rounded-full"
-                    style={{ backgroundColor: prop.color === 'special' ? '#gray' : prop.color }}
+                    style={{ backgroundColor: prop.color === 'special' ? '#888' : prop.color }}
                   />
                   {prop.name}
                 </div>
@@ -94,7 +94,7 @@ export default function TradeNotification({
             </div>
           )}
           {trade.requestedMoney === 0 && requestedProps.length === 0 && (
-            <p className="text-sm text-gray-500">Ничего</p>
+            <p className="text-sm theme-text-muted">Ничего</p>
           )}
         </div>
       </div>
@@ -103,13 +103,14 @@ export default function TradeNotification({
         <div className="flex gap-2">
           <button
             onClick={() => onReject(trade.id)}
-            className="flex-1 px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg font-semibold transition-all transform hover:scale-105 active:scale-95"
+            className="flex-1 px-4 py-2 rounded-lg font-semibold transition-all transform hover:scale-105 active:scale-95 text-white"
+            style={{ background: 'var(--color-accent-red)' }}
           >
             Отклонить
           </button>
           <button
             onClick={() => onAccept(trade.id)}
-            className="flex-1 px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded-lg font-semibold transition-all transform hover:scale-105 active:scale-95 animate-pulse-glow"
+            className="flex-1 px-4 py-2 theme-btn theme-btn-secondary rounded-lg font-semibold transition-all transform hover:scale-105 active:scale-95"
           >
             Принять
           </button>
@@ -118,7 +119,7 @@ export default function TradeNotification({
 
       {isFromMe && (
         <div className="text-center">
-          <p className="text-sm text-gray-600 mb-2 animate-pulse">Ожидание ответа...</p>
+          <p className="text-sm theme-text-muted mb-2 animate-pulse">Ожидание ответа...</p>
         </div>
       )}
     </div>

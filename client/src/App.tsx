@@ -84,7 +84,11 @@ function App() {
           if (response.success && response.game) {
             console.log('✅ Состояние игры восстановлено, новый socket.id:', socket.id);
             setGameState(response.game);
-            setMyPlayerId(originalPlayerId); // Используем оригинальный ID
+            // ВАЖНО: используем новый socket.id после переподключения
+            const newSocketId = socket.id || '';
+            setMyPlayerId(newSocketId);
+            // Обновляем originalPlayerId на новый socket.id для следующих переподключений
+            setOriginalPlayerId(newSocketId);
             setPhase('playing');
           } else {
             console.error('❌ Не удалось восстановить игру:', response.message);
@@ -649,18 +653,56 @@ function App() {
 
   if (!connected) {
     return (
-      <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: '#2d8659' }}>
-        <div className="backdrop-blur-glass rounded-3xl shadow-2xl p-10 animate-scale-in">
+      <div 
+        className="min-h-screen flex items-center justify-center"
+        style={{ background: '#1c1c1e' }}
+      >
+        <div 
+          className="rounded-2xl p-10 animate-scale-in"
+          style={{
+            background: '#252528',
+            boxShadow: '12px 12px 24px rgba(0,0,0,0.4), -12px -12px 24px rgba(60,60,60,0.1)',
+          }}
+        >
           <div className="text-center">
-            <div className="text-6xl mb-4 animate-spin">🎲</div>
-            <div className="text-2xl font-bold text-gray-800">
-              {gameState ? 'Переподключение...' : 'Подключение к серверу...'}
+            {/* Текст */}
+            <div 
+              className="text-2xl font-light tracking-widest mb-2"
+              style={{ color: '#d4af37' }}
+            >
+              {gameState ? 'RECONNECTING' : 'CONNECTING'}
             </div>
+            
             {gameState && (
-              <div className="text-sm text-gray-600 mt-2">
-                Восстанавливаем состояние игры...
+              <div className="text-sm text-gray-500 mt-2 tracking-wider">
+                Restoring game state...
               </div>
             )}
+            
+            {/* Анимированные точки */}
+            <div className="flex justify-center gap-2 mt-6">
+              <div 
+                className="w-2 h-2 rounded-full animate-pulse"
+                style={{ 
+                  background: '#d4af37',
+                  animationDelay: '0s'
+                }}
+              ></div>
+              <div 
+                className="w-2 h-2 rounded-full animate-pulse"
+                style={{ 
+                  background: '#d4af37',
+                  animationDelay: '0.2s'
+                }}
+              ></div>
+              <div 
+                className="w-2 h-2 rounded-full animate-pulse"
+                style={{ 
+                  background: '#d4af37',
+                  animationDelay: '0.4s'
+                }}
+              ></div>
+            </div>
           </div>
         </div>
       </div>
@@ -668,7 +710,7 @@ function App() {
   }
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen" style={{ background: 'var(--color-bg-primary)' }}>
       {/* Уведомления о торговле */}
       {gameState?.tradeOffers
         .filter(trade => trade.status === 'pending')
@@ -702,7 +744,14 @@ function App() {
         )}
 
         {phase === 'playing' && gameState && (
-          <div className="flex justify-center" style={{ backgroundColor: '#2d8659', paddingTop: '20px', paddingBottom: '20px', minHeight: '1250px' }}>
+          <div className="flex justify-center" style={{
+            paddingTop: '20px',
+            paddingBottom: '20px',
+            minHeight: '1250px',
+            background: 'linear-gradient(135deg, rgba(75, 75, 80, 0.6) 0%, rgba(42, 42, 46, 0.7) 100%)',
+            backdropFilter: 'blur(24px)',
+            WebkitBackdropFilter: 'blur(24px)',
+          }}>
             <div className="flex items-start" style={{ gap: '20px' }}>
               {/* Доска - игровое поле (независимый блок) */}
               <div className="w-[1000px] h-[1000px] flex-shrink-0">
@@ -758,7 +807,8 @@ function App() {
 
                 {/* Модальное окно налога */}
                 {showTaxModal && gameState && (
-                  <div className="bg-white rounded-lg shadow-2xl border-4 border-red-600 p-6">
+                  <div className="game-modal-fixed p-6">
+                    <h2 className="game-modal-title">Налог</h2>
                     <TaxModal
                       taxType={showTaxModal.type}
                       amount={showTaxModal.amount}
@@ -771,7 +821,8 @@ function App() {
 
                 {/* Модальное окно ренты */}
                 {showRentModal && gameState && (
-                  <div className="bg-white rounded-lg shadow-2xl border-4 border-red-600">
+                  <div className="game-modal-fixed">
+                    <h2 className="game-modal-title">Оплата аренды</h2>
                     <RentModal
                       property={gameState.board[showRentModal.propertyId]}
                       rent={showRentModal.rent}
@@ -803,7 +854,7 @@ function App() {
 
                 {/* Модальное окно карточки */}
                 {currentCard && gameState && (
-                  <div className="bg-white rounded-lg shadow-2xl border-4 border-black">
+                  <div className="game-modal-fixed">
                     <CardModal
                       card={currentCard}
                       playerMoney={gameState.players.find(p => p.id === myPlayerId)?.money || 0}
@@ -824,14 +875,15 @@ function App() {
 
                 {/* Модальное окно торговли */}
                 {showTradeModal && (
-                  <div className="bg-white rounded-lg shadow-2xl border-4 border-black p-4 max-h-[900px] overflow-y-auto">
+                  <div className="game-modal-fixed p-4">
                     <div className="flex items-center justify-between mb-4">
-                      <h2 className="text-xl font-black uppercase monopoly-title">
+                      <h2 className="text-xl font-black uppercase monopoly-title" style={{ color: 'var(--color-accent-gold)' }}>
                         Торговля
                       </h2>
                       <button
                         onClick={() => setShowTradeModal(false)}
-                        className="text-gray-800 hover:text-black font-bold text-2xl leading-none"
+                        className="hover:text-[var(--color-accent-gold)] font-bold text-2xl leading-none transition-colors"
+                        style={{ color: 'var(--color-text-secondary)' }}
                       >
                         ×
                       </button>
@@ -848,7 +900,7 @@ function App() {
 
                 {/* Модальное окно управления недвижимостью */}
                 {showPropertyManagement && (
-                  <div className="bg-white rounded-lg shadow-2xl border-4 border-black max-h-[900px] overflow-y-auto">
+                  <div className="game-modal-fixed p-4">
                     <PropertyManagement
                       properties={gameState.board}
                       player={gameState.players.find(p => p.id === myPlayerId)!}
@@ -881,7 +933,7 @@ function App() {
 
                 {/* Анимация победы */}
                 {winner && (
-                  <div className="bg-white rounded-lg shadow-2xl border-4 border-yellow-500">
+                  <div className="game-modal-fixed p-6 border-2 border-[var(--color-accent-gold)]">
                     <VictoryAnimation
                       winner={winner}
                       onClose={() => {
@@ -895,7 +947,7 @@ function App() {
 
                 {/* Анимация банкротства */}
                 {bankruptPlayer && (
-                  <div className="bg-white rounded-lg shadow-2xl border-4 border-red-600">
+                  <div className="game-modal-fixed p-6 border-2 border-[var(--color-accent-red)]">
                     <BankruptcyAnimation
                       player={bankruptPlayer}
                       onComplete={() => setBankruptPlayer(null)}
@@ -905,7 +957,7 @@ function App() {
 
                 {/* Модальное окно покупки недвижимости */}
                 {selectedProperty !== null && (
-                  <div className="bg-white rounded-lg shadow-2xl border-4 border-black p-4">
+                  <div className="game-modal-fixed p-4">
                     <PropertyModal
                       property={gameState.board[selectedProperty]}
                       playerMoney={gameState.players.find(p => p.id === myPlayerId)?.money || 0}
@@ -920,15 +972,17 @@ function App() {
               {/* Список игроков - справа от центральной области (независимый блок) */}
               <div className="w-80 flex-shrink-0 space-y-4">
                 {/* Таблица игроков */}
-                <PlayersList
-                  players={gameState.players}
-                  currentPlayerId={gameState.players[gameState.currentPlayerIndex]?.id || ''}
-                  myPlayerId={myPlayerId}
-                />
+                <div className="game-panel-fixed">
+                  <PlayersList
+                    players={gameState.players}
+                    currentPlayerId={gameState.players[gameState.currentPlayerIndex]?.id || ''}
+                    myPlayerId={myPlayerId}
+                  />
+                </div>
 
                 {/* Модальное окно информации о недвижимости */}
                 {showPropertyInfo !== null && (
-                  <div className="bg-white rounded-lg shadow-2xl border-4 border-black">
+                  <div className="game-modal-fixed p-4">
                     <PropertyInfoModal
                       property={gameState.board[showPropertyInfo]}
                       onMortgage={() => {
@@ -955,8 +1009,8 @@ function App() {
 
                 {/* Панель управления для текущего игрока */}
                 {gameState.players[gameState.currentPlayerIndex]?.id === myPlayerId && (
-                  <div className="bg-white rounded-lg shadow-lg border-2 border-black p-4">
-                    <h3 className="text-sm font-black uppercase mb-3 text-center monopoly-title">
+                  <div className="game-panel-fixed">
+                    <h3 className="game-modal-title mb-3">
                       Ваш ход
                     </h3>
 

@@ -6,11 +6,12 @@ export class GameService {
   private games: Map<string, GameState> = new Map();
 
   createGame(gameId: string): GameState {
+    const normalizedId = gameId.toLowerCase();
     const game: GameState = {
-      id: gameId,
+      id: normalizedId,
       players: [],
       currentPlayerIndex: 0,
-      board: JSON.parse(JSON.stringify(BOARD)), // Глубокое копирование
+      board: JSON.parse(JSON.stringify(BOARD)),
       started: false,
       finished: false,
       winner: null,
@@ -20,12 +21,12 @@ export class GameService {
       communityIndex: 0,
       tradeOffers: [],
     };
-    this.games.set(gameId, game);
+    this.games.set(normalizedId, game);
     return game;
   }
 
   getGame(gameId: string): GameState | undefined {
-    return this.games.get(gameId);
+    return this.games.get(gameId.toLowerCase());
   }
 
   addPlayer(gameId: string, playerId: string, playerName: string): Player | null {

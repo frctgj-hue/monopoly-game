@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Monopoly - Запуск</title>
+  <meta http-equiv="refresh" content="2;url=http://127.0.0.1:5173/">
+  <style>
+    body { 
+      font-family: system-ui, sans-serif; 
+      background: #1c1c1e; 
+      color: #d4af37; 
+      display: flex; 
+      align-items: center; 
+      justify-content: center; 
+      height: 100vh; 
+      margin: 0; 
+    }
+    .card {
+      background: #252528;
+      padding: 2rem;
+      border-radius: 1.5rem;
+      text-align: center;
+      box-shadow: 8px 8px 16px rgba(0,0,0,0.4);
+      border: 1px solid #3a3a3c;
+    }
+    a {
+      display: inline-block;
+      margin-top: 1rem;
+      padding: 0.75rem 1.5rem;
+      background: #d4af37;
+      color: #1c1c1e;
+      text-decoration: none;
+      border-radius: 0.75rem;
+      font-weight: 600;
+    }
+    a:hover { filter: brightness(1.1); }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1 style="margin:0 0 1rem 0; letter-spacing:0.3em; text-transform:uppercase;">Monopoly</h1>
+    <p>Перенаправление на игру...</p>
+    <a href="http://127.0.0.1:5173/" target="_blank">Открыть игру вручную</a>
+  </div>
+  <script>
+    // Попытка открыть в новом окне, если редирект не сработал
+    setTimeout(() => {
+      window.open('http://127.0.0.1:5173/', '_blank');
+    }, 2500);
+  </script>
+</body>
+</html>

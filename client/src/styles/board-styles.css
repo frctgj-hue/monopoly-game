@@ -1,0 +1,373 @@
+/* ===== MONOPOLY BOARD — Premium Dark Theme ===== */
+/* Фон доски: темный графит с матовым эффектом */
+/* Клетки улиц: не трогаем (цвета через .property-color-bar и базовый .board-cell) */
+
+/* Обертка для центрирования */
+.board-wrapper {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: transparent;
+}
+
+/* Контейнер игрового поля — Темный матовый */
+.board-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #252528;
+  border-radius: 16px;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  border: 8px solid #8a8a8e !important;
+  outline: 2px solid #aaaaaa !important;
+  padding: 12px;
+  width: 100%;
+  max-width: 850px;
+  aspect-ratio: 1 / 1;
+  box-sizing: border-box;
+}
+
+/* Внутренняя сетка */
+.board-inner {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(11, 1fr);
+  grid-template-rows: repeat(11, 1fr);
+  gap: 0;
+  background: transparent;
+  width: 100%;
+  height: 100%;
+  border-collapse: collapse;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+/* Центральная область — Темный матовый */
+.board-center {
+  grid-column: 2 / 11;
+  grid-row: 2 / 11;
+  background: radial-gradient(circle at center, #252528 0%, #1a1a1c 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  border: none !important;
+}
+
+/* Логотип MONOPOLY в центре — Золотой стиль */
+.board-center-logo {
+  font-family: 'Arial Black', 'Impact', sans-serif;
+  font-size: clamp(2rem, 5vw, 4rem);
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: #d4af37; /* Золотой цвет */
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5), 0 0 10px rgba(212, 175, 55, 0.3);
+  transform: rotate(-12deg);
+  position: relative;
+  z-index: 2;
+  white-space: nowrap;
+}
+
+/* Подпись в центре */
+.board-center-subtitle {
+  font-family: 'Georgia', serif;
+  font-size: clamp(0.7rem, 1.5vw, 1rem);
+  color: #888;
+  text-transform: uppercase;
+  letter-spacing: 0.3em;
+  margin-top: 8px;
+  position: relative;
+  z-index: 2;
+}
+
+/* Декоративные линии в центре */
+.board-center::before,
+.board-center::after {
+  content: '';
+  position: absolute;
+  background: #d4af37;
+  opacity: 0.1;
+  z-index: 1;
+}
+
+.board-center::before {
+  width: 300px;
+  height: 1px;
+  top: 35%;
+  left: 50%;
+  transform: translateX(-50%) rotate(45deg);
+}
+
+.board-center::after {
+  width: 300px;
+  height: 1px;
+  top: 65%;
+  left: 50%;
+  transform: translateX(-50%) rotate(-45deg);
+}
+
+/* ===== КЛЕТКИ ===== */
+
+/* Базовая клетка (улицы) — Оставляем светлой для контраста */
+.board-cell {
+  position: relative;
+  background: #f5f5f5; /* Светлый фон */
+  border: 1px solid #333;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: all 0.2s ease;
+  overflow: visible;
+  box-sizing: border-box;
+}
+
+.board-cell:hover {
+  background: #fff;
+  z-index: 10;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Угловые клетки (Special) — Тёмный стиль с золотом */
+.board-cell.corner {
+  background: linear-gradient(135deg, #2a2a2e 0%, #1a1a1c 100%);
+  justify-content: center;
+  padding: 6px;
+  border-color: #444;
+}
+
+.board-cell.corner .cell-name,
+.board-cell.corner .cell-price,
+.board-cell.corner .cell-icon {
+  color: #ffffff !important; /* Белый текст в угловых клетках */
+  font-size: clamp(8px, 1.1vw, 12px);
+}
+
+/* Стартовая клетка */
+.board-cell.corner-start {
+  background: linear-gradient(135deg, #333338 0%, #222225 100%);
+  border-bottom: 2px solid #d4af37;
+}
+
+/* Тюрьма */
+.board-cell.corner-jail {
+  background: linear-gradient(135deg, #2a2a2e 0%, #1a1a1c 100%);
+}
+
+/* Бесплатная парковка */
+.board-cell.corner-parking {
+  background: linear-gradient(135deg, #2a2a2e 0%, #1a1a1c 100%);
+}
+
+/* Отправляйся в тюрьму */
+.board-cell.corner-gotojail {
+  background: linear-gradient(135deg, #3a1a1a 0%, #2a1111 100%);
+  border-top: 2px solid #dc3545;
+}
+
+.board-cell.corner-gotojail .cell-name {
+  color: #ff6b6b;
+}
+
+.board-cell.corner-gotojail .cell-icon {
+  color: #ff6b6b;
+}
+
+/* Цветная полоска собственности */
+.property-color-bar {
+  width: 100%;
+  height: 18px;
+  border-bottom: 2px solid #1a1a1a;
+  flex-shrink: 0;
+}
+
+/* Полоска для ж/д (чёрная с иконкой) */
+.property-color-bar.railroad {
+  background: #1a1a1a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 10px;
+}
+
+/* Название клетки */
+.cell-name {
+  font-family: 'Arial', sans-serif;
+  font-weight: 700;
+  font-size: clamp(6px, 0.9vw, 10px);
+  text-transform: uppercase;
+  text-align: center;
+  color: #1a1a1a;
+  line-height: 1.2;
+  padding: 2px 3px;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  word-break: break-word;
+  overflow: hidden;
+}
+
+/* Цена */
+.cell-price {
+  font-family: 'Arial', sans-serif;
+  font-weight: 600;
+  font-size: clamp(6px, 0.8vw, 9px);
+  color: #4a4a4a;
+  text-align: center;
+  padding: 1px 3px 3px;
+  white-space: nowrap;
+}
+
+/* Иконка специальных клеток */
+.cell-icon {
+  font-size: clamp(10px, 1.5vw, 16px);
+  color: #1a1a1a;
+  margin: 4px 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ===== ФИШКИ ИГРОКОВ ===== */
+
+/* Контейнер фишек на клетке */
+.cell-tokens {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px;
+  justify-content: center;
+  align-items: center;
+  padding: 2px;
+  position: relative;
+  z-index: 20;
+  min-height: 20px;
+  margin-top: auto;
+}
+
+/* Индикатор владельца */
+.cell-owner-indicator {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: var(--owner-color, #d4af37);
+  z-index: 5;
+}
+
+/* Подсветка клетки при наведении */
+.board-cell.highlighted {
+  outline: 2px solid #d4af37;
+  outline-offset: -2px;
+  background: #fff;
+}
+
+/* Анимация движения фишки */
+.board-cell.active-turn {
+  animation: cellPulse 1s ease-in-out infinite;
+}
+
+@keyframes cellPulse {
+  0%, 100% { outline: 2px solid transparent; }
+  50% { outline: 2px solid #d4af37; outline-offset: -2px; }
+}
+
+/* ===== ЦВЕТА ГРУПП НЕДВИЖИМОСТИ ===== */
+.property-color-bar.brown { background: #8B4513; }
+.property-color-bar.lightblue { background: #87CEEB; }
+.property-color-bar.pink { background: #FF1493; }
+.property-color-bar.orange { background: #FF8C00; }
+.property-color-bar.red { background: #DC143C; }
+.property-color-bar.yellow { background: #FFD700; }
+.property-color-bar.green { background: #228B22; }
+.property-color-bar.darkblue { background: #00008B; }
+
+/* ===== АДАПТИВНОСТЬ ===== */
+
+:root {
+  --cell-size: clamp(48px, 7vw, 72px);
+}
+
+/* Обертка ячейки */
+.board-cell-wrapper {
+  display: flex;
+  align-items: stretch;
+  justify-content: stretch;
+}
+
+.board-inner {
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+}
+
+.board-cell {
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  border: 1px solid #1a1a1a;
+}
+
+/* Центральная клетка */
+.board-center {
+  border: none !important;
+  background: #e8e4d9 !important;
+}
+
+/* Маленькие экраны */
+@media (max-width: 900px) {
+  :root {
+    --cell-size: clamp(36px, 9vw, 48px);
+  }
+  
+  .board-container {
+    padding: 6px;
+  }
+  
+  .board-center-logo {
+    font-size: clamp(1.2rem, 6vw, 2rem);
+  }
+  
+  .board-center-subtitle {
+    font-size: clamp(0.5rem, 2vw, 0.7rem);
+    letter-spacing: 0.15em;
+  }
+  
+  .cell-name {
+    font-size: clamp(5px, 1.2vw, 8px);
+  }
+  
+  .cell-price {
+    font-size: clamp(5px, 1vw, 7px);
+  }
+}
+
+/* Очень маленькие экраны */
+@media (max-width: 600px) {
+  :root {
+    --cell-size: clamp(28px, 11vw, 40px);
+  }
+  
+  .property-color-bar {
+    height: 12px;
+  }
+  
+  .cell-icon {
+    font-size: clamp(8px, 2.5vw, 12px);
+    margin: 2px 0;
+  }
+  
+  .cell-tokens {
+    min-height: 14px;
+  }
+}

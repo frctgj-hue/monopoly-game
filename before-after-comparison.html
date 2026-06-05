@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monopoly - До и После</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #0a0a0a;
+            color: #ffffff;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            font-size: 3.5rem;
+            font-weight: 300;
+            letter-spacing: 0.3em;
+            text-align: center;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #d4af37 0%, #f4d03f 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #888;
+            font-size: 1.1rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            margin-bottom: 60px;
+        }
+
+        .comparison-section {
+            margin-bottom: 100px;
+        }
+
+        .section-title {
+            font-size: 2rem;
+            font-weight: 300;
+            letter-spacing: 0.2em;
+            margin-bottom: 40px;
+            text-align: center;
+            color: #d4af37;
+        }
+
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+
+        .comparison-item {
+            border-radius: 20px;
+            padding: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .before {
+            background: linear-gradient(135deg, #1e3a8a 0%, #7c3aed 100%);
+            border: 2px solid rgba(239, 68, 68, 0.3);
+        }
+
+        .after {
+            background: #252528;
+            border: 2px solid rgba(212, 175, 55, 0.3);
+            box-shadow: 
+                8px 8px 16px rgba(0,0,0,0.4),
+                -8px -8px 16px rgba(60,60,60,0.1);
+        }
+
+        .label {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            font-weight: 500;
+        }
+
+        .label-before {
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+            border: 1px solid #ef4444;
+        }
+
+        .label-after {
+            background: rgba(212, 175, 55, 0.2);
+            color: #d4af37;
+            border: 1px solid #d4af37;
+        }
+
+        .mock-card {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .mock-card.before-style {
+            background: white;
+            color: #1f2937;
+        }
+
+        .mock-card.after-style {
+            background: #1c1c1e;
+            color: #d4af37;
+            box-shadow: inset 4px 4px 8px rgba(0,0,0,0.5);
+        }
+
+        .mock-button {
+            padding: 12px 30px;
+            border-radius: 10px;
+            border: none;
+            font-size: 0.9rem;
+            letter-spacing: 0.1em;
+            cursor: pointer;
+            margin: 10px 5px;
+            transition: all 0.3s;
+        }
+
+        .mock-button.before-style {
+            background: linear-gradient(to right, #3b82f6, #8b5cf6);
+            color: white;
+        }
+
+        .mock-button.after-style {
+            background: #d4af37;
+            color: #1c1c1e;
+            box-shadow: 0 4px 12px rgba(212, 175, 55, 0.3);
+        }
+
+        .mock-button.after-style:hover {
+            transform: scale(1.05);
+        }
+
+        .feature-list {
+            list-style: none;
+            padding: 20px 0;
+        }
+
+        .feature-list li {
+            padding: 10px 0;
+            padding-left: 30px;
+            position: relative;
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        .feature-list.before-list li:before {
+            content: "×";
+            position: absolute;
+            left: 0;
+            color: #ef4444;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        .feature-list.after-list li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #d4af37;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 40px;
+        }
+
+        .stat-card {
+            background: #252528;
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            box-shadow: 4px 4px 12px rgba(0,0,0,0.4);
+            border: 1px solid rgba(212, 175, 55, 0.1);
+        }
+
+        .stat-value {
+            font-size: 3rem;
+            font-weight: 300;
+            color: #d4af37;
+            margin-bottom: 10px;
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: #888;
+        }
+
+        .visual-demo {
+            background: #1c1c1e;
+            border-radius: 20px;
+            padding: 40px;
+            margin-top: 40px;
+        }
+
+        .demo-title {
+            font-size: 1.2rem;
+            font-weight: 300;
+            letter-spacing: 0.15em;
+            color: #d4af37;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .color-comparison {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .color-box {
+            width: 120px;
+            height: 120px;
+            border-radius: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+
+        .color-label {
+            font-size: 0.7rem;
+            margin-top: 10px;
+            letter-spacing: 0.1em;
+        }
+
+        .arrow {
+            font-size: 3rem;
+            color: #d4af37;
+            text-align: center;
+            margin: 40px 0;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 0.5;
+                transform: scale(1);
+            }
+            50% {
+                opacity: 1;
+                transform: scale(1.1);
+            }
+        }
+
+        .highlight-box {
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.1) 0%, rgba(212, 175, 55, 0.05) 100%);
+            border: 2px solid rgba(212, 175, 55, 0.3);
+            border-radius: 15px;
+            padding: 30px;
+            margin-top: 40px;
+        }
+
+        .highlight-title {
+            font-size: 1.5rem;
+            font-weight: 300;
+            letter-spacing: 0.2em;
+            color: #d4af37;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        @media (max-width: 768px) {
+            .comparison-grid {
+                grid-template-columns: 1fr;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            .section-title {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>MONOPOLY GAME</h1>
+        <div class="subtitle">Design Evolution • Before & After</div>
+
+        <!-- Общее сравнение -->
+        <div class="comparison-section">
+            <div class="section-title">📊 Общее сравнение</div>
+            
+            <div class="comparison-grid">
+                <div class="comparison-item before">
+                    <div class="label label-before">❌ До</div>
+                    <h3 style="font-size: 1.5rem; margin-bottom: 20px; font-weight: 300;">Старый дизайн</h3>
+                    <ul class="feature-list before-list">
+                        <li>Яркие синие и фиолетовые цвета</li>
+                        <li>Белый фон карточек</li>
+                        <li>Простые плоские тени</li>
+                        <li>Базовые анимации</li>
+                        <li>Стандартная типографика</li>
+                        <li>Нет единого стиля</li>
+                    </ul>
+                    <div class="mock-card before-style">
+                        <div style="font-weight: bold; margin-bottom: 10px;">Player Name</div>
+                        <div style="font-size: 0.9rem; color: #6b7280;">💰 $1500 • 🏠 3</div>
+                        <button class="mock-button before-style">Roll Dice</button>
+                    </div>
+                </div>
+
+                <div class="comparison-item after">
+                    <div class="label label-after">✓ После</div>
+                    <h3 style="font-size: 1.5rem; margin-bottom: 20px; font-weight: 300; color: #d4af37;">Новый дизайн</h3>
+                    <ul class="feature-list after-list">
+                        <li>Премиум золотой цвет (#d4af37)</li>
+                        <li>Темный фон (#252528)</li>
+                        <li>Неоморфные объемные тени</li>
+                        <li>Плавные анимации (fadeIn, float, glow)</li>
+                        <li>Тонкая типографика (font-light)</li>
+                        <li>Единая дизайн-система</li>
+                    </ul>
+                    <div class="mock-card after-style">
+                        <div style="font-weight: 300; margin-bottom: 10px; letter-spacing: 0.1em;">PLAYER NAME</div>
+                        <div style="font-size: 0.9rem; color: #888;">💰 $1500 • 🏠 3</div>
+                        <button class="mock-button after-style">ROLL DICE</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="arrow">↓</div>
+
+        <!-- Цветовая палитра -->
+        <div class="comparison-section">
+            <div class="section-title">🎨 Цветовая трансформация</div>
+            
+            <div class="visual-demo">
+                <div class="demo-title">До</div>
+                <div class="color-comparison">
+                    <div class="color-box" style="background: #3b82f6;">
+                        <div class="color-label" style="color: white;">Синий</div>
+                        <div style="font-family: monospace; font-size: 0.7rem; color: rgba(255,255,255,0.7);">#3b82f6</div>
+                    </div>
+                    <div class="color-box" style="background: #8b5cf6;">
+                        <div class="color-label" style="color: white;">Фиолетовый</div>
+                        <div style="font-family: monospace; font-size: 0.7rem; color: rgba(255,255,255,0.7);">#8b5cf6</div>
+                    </div>
+                    <div class="color-box" style="background: white; border: 2px solid #e5e7eb;">
+                        <div class="color-label" style="color: #1f2937;">Белый</div>
+                        <div style="font-family: monospace; font-size: 0.7rem; color: #6b7280;">#ffffff</div>
+                    </div>
+                </div>
+
+                <div style="text-align: center; margin: 30px 0; font-size: 2rem; color: #d4af37;">↓</div>
+
+                <div class="demo-title">После</div>
+                <div class="color-comparison">
+                    <div class="color-box" style="background: #1c1c1e;">
+                        <div class="color-label" style="color: #d4af37;">Основной</div>
+                        <div style="font-family: monospace; font-size: 0.7rem; color: #888;">#1c1c1e</div>
+                    </div>
+                    <div class="color-box" style="background: #252528;">
+                        <div class="color-label" style="color: #d4af37;">Карточки</div>
+                        <div style="font-family: monospace; font-size: 0.7rem; color: #888;">#252528</div>
+                    </div>
+                    <div class="color-box" style="background: #d4af37;">
+                        <div class="color-label" style="color: #1c1c1e;">Золотой</div>
+                        <div style="font-family: monospace; font-size: 0.7rem; color: #1c1c1e;">#d4af37</div>
+                    </div>
+                    <div class="color-box" style="background: #2d5f3f;">
+                        <div class="color-label" style="color: white;">Зеленый</div>
+                        <div style="font-family: monospace; font-size: 0.7rem; color: rgba(255,255,255,0.7);">#2d5f3f</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="arrow">↓</div>
+
+        <!-- Статистика -->
+        <div class="comparison-section">
+            <div class="section-title">📈 Метрики улучшений</div>
+            
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-value">3</div>
+                    <div class="stat-label">Компонентов обновлено</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">4</div>
+                    <div class="stat-label">Новых анимаций</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">200+</div>
+                    <div class="stat-label">Строк кода</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">100%</div>
+                    <div class="stat-label">Единый стиль</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Ключевые улучшения -->
+        <div class="comparison-section">
+            <div class="highlight-box">
+                <div class="highlight-title">✨ Ключевые улучшения</div>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 30px; margin-top: 30px;">
+                    <div>
+                        <div style="font-size: 2rem; margin-bottom: 10px;">🎨</div>
+                        <div style="font-weight: 300; letter-spacing: 0.1em; color: #d4af37; margin-bottom: 10px;">Премиум дизайн</div>
+                        <div style="font-size: 0.9rem; color: #888; line-height: 1.6;">Золотые акценты и темная тема создают роскошный вид</div>
+                    </div>
+                    <div>
+                        <div style="font-size: 2rem; margin-bottom: 10px;">✨</div>
+                        <div style="font-weight: 300; letter-spacing: 0.1em; color: #d4af37; margin-bottom: 10px;">Плавные анимации</div>
+                        <div style="font-size: 0.9rem; color: #888; line-height: 1.6;">fadeIn, float, glow для живого интерфейса</div>
+                    </div>
+                    <div>
+                        <div style="font-size: 2rem; margin-bottom: 10px;">🎯</div>
+                        <div style="font-weight: 300; letter-spacing: 0.1em; color: #d4af37; margin-bottom: 10px;">Неоморфизм</div>
+                        <div style="font-size: 0.9rem; color: #888; line-height: 1.6;">Объемные тени для глубины и реализма</div>
+                    </div>
+                    <div>
+                        <div style="font-size: 2rem; margin-bottom: 10px;">📱</div>
+                        <div style="font-weight: 300; letter-spacing: 0.1em; color: #d4af37; margin-bottom: 10px;">Адаптивность</div>
+                        <div style="font-size: 0.9rem; color: #888; line-height: 1.6;">Отлично работает на всех устройствах</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Компоненты -->
+        <div class="comparison-section">
+            <div class="section-title">📦 Обновленные компоненты</div>
+            
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px;">
+                <div style="background: #252528; border-radius: 15px; padding: 30px; box-shadow: 4px 4px 12px rgba(0,0,0,0.4); border: 1px solid rgba(212, 175, 55, 0.1);">
+                    <div style="font-size: 1.3rem; font-weight: 300; letter-spacing: 0.15em; color: #d4af37; margin-bottom: 20px;">WaitingRoom</div>
+                    <ul class="feature-list after-list">
+                        <li>Анимированный фон</li>
+                        <li>Stagger animation</li>
+                        <li>Hover эффекты</li>
+                        <li>Прогресс-бар</li>
+                    </ul>
+                </div>
+
+                <div style="background: #252528; border-radius: 15px; padding: 30px; box-shadow: 4px 4px 12px rgba(0,0,0,0.4); border: 1px solid rgba(212, 175, 55, 0.1);">
+                    <div style="font-size: 1.3rem; font-weight: 300; letter-spacing: 0.15em; color: #d4af37; margin-bottom: 20px;">Lobby</div>
+                    <ul class="feature-list after-list">
+                        <li>Float анимация</li>
+                        <li>Задержка появления</li>
+                        <li>Золотое свечение</li>
+                        <li>Два цвета кнопок</li>
+                    </ul>
+                </div>
+
+                <div style="background: #252528; border-radius: 15px; padding: 30px; box-shadow: 4px 4px 12px rgba(0,0,0,0.4); border: 1px solid rgba(212, 175, 55, 0.1);">
+                    <div style="font-size: 1.3rem; font-weight: 300; letter-spacing: 0.15em; color: #d4af37; margin-bottom: 20px;">PlayerCard</div>
+                    <ul class="feature-list after-list">
+                        <li>Золотой градиент</li>
+                        <li>Неоморфные тени</li>
+                        <li>Hover scale</li>
+                        <li>Новые цвета</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Футер -->
+        <div style="text-align: center; padding: 60px 0; margin-top: 60px; border-top: 1px solid rgba(212, 175, 55, 0.1);">
+            <div style="font-size: 1.5rem; font-weight: 300; letter-spacing: 0.2em; color: #d4af37; margin-bottom: 20px;">
+                MONOPOLY GAME
+            </div>
+            <div style="color: #888; font-size: 0.9rem; letter-spacing: 0.15em;">
+                Design Evolution • Version 2.0 • May 2026
+            </div>
+            <div style="margin-top: 30px; color: #666; font-size: 0.8rem;">
+                Created with ❤️ by Kiro AI Assistant
+            </div>
+        </div>
+    </div>
+</body>
+</html>

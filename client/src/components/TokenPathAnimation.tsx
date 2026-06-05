@@ -20,7 +20,6 @@ const TokenPathAnimation: React.FC<TokenPathAnimationProps> = ({
   const [path, setPath] = useState<number[]>([]);
 
   useEffect(() => {
-    // Вычисляем путь от fromPosition до toPosition
     const steps: number[] = [];
     const totalSteps = toPosition >= fromPosition
       ? toPosition - fromPosition
@@ -40,11 +39,9 @@ const TokenPathAnimation: React.FC<TokenPathAnimationProps> = ({
     if (currentStep < path.length - 1) {
       const timer = setTimeout(() => {
         setCurrentStep(prev => prev + 1);
-      }, 150); // 150ms между шагами
-
+      }, 150);
       return () => clearTimeout(timer);
     } else if (currentStep === path.length - 1) {
-      // Анимация завершена
       setTimeout(() => {
         onComplete();
       }, 200);
@@ -54,20 +51,15 @@ const TokenPathAnimation: React.FC<TokenPathAnimationProps> = ({
   if (path.length === 0) return null;
 
   const currentPosition = path[currentStep];
-
-  // Получаем DOM элемент клетки для позиционирования
   const cellElement = document.querySelector(`[data-property-id="${currentPosition}"]`);
-
   if (!cellElement) return null;
 
   const rect = cellElement.getBoundingClientRect();
   const boardElement = document.querySelector('.board-container');
   const boardRect = boardElement?.getBoundingClientRect();
-
   if (!boardRect) return null;
 
-  // Вычисляем позицию относительно игрового поля
-  const left = rect.left - boardRect.left + rect.width / 2 - 16; // 16px = половина размера фишки
+  const left = rect.left - boardRect.left + rect.width / 2 - 16;
   const top = rect.top - boardRect.top + rect.height / 2 - 16;
 
   return (
@@ -76,7 +68,8 @@ const TokenPathAnimation: React.FC<TokenPathAnimationProps> = ({
       style={{
         left: `${left}px`,
         top: `${top}px`,
-        transform: 'translate(-50%, -50%)'
+        transform: 'translate(-50%, -50%)',
+        filter: 'drop-shadow(0 4px 8px rgba(0, 0, 0, 0.4))'
       }}
       data-animating-token={playerId}
     >

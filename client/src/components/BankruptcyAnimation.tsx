@@ -12,12 +12,10 @@ const BankruptcyAnimation: React.FC<BankruptcyAnimationProps> = ({ player, onCom
   const [isVisible, setIsVisible] = useState(true);
 
   useEffect(() => {
-    // Анимация длится 2 секунды, затем вызываем callback
     const timer = setTimeout(() => {
       setIsVisible(false);
       onComplete();
     }, 2000);
-
     return () => clearTimeout(timer);
   }, [onComplete]);
 
@@ -26,14 +24,14 @@ const BankruptcyAnimation: React.FC<BankruptcyAnimationProps> = ({ player, onCom
   return (
     <div className="w-full">
       <div className="text-center">
-        <div className="bg-white rounded-lg shadow-2xl p-8 border-4 border-red-600">
+        <div className="theme-panel p-8 border-4 border-[var(--color-accent-red)] animate-bankruptcy">
           {/* Иконка банкротства */}
-          <div className="text-6xl mb-4 text-red-600">
+          <div className="text-6xl mb-4 text-[var(--color-accent-red)] animate-bankruptcy-shake">
             <FontAwesomeIcon icon={faExclamationTriangle} />
           </div>
 
           {/* Заголовок */}
-          <h1 className="text-4xl font-bold text-red-600 mb-3 uppercase">
+          <h1 className="theme-title text-4xl mb-3 text-[var(--color-accent-red)]">
             БАНКРОТСТВО
           </h1>
 
@@ -48,13 +46,13 @@ const BankruptcyAnimation: React.FC<BankruptcyAnimationProps> = ({ player, onCom
           </div>
 
           {/* Имя игрока */}
-          <h2 className="text-2xl font-bold text-gray-800 mb-3 uppercase">
+          <h2 className="text-2xl font-bold text-[var(--color-text-primary)] mb-3 uppercase">
             {player.name}
           </h2>
 
           {/* Сообщение */}
-          <div className="bg-gray-100 border-2 border-gray-300 p-4">
-            <p className="text-lg text-gray-800 font-medium">
+          <div className="theme-panel-inset p-4">
+            <p className="text-lg text-[var(--color-text-muted)] font-medium">
               Игрок обанкротился и выбывает из игры
             </p>
           </div>

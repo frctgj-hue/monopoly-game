@@ -11,7 +11,28 @@ export default defineConfig({
     },
   },
   server: {
-    host: '0.0.0.0', // Доступ из локальной сети
+    host: '0.0.0.0',
     port: 5173,
+    strictPort: false,
+    cors: true,
+    allowedHosts: true, // Разрешить загрузку из встроенных предпросмотров
+  },
+  optimizeDeps: {
+    include: ['animejs']
+  },
+  build: {
+    commonjsOptions: {
+      transformMixedEsModules: true,
+    },
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          if (id.includes('node_modules')) {
+            if (id.includes('animejs')) return 'anime';
+            if (id.includes('react')) return 'vendor';
+          }
+        }
+      }
+    }
   }
 })

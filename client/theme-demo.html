@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Monopoly - Тёмная тема</title>
+  <style>
+    :root {
+      --color-bg-primary: #1c1c1e;
+      --color-bg-secondary: #252528;
+      --color-bg-tertiary: #2a2a2c;
+      --color-text-primary: #f5f5f5;
+      --color-text-gold: #d4af37;
+      --color-text-muted: #888888;
+      --color-accent-gold: #d4af37;
+      --color-accent-green: #2d8659;
+      --color-accent-red: #dc3545;
+      --color-border: #3a3a3c;
+      --shadow: 8px 8px 16px rgba(0,0,0,0.4), -8px -8px 16px rgba(60,60,60,0.1);
+      --shadow-inset: inset 4px 4px 8px rgba(0,0,0,0.5), inset -4px -4px 8px rgba(60,60,60,0.1);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      background: var(--color-bg-primary);
+      color: var(--color-text-primary);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 2rem;
+    }
+
+    .container {
+      max-width: 600px;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    h1 {
+      color: var(--color-text-gold);
+      font-weight: 300;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      text-align: center;
+      font-size: 2rem;
+    }
+
+    .card {
+      background: var(--color-bg-secondary);
+      border-radius: 1.5rem;
+      padding: 1.5rem;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--color-border);
+    }
+
+    .card-inset {
+      background: var(--color-bg-tertiary);
+      border-radius: 1rem;
+      padding: 1rem;
+      box-shadow: var(--shadow-inset);
+    }
+
+    .text-gold { color: var(--color-text-gold); }
+    .text-muted { color: var(--color-text-muted); font-size: 0.9rem; }
+
+    .btn {
+      padding: 0.75rem 1.5rem;
+      border-radius: 0.75rem;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+
+    .btn-gold {
+      background: var(--color-accent-gold);
+      color: #1c1c1e;
+      box-shadow: 0 4px 12px rgba(212, 175, 55, 0.3);
+    }
+    .btn-gold:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(212, 175, 55, 0.5);
+    }
+
+    .btn-green {
+      background: var(--color-accent-green);
+      color: #fff;
+      box-shadow: 0 4px 12px rgba(45, 134, 89, 0.3);
+    }
+    .btn-green:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(45, 134, 89, 0.5);
+    }
+
+    .btn-ghost {
+      background: transparent;
+      color: var(--color-text-gold);
+      border: 2px solid var(--color-accent-gold);
+    }
+    .btn-ghost:hover {
+      background: rgba(212, 175, 55, 0.1);
+    }
+
+    .input {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      border-radius: 0.75rem;
+      background: var(--color-bg-tertiary);
+      border: 2px solid var(--color-border);
+      color: var(--color-text-primary);
+      font-size: 1rem;
+    }
+    .input:focus {
+      outline: none;
+      border-color: var(--color-accent-gold);
+      box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.2);
+    }
+
+    .flex { display: flex; gap: 0.75rem; }
+    .flex-1 { flex: 1; }
+    .space-y { display: flex; flex-direction: column; gap: 0.5rem; }
+
+    .badge {
+      display: inline-block;
+      padding: 0.25rem 0.75rem;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+    .badge-red { background: rgba(220, 53, 69, 0.2); color: #fca5a5; }
+    .badge-green { background: rgba(45, 134, 89, 0.2); color: #6ee7b7; }
+
+    .color-strip {
+      height: 8px;
+      border-radius: 4px;
+      margin-bottom: 0.5rem;
+    }
+    .bg-red { background: #DC143C; }
+    .bg-green { background: #228B22; }
+    .bg-blue { background: #00008B; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Monopoly UI</h1>
+
+    <!-- Панель -->
+    <div class="card">
+      <div class="color-strip bg-red"></div>
+      <div style="display: flex; justify-content: space-between; align-items: center;">
+        <div>
+          <div class="text-gold" style="font-weight: 600;">Парк Лейн</div>
+          <div class="text-muted">Недвижимость</div>
+        </div>
+        <div class="badge badge-green">💰 $350</div>
+      </div>
+    </div>
+
+    <!-- Вложенная панель -->
+    <div class="card">
+      <div class="card-inset">
+        <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+          <span class="text-muted">Аренда:</span>
+          <span class="text-gold" style="font-weight: 700; font-size: 1.25rem;">$50</span>
+        </div>
+        <div style="display: flex; justify-content: space-between;">
+          <span class="text-muted">Баланс:</span>
+          <span class="text-gold">$1,500</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Кнопки -->
+    <div class="flex">
+      <button class="btn btn-gold flex-1">🎲 Бросить</button>
+      <button class="btn btn-green flex-1">💵 Купить</button>
+      <button class="btn btn-ghost flex-1">Отмена</button>
+    </div>
+
+    <!-- Инпут -->
+    <input type="text" class="input" placeholder="Введите имя игрока...">
+
+    <!-- Уведомления -->
+    <div class="flex">
+      <span class="badge badge-green flex-1" style="text-align: center;">✓ Успех</span>
+      <span class="badge badge-red flex-1" style="text-align: center;">✗ Ошибка</span>
+    </div>
+  </div>
+</body>
+</html>

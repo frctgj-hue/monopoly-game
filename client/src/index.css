@@ -1,15 +1,18 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Bebas+Neue&family=Oswald:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+
+@import './styles/theme.css';
+@import './styles/board-styles.css';
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
-  /* Классические цвета Монополии */
-  --board-bg: #CDE6D0;
-  --board-border: #000000;
+  /* Classic Monopoly colors */
+  --board-bg: #AAD4C8;
+  --board-border: #5a5a5e; /* Светло-серый, светлее основного фона */
 
-  /* Цвета групп недвижимости */
+  /* Property group colors - classic palette */
   --color-brown: #955436;
   --color-lightblue: #AAE0FA;
   --color-pink: #D93A96;
@@ -17,21 +20,25 @@
   --color-red: #ED1B24;
   --color-yellow: #FEF200;
   --color-green: #1FB25A;
-  --color-darkblue: #0072BB;
+  --color-darkblue: #1B3A6B;
 
-  /* Дополнительные цвета */
+  /* Additional classic colors */
   --color-railroad: #000000;
   --color-utility: #000000;
-  --color-special: #CDE6D0;
+  --color-special: #AAD4C8;
+  --card-bg: #F5F5F0;
+  --monopoly-red: #CC0000;
 }
 
 body {
   margin: 0;
-  font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+  font-family: 'Inter', 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background: var(--color-bg-primary, #121214);
+  color: var(--color-text-primary, #f0f0f5);
 }
 
 /* Шрифты для классической Монополии */
@@ -75,6 +82,63 @@ body {
   background: #555;
 }
 
+/* Ползунки (range inputs) — серый стиль */
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 6px;
+  background: #4a4a4a;
+  border-radius: 3px;
+  outline: none;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  background: #888;
+  border-radius: 50%;
+  cursor: pointer;
+  border: 2px solid #666;
+  transition: background 0.2s, transform 0.1s;
+}
+
+input[type="range"]::-webkit-slider-thumb:hover {
+  background: #999;
+  transform: scale(1.1);
+}
+
+input[type="range"]::-webkit-slider-thumb:active {
+  background: #aaa;
+}
+
+input[type="range"]::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  background: #888;
+  border-radius: 50%;
+  cursor: pointer;
+  border: 2px solid #666;
+  transition: background 0.2s, transform 0.1s;
+}
+
+input[type="range"]::-moz-range-thumb:hover {
+  background: #999;
+  transform: scale(1.1);
+}
+
+input[type="range"]::-moz-range-thumb:active {
+  background: #aaa;
+}
+
+input[type="range"]::-moz-range-track {
+  background: #4a4a4a;
+  border-radius: 3px;
+  height: 6px;
+}
+
 /* Утилитарные классы */
 @layer utilities {
   .text-shadow {
@@ -87,11 +151,11 @@ body {
 
   .backdrop-blur-glass {
     backdrop-filter: blur(10px);
-    background: rgba(255, 255, 255, 0.95);
+    background: rgba(37, 37, 40, 0.95);
   }
 
   .gradient-monopoly {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #252528 0%, #1c1c1e 100%);
   }
 
   .gradient-gold {
@@ -707,4 +771,785 @@ body {
 
 .animate-bankruptcy-shake {
   animation: bankruptcy-shake 0.5s ease-in-out;
+}
+
+/* ========================================
+   СОВРЕМЕННЫЕ СТИЛИ
+   ======================================== */
+
+/* Glassmorphism эффект */
+.glass-morphism {
+  background: rgba(37, 37, 40, 0.7);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid rgba(212, 175, 55, 0.1);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
+}
+
+.glass-morphism-dark {
+  background: rgba(30, 41, 59, 0.7);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+}
+
+/* Неоморфизм для кнопок */
+.neo-button {
+  background: linear-gradient(145deg, #ffffff, #e6e6e6);
+  box-shadow: 8px 8px 16px rgba(163, 177, 198, 0.6),
+              -8px -8px 16px rgba(255, 255, 255, 0.5);
+  transition: all 0.3s ease;
+}
+
+.neo-button:hover {
+  box-shadow: 12px 12px 24px rgba(163, 177, 198, 0.6),
+              -12px -12px 24px rgba(255, 255, 255, 0.5);
+  transform: translateY(-2px);
+}
+
+.neo-button:active {
+  box-shadow: inset 4px 4px 8px rgba(163, 177, 198, 0.6),
+              inset -4px -4px 8px rgba(255, 255, 255, 0.5);
+  transform: translateY(0);
+}
+
+/* Градиентные кнопки */
+.gradient-button {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background-size: 200% 200%;
+  transition: all 0.4s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.gradient-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  transition: left 0.5s ease;
+}
+
+.gradient-button:hover::before {
+  left: 100%;
+}
+
+.gradient-button:hover {
+  background-position: 100% 0;
+  transform: translateY(-2px);
+  box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+}
+
+/* Современные карточки */
+.modern-card {
+  background: white;
+  border-radius: 20px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.modern-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+}
+
+/* Светящиеся границы */
+.glow-border {
+  position: relative;
+  border-radius: 16px;
+}
+
+.glow-border::before {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: 16px;
+  padding: 2px;
+  background: linear-gradient(45deg, #667eea, #764ba2, #f093fb, #4facfe);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  animation: gradient 3s linear infinite;
+  background-size: 300% 300%;
+}
+
+/* Пульсирующее свечение */
+@keyframes pulse-ring {
+  0% {
+    box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.7);
+  }
+  70% {
+    box-shadow: 0 0 0 20px rgba(99, 102, 241, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(99, 102, 241, 0);
+  }
+}
+
+.pulse-ring {
+  animation: pulse-ring 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Анимация градиента */
+@keyframes gradient-shift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.animated-gradient {
+  background: linear-gradient(-45deg, #667eea, #764ba2, #f093fb, #4facfe);
+  background-size: 400% 400%;
+  animation: gradient-shift 15s ease infinite;
+}
+
+/* Современный скроллбар */
+::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 10px;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+}
+
+/* Эффект ripple для кнопок */
+.ripple {
+  position: relative;
+  overflow: hidden;
+}
+
+.ripple::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.5);
+  transform: translate(-50%, -50%);
+  transition: width 0.6s, height 0.6s;
+}
+
+.ripple:active::after {
+  width: 300px;
+  height: 300px;
+}
+
+/* Текстовые градиенты */
+.text-gradient {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.text-gradient-gold {
+  background: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.text-gradient-green {
+  background: linear-gradient(135deg, #1FB25A 0%, #15803d 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Анимация появления снизу */
+@keyframes slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-slide-up {
+  animation: slide-up 0.5s ease-out;
+}
+
+/* Эффект hover для карточек недвижимости */
+.property-card {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.property-card:hover {
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+}
+
+/* Современный badge */
+.modern-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+/* Эффект shimmer для загрузки */
+@keyframes shimmer-animation {
+  0% {
+    background-position: -1000px 0;
+  }
+  100% {
+    background-position: 1000px 0;
+  }
+}
+
+.shimmer {
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.3) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  background-size: 1000px 100%;
+  animation: shimmer-animation 2s infinite;
+}
+
+/* Floating action button */
+.fab {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  box-shadow: 0 8px 24px rgba(102, 126, 234, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 24px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  z-index: 1000;
+}
+
+.fab:hover {
+  transform: scale(1.1) rotate(90deg);
+  box-shadow: 0 12px 32px rgba(102, 126, 234, 0.6);
+}
+
+/* Tooltip современный */
+.modern-tooltip {
+  position: relative;
+}
+
+.modern-tooltip::before {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%) translateY(-8px);
+  padding: 0.5rem 1rem;
+  background: rgba(30, 41, 59, 0.95);
+  color: white;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.modern-tooltip:hover::before {
+  opacity: 1;
+  transform: translateX(-50%) translateY(-12px);
+}
+
+/* Прогресс бар современный */
+.modern-progress {
+  height: 8px;
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 9999px;
+  overflow: hidden;
+  position: relative;
+}
+
+.modern-progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+  border-radius: 9999px;
+  transition: width 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.modern-progress-bar::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.3),
+    transparent
+  );
+  animation: shimmer-animation 2s infinite;
+}
+
+/* Skeleton loader */
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    #f0f0f0 25%,
+    #e0e0e0 50%,
+    #f0f0f0 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer-animation 1.5s infinite;
+  border-radius: 8px;
+}
+
+/* Chip/Tag современный */
+.modern-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background: white;
+  border-radius: 9999px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.modern-chip:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transform: translateY(-2px);
+}
+
+/* Divider с текстом */
+.divider-text {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  color: #64748b;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.divider-text::before,
+.divider-text::after {
+  content: '';
+  flex: 1;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.divider-text::before {
+  margin-right: 1rem;
+}
+
+.divider-text::after {
+  margin-left: 1rem;
+}
+
+/* Современный input */
+.modern-input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 2px solid #e2e8f0;
+  border-radius: 12px;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  background: white;
+}
+
+.modern-input:focus {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+}
+
+.modern-input::placeholder {
+  color: #94a3b8;
+}
+
+/* Checkbox современный */
+.modern-checkbox {
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border: 2px solid #cbd5e1;
+  border-radius: 6px;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.modern-checkbox:checked {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-color: #667eea;
+}
+
+.modern-checkbox:checked::after {
+  content: '✓';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+/* Toggle switch современный */
+.modern-toggle {
+  position: relative;
+  width: 48px;
+  height: 24px;
+  background: #cbd5e1;
+  border-radius: 9999px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.modern-toggle::after {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 20px;
+  height: 20px;
+  background: white;
+  border-radius: 50%;
+  transition: transform 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.modern-toggle.active {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.modern-toggle.active::after {
+  transform: translateX(24px);
+}
+
+/* ========================================
+   ТЕМНАЯ ТЕМА — ПЕРЕМЕННЫЕ И КЛАССЫ
+   ======================================== */
+
+:root {
+  /* Основные цвета темы */
+  --color-bg-primary: #1c1c1e;
+  --color-bg-secondary: #252528;
+  --color-bg-tertiary: #2a2a2c;
+
+  --color-text-primary: #f5f5f5;
+  --color-text-secondary: #d4d4d4;
+  --color-text-muted: #888888;
+  --color-text-label: #aaaaaa;
+  --color-text-gold: #d4af37;
+
+  --color-accent-gold: #d4af37;
+  --color-accent-green: #2d8659;
+  --color-accent-blue: #3b82f6;
+  --color-accent-red: #dc3545;
+  --color-accent-purple: #8b5cf6;
+
+  --color-border-primary: #3a3a3c;
+  --color-border-gold: rgba(212, 175, 55, 0.3);
+  --color-border-green: rgba(45, 134, 89, 0.3);
+
+  --shadow-sm: 4px 4px 8px rgba(0,0,0,0.3), -4px -4px 8px rgba(60,60,60,0.1);
+  --shadow-md: 8px 8px 16px rgba(0,0,0,0.4), -8px -8px 16px rgba(60,60,60,0.1);
+  --shadow-lg: 12px 12px 24px rgba(0,0,0,0.5), -12px -12px 24px rgba(60,60,60,0.1);
+  --shadow-inset: inset 4px 4px 8px rgba(0,0,0,0.5), inset -4px -4px 8px rgba(60,60,60,0.1);
+}
+
+/* Фоны */
+.theme-bg {
+  background: var(--color-bg-primary);
+}
+
+.theme-bg-secondary {
+  background: var(--color-bg-secondary);
+}
+
+.theme-bg-decor {
+  background: var(--color-bg-primary);
+  position: relative;
+  overflow: hidden;
+}
+
+.theme-bg-decor::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  opacity: 0.1;
+  background: radial-gradient(circle at 25% 25%, var(--color-accent-gold) 0%, transparent 50%),
+              radial-gradient(circle at 75% 75%, var(--color-accent-gold) 0%, transparent 50%);
+  animation: pulse 8s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 0.05; }
+  50% { opacity: 0.15; }
+}
+
+/* Панели */
+.theme-panel {
+  background: var(--color-bg-secondary);
+  border-radius: 1.5rem;
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--color-border-primary);
+}
+
+.theme-panel-inset {
+  background: var(--color-bg-tertiary);
+  border-radius: 1rem;
+  box-shadow: var(--shadow-inset);
+  border: 1px solid var(--color-border-primary);
+}
+
+/* Текст */
+.theme-text-primary { color: var(--color-text-primary); }
+.theme-text-secondary { color: var(--color-text-secondary); }
+.theme-text-muted { color: var(--color-text-muted); }
+.theme-text-label { color: var(--color-text-label); font-weight: 500; }
+
+.theme-title {
+  color: var(--color-text-gold);
+  font-weight: 300;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  font-family: system-ui, -apple-system, sans-serif;
+}
+
+/* Кнопки */
+.theme-btn {
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  border: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.theme-btn-primary {
+  background: var(--color-accent-gold);
+  color: var(--color-bg-primary);
+  box-shadow: 0 4px 12px rgba(212, 175, 55, 0.3);
+}
+
+.theme-btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(212, 175, 55, 0.5);
+}
+
+.theme-btn-primary:active {
+  transform: translateY(0);
+}
+
+.theme-btn-secondary {
+  background: var(--color-accent-green);
+  color: #fff;
+  box-shadow: 0 4px 12px rgba(45, 134, 89, 0.3);
+}
+
+.theme-btn-secondary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(45, 134, 89, 0.5);
+}
+
+.theme-btn-ghost {
+  background: transparent;
+  color: var(--color-text-gold);
+  border: 2px solid var(--color-accent-gold);
+}
+
+.theme-btn-ghost:hover {
+  background: rgba(212, 175, 55, 0.1);
+  transform: translateY(-2px);
+}
+
+/* Инпуты */
+.theme-input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border-radius: 0.75rem;
+  background: var(--color-bg-tertiary);
+  border: 2px solid var(--color-border-primary);
+  color: var(--color-text-primary);
+  font-size: 1rem;
+  transition: all 0.2s ease;
+}
+
+.theme-input:focus {
+  outline: none;
+  border-color: var(--color-accent-gold);
+  box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.2);
+}
+
+.theme-input::placeholder {
+  color: var(--color-text-muted);
+}
+
+/* Уведомления */
+.theme-toast {
+  padding: 0.75rem 1rem;
+  border-radius: 0.75rem;
+  font-size: 0.875rem;
+}
+
+.theme-toast.success {
+  background: rgba(45, 134, 89, 0.2);
+  border: 1px solid var(--color-accent-green);
+  color: #6ee7b7;
+}
+
+.theme-toast.error {
+  background: rgba(220, 53, 69, 0.2);
+  border: 1px solid var(--color-accent-red);
+  color: #fca5a5;
+}
+
+.theme-toast.warning {
+  background: rgba(245, 158, 11, 0.2);
+  border: 1px solid #f59e0b;
+  color: #fcd34d;
+}
+
+/* Анимации */
+.animate-fade-in {
+  animation: fadeIn 0.5s ease-out forwards;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-glow {
+  animation: glow 2s ease-in-out infinite;
+}
+
+@keyframes glow {
+  0%, 100% { box-shadow: 0 0 20px rgba(212, 175, 55, 0.3); }
+  50% { box-shadow: 0 0 30px rgba(212, 175, 55, 0.6); }
+}
+
+/* Цвета групп недвижимости */
+/* Classic Monopoly property color strips */
+.property-brown { background-color: var(--color-brown); border-bottom: 1px solid #5a2d0d; }
+.property-lightblue { background-color: var(--color-lightblue); border-bottom: 1px solid #4a9cbd; }
+.property-pink { background-color: var(--color-pink); border-bottom: 1px solid #a02a6a; }
+.property-orange { background-color: var(--color-orange); border-bottom: 1px solid #c46a0e; }
+.property-red { background-color: var(--color-red); border-bottom: 1px solid #b01018; }
+.property-yellow { background-color: var(--color-yellow); border-bottom: 1px solid #d4b800; }
+.property-green { background-color: var(--color-green); border-bottom: 1px solid #157a3d; }
+.property-darkblue { background-color: var(--color-darkblue); border-bottom: 1px solid #0d1f3d; }
+.property-railroad { background-color: var(--color-railroad); }
+.property-utility { background-color: #ffffff; }
+.property-special { background-color: var(--color-special); }
+
+/* --- CLASSIC MONOPOLY BOARD STYLES --- */
+/* Override any theme/gold colors */
+.board-container {
+  background-color: #252528 !important; /* Тёмно-серый фон */
+  border: 4px solid #8a8a8e !important; /* Светло-серая обводка */
+  box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.3) !important;
+}
+
+.board-cell {
+  background-color: #F5F5F0 !important; /* Off-white card stock */
+  border: 1px solid #000000 !important;
+  transition: none !important;
+  box-shadow: none !important;
+}
+
+.board-cell:not(.corner) .cell-name,
+.board-cell:not(.corner) .cell-price,
+.board-cell:not(.corner) .cell-icon {
+  color: #000000 !important; /* Чёрный текст в обычных клетках */
+}
+
+.board-cell.corner .cell-name,
+.board-cell.corner .cell-price,
+.board-cell.corner .cell-icon {
+  color: #ffffff !important; /* Белый текст в угловых клетках */
+}
+
+.board-cell:hover {
+  filter: none !important;
+}
+
+/* Corner cells */
+.board-cell.corner-start,
+.board-cell.corner-gotojail,
+.board-cell.corner-parking,
+.board-cell.corner-jail {
+  background-color: #2a2a2e !important;
+}
+
+/* Property color strips */
+.property-brown { background-color: #955436 !important; }
+.property-lightblue { background-color: #AAE0FA !important; }
+.property-pink { background-color: #D93A96 !important; }
+.property-orange { background-color: #F7941D !important; }
+.property-red { background-color: #ED1B24 !important; }
+.property-yellow { background-color: #FEF200 !important; }
+.property-green { background-color: #1FB25A !important; }
+.property-darkblue { background-color: #1B3A6B !important; }
+.property-railroad { background-color: #000000 !important; }
+.property-utility { background-color: #FFFFFF !important; }
+.property-special { background-color: #F5F5F0 !important; }
+
+/* Monopoly Logo */
+.monopoly-title {
+  color: #CC0000 !important; /* Classic Red */
+  font-family: 'Georgia', serif !important;
+  -webkit-text-stroke: 1px white !important;
+  text-shadow: 2px 2px 0px white, -1px -1px 0px white !important;
+}
+
+/* Утилиты */
+.text-shadow-gold {
+  text-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
 }

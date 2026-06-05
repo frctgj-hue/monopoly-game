@@ -7,41 +7,43 @@ interface TokenPieceProps {
 }
 
 const TokenPiece: React.FC<TokenPieceProps> = ({ color, size = 'md', animate = false }) => {
-  const getColorClass = () => {
-    const colorMap: { [key: string]: string } = {
-      red: 'bg-monopoly-red',
-      blue: 'bg-monopoly-blue',
-      green: 'bg-monopoly-green',
-      yellow: 'bg-monopoly-yellow',
+  const getSizeStyle = () => {
+    const styleMap: { [key: string]: React.CSSProperties } = {
+      sm: { width: '16px', height: '16px', fontSize: '12px' },
+      md: { width: '24px', height: '24px', fontSize: '14px' },
+      lg: { width: '48px', height: '48px', fontSize: '20px' },
     };
-    return colorMap[color] || 'bg-gray-500';
-  };
-
-  const getSizeClass = () => {
-    const sizeMap = {
-      sm: 'w-4 h-4 text-xs',
-      md: 'w-6 h-6 text-sm',
-      lg: 'w-8 h-8 text-base',
-    };
-    return sizeMap[size];
+    return styleMap[size] || styleMap.md;
   };
 
   const getIcon = () => {
     const iconMap: { [key: string]: string } = {
-      red: '🎩',      // Шляпа
-      blue: '🐱',     // Кот
-      green: '🐕',    // Собака
-      yellow: '🌉',   // Мост
+      red: '🎩',
+      blue: '🐱',
+      green: '🐕',
+      yellow: '🌉',
     };
     return iconMap[color] || '⭐';
   };
 
+  const getBgColor = () => {
+    const colorMap: { [key: string]: string } = {
+      red: '#DC143C',
+      blue: '#0078D7',
+      green: '#1FB25A',
+      yellow: '#FEF200',
+    };
+    return colorMap[color] || '#6b7280';
+  };
+
   return (
     <div
-      className={`${getSizeClass()} ${getColorClass()} rounded-full flex items-center justify-center shadow-lg border-2 border-white ${
+      className={`rounded-full flex items-center justify-center border-2 border-white ${
         animate ? 'animate-token-move' : ''
       }`}
       style={{
+        ...getSizeStyle(),
+        backgroundColor: getBgColor(),
         boxShadow: '0 4px 6px rgba(0, 0, 0, 0.3), 0 2px 4px rgba(0, 0, 0, 0.2)',
       }}
     >

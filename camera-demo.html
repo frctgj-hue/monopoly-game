@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Camera Exploded View - Modern Camera Technology</title>
+    <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1c1c1e 50%, #0a0a0a 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            perspective: 2000px;
+            overflow: hidden;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 60px;
+            z-index: 100;
+        }
+
+        .title {
+            font-size: 4rem;
+            font-weight: 300;
+            letter-spacing: 0.3em;
+            color: #d4af37;
+            text-shadow: 0 0 30px rgba(212, 175, 55, 0.3);
+            margin-bottom: 20px;
+        }
+
+        .subtitle {
+            color: #888;
+            font-size: 1.2rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+        }
+
+        .camera-container {
+            position: relative;
+            width: 600px;
+            height: 600px;
+            transform-style: preserve-3d;
+            transform: rotateX(-10deg) rotateY(20deg);
+        }
+
+        .camera-part {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform-style: preserve-3d;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: filter 0.3s;
+        }
+
+        .camera-part:hover {
+            filter: brightness(1.2);
+        }
+
+        .part-label {
+            position: absolute;
+            left: 120%;
+            top: 50%;
+            transform: translateY(-50%);
+            white-space: nowrap;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .label-content {
+            background: rgba(0, 0, 0, 0.9);
+            color: #d4af37;
+            padding: 10px 20px;
+            border-radius: 10px;
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+            font-size: 0.9rem;
+            letter-spacing: 0.1em;
+        }
+
+        .label-line {
+            position: absolute;
+            right: 100%;
+            top: 50%;
+            width: 60px;
+            height: 1px;
+            background: linear-gradient(to left, #d4af37, transparent);
+        }
+
+        .control-button {
+            background: #d4af37;
+            color: #1c1c1e;
+            border: none;
+            padding: 15px 50px;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 300;
+            letter-spacing: 0.2em;
+            cursor: pointer;
+            box-shadow: 0 4px 16px rgba(212, 175, 55, 0.3);
+            transition: all 0.3s;
+            margin-top: 60px;
+            z-index: 100;
+        }
+
+        .control-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 20px rgba(212, 175, 55, 0.5);
+        }
+
+        .specs {
+            display: flex;
+            gap: 60px;
+            margin-top: 60px;
+            z-index: 100;
+        }
+
+        .spec-item {
+            text-align: center;
+        }
+
+        .spec-value {
+            font-size: 2.5rem;
+            font-weight: 300;
+            color: #d4af37;
+            margin-bottom: 10px;
+        }
+
+        .spec-label {
+            color: #666;
+            font-size: 0.8rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+        }
+
+        /* Детализация для линз */
+        .lens-detail {
+            position: absolute;
+            border-radius: 50%;
+        }
+
+        .lens-outer {
+            width: 60%;
+            height: 60%;
+            background: radial-gradient(circle, rgba(255,255,255,0.3), transparent);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .lens-inner {
+            width: 30%;
+            height: 30%;
+            background: radial-gradient(circle, rgba(100,150,255,0.4), transparent);
+        }
+
+        /* Детализация для сенсора */
+        .sensor-grid {
+            display: grid;
+            grid-template-columns: repeat(8, 1fr);
+            gap: 1px;
+            width: 80%;
+            height: 80%;
+        }
+
+        .sensor-pixel {
+            background: #1a472a;
+            box-shadow: inset 0 0 2px rgba(0,255,0,0.3);
+        }
+
+        /* Детализация для диафрагмы */
+        .aperture-blade {
+            position: absolute;
+            width: 40%;
+            height: 8%;
+            top: 50%;
+            left: 50%;
+            transform-origin: 0% 50%;
+            background: #505050;
+            border-radius: 2px;
+        }
+
+        .processor-label {
+            font-size: 0.6rem;
+            color: white;
+            font-family: monospace;
+            opacity: 0.7;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1 class="title">CAMERA ANATOMY</h1>
+        <p class="subtitle">Precision Engineering • Advanced Optics • Cutting-Edge Technology</p>
+    </div>
+
+    <div class="camera-container" id="cameraContainer"></div>
+
+    <button class="control-button" id="toggleButton">EXPLODE VIEW</button>
+
+    <div class="specs">
+        <div class="spec-item">
+            <div class="spec-value">108MP</div>
+            <div class="spec-label">Resolution</div>
+        </div>
+        <div class="spec-item">
+            <div class="spec-value">f/1.4</div>
+            <div class="spec-label">Aperture</div>
+        </div>
+        <div class="spec-item">
+            <div class="spec-value">8K</div>
+            <div class="spec-label">Video</div>
+        </div>
+    </div>
+
+    <script>
+        // Проверка загрузки anime.js
+        if (typeof anime === 'undefined') {
+            document.body.innerHTML = '<div style="color: white; text-align: center; padding: 50px;">Error: anime.js failed to load. Please check your internet connection.</div>';
+            throw new Error('anime.js not loaded');
+        }
+
+        console.log('anime.js loaded successfully');
+
+        const cameraParts = [
+            { id: 'lens-front', name: 'Front Lens Element', color: '#e0e0e0', size: 80, type: 'lens' },
+            { id: 'lens-group-1', name: 'Lens Group 1', color: '#c0c0c0', size: 75, type: 'lens' },
+            { id: 'lens-group-2', name: 'Lens Group 2', color: '#d0d0d0', size: 70, type: 'lens' },
+            { id: 'aperture', name: 'Aperture Blades', color: '#505050', size: 65, type: 'aperture' },
+            { id: 'lens-group-3', name: 'Lens Group 3', color: '#c5c5c5', size: 68, type: 'lens' },
+            { id: 'shutter', name: 'Shutter Mechanism', color: '#606060', size: 72, type: 'normal' },
+            { id: 'sensor-filter', name: 'IR Cut Filter', color: '#8b4789', size: 70, type: 'normal' },
+            { id: 'sensor', name: 'Image Sensor', color: '#1a472a', size: 68, type: 'sensor' },
+            { id: 'processor', name: 'Image Processor', color: '#2d5f3f', size: 75, type: 'processor' },
+            { id: 'circuit-board', name: 'Main Circuit Board', color: '#1e5631', size: 85, type: 'normal' },
+            { id: 'battery', name: 'Battery Pack', color: '#d4af37', size: 60, type: 'normal' },
+            { id: 'body-back', name: 'Camera Body', color: '#2a2a2a', size: 95, type: 'normal' },
+        ];
+
+        let isExploded = false;
+        const container = document.getElementById('cameraContainer');
+        const toggleButton = document.getElementById('toggleButton');
+
+        function adjustBrightness(color, amount) {
+            const hex = color.replace('#', '');
+            const r = Math.max(0, Math.min(255, parseInt(hex.substr(0, 2), 16) + amount));
+            const g = Math.max(0, Math.min(255, parseInt(hex.substr(2, 2), 16) + amount));
+            const b = Math.max(0, Math.min(255, parseInt(hex.substr(4, 2), 16) + amount));
+            return `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`;
+        }
+
+        // Создание деталей камеры
+        cameraParts.forEach((part, index) => {
+            const wrapper = document.createElement('div');
+            wrapper.style.position = 'absolute';
+            wrapper.style.inset = '0';
+            wrapper.style.display = 'flex';
+            wrapper.style.alignItems = 'center';
+            wrapper.style.justifyContent = 'center';
+
+            const partElement = document.createElement('div');
+            partElement.className = 'camera-part';
+            partElement.id = part.id;
+            partElement.style.width = `${part.size}px`;
+            partElement.style.height = `${part.size}px`;
+            partElement.style.background = `radial-gradient(circle at 30% 30%, ${part.color}, ${adjustBrightness(part.color, -30)})`;
+            partElement.style.borderRadius = part.type === 'lens' ? '50%' : part.type === 'sensor' ? '10%' : '8%';
+            partElement.style.boxShadow = `
+                0 0 20px rgba(0,0,0,0.5),
+                inset 0 0 20px rgba(255,255,255,0.1),
+                0 0 40px ${part.color}40
+            `;
+            partElement.style.border = `2px solid ${adjustBrightness(part.color, 20)}`;
+            partElement.style.zIndex = cameraParts.length - index;
+            partElement.style.transform = 'translate(-50%, -50%)';
+            partElement.style.opacity = '0';
+
+            // Добавление деталей в зависимости от типа
+            if (part.type === 'lens') {
+                const outer = document.createElement('div');
+                outer.className = 'lens-detail lens-outer';
+                partElement.appendChild(outer);
+
+                const inner = document.createElement('div');
+                inner.className = 'lens-detail lens-inner';
+                partElement.appendChild(inner);
+            } else if (part.type === 'sensor') {
+                const grid = document.createElement('div');
+                grid.className = 'sensor-grid';
+                for (let i = 0; i < 64; i++) {
+                    const pixel = document.createElement('div');
+                    pixel.className = 'sensor-pixel';
+                    grid.appendChild(pixel);
+                }
+                partElement.appendChild(grid);
+            } else if (part.type === 'processor') {
+                const label = document.createElement('div');
+                label.className = 'processor-label';
+                label.textContent = 'AI CHIP';
+                partElement.appendChild(label);
+            } else if (part.type === 'aperture') {
+                for (let i = 0; i < 8; i++) {
+                    const blade = document.createElement('div');
+                    blade.className = 'aperture-blade';
+                    blade.style.transform = `rotate(${i * 45}deg)`;
+                    partElement.appendChild(blade);
+                }
+            }
+
+            // Метка
+            const label = document.createElement('div');
+            label.className = 'part-label';
+            const labelContent = document.createElement('div');
+            labelContent.className = 'label-content';
+            labelContent.textContent = part.name;
+            const labelLine = document.createElement('div');
+            labelLine.className = 'label-line';
+            label.appendChild(labelContent);
+            label.appendChild(labelLine);
+
+            wrapper.appendChild(partElement);
+            wrapper.appendChild(label);
+            container.appendChild(wrapper);
+        });
+
+        // Начальная анимация
+        console.log('Starting initial animation...');
+        anime({
+            targets: '.camera-part',
+            opacity: [0, 1],
+            scale: [0.5, 1],
+            delay: anime.stagger(100),
+            duration: 800,
+            easing: 'easeOutElastic(1, .8)',
+            complete: () => console.log('Initial animation complete')
+        });
+
+        // Автоматический цикл
+        console.log('Setting up auto-cycle...');
+        setInterval(() => {
+            console.log('Auto-toggling explode...');
+            toggleExplode();
+        }, 5000);
+
+        function toggleExplode() {
+            console.log('toggleExplode called, isExploded:', isExploded);
+            isExploded = !isExploded;
+
+            if (isExploded) {
+                console.log('Exploding...');
+                // Разборка
+                anime({
+                    targets: '.camera-part',
+                    translateZ: (el, i) => (cameraParts.length - i) * 150,
+                    translateX: (el, i) => {
+                        const angle = (i / cameraParts.length) * Math.PI * 2;
+                        return Math.cos(angle) * 100;
+                    },
+                    translateY: (el, i) => {
+                        const angle = (i / cameraParts.length) * Math.PI * 2;
+                        return Math.sin(angle) * 100;
+                    },
+                    rotateX: (el, i) => (i % 2 === 0 ? 1 : -1) * 15,
+                    rotateY: (el, i) => (i % 3 === 0 ? 1 : -1) * 15,
+                    scale: 1.1,
+                    duration: 1500,
+                    delay: anime.stagger(80),
+                    easing: 'easeOutExpo',
+                    complete: () => console.log('Explode animation complete')
+                });
+
+                anime({
+                    targets: '.part-label',
+                    opacity: [0, 1],
+                    translateY: [20, 0],
+                    delay: anime.stagger(80, { start: 500 }),
+                    duration: 600,
+                    easing: 'easeOutQuad',
+                });
+
+                toggleButton.textContent = 'ASSEMBLE';
+            } else {
+                console.log('Assembling...');
+                // Сборка
+                anime({
+                    targets: '.camera-part',
+                    translateZ: 0,
+                    translateX: 0,
+                    translateY: 0,
+                    rotateX: 0,
+                    rotateY: 0,
+                    scale: 1,
+                    duration: 1200,
+                    delay: anime.stagger(60, { from: 'last' }),
+                    easing: 'easeInOutQuad',
+                    complete: () => console.log('Assemble animation complete')
+                });
+
+                anime({
+                    targets: '.part-label',
+                    opacity: 0,
+                    translateY: -20,
+                    duration: 400,
+                    easing: 'easeInQuad',
+                });
+
+                toggleButton.textContent = 'EXPLODE VIEW';
+            }
+        }
+
+        toggleButton.addEventListener('click', toggleExplode);
+    </script>
+</body>
+</html>

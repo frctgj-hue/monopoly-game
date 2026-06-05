@@ -11,17 +11,17 @@ const GoToJailModal: React.FC<GoToJailModalProps> = ({ onConfirm }) => {
     <div className="w-full">
       <div className="text-center">
         {/* Иконка */}
-        <div className="text-6xl mb-4 text-red-600">
+        <div className="text-6xl mb-4 text-[var(--color-accent-red)]">
           <FontAwesomeIcon icon={faHandcuffs} />
         </div>
 
         {/* Заголовок */}
-        <h2 className="text-2xl font-black text-red-600 mb-3 uppercase">
+        <h2 className="theme-title text-2xl mb-3">
           Отправляйтесь в тюрьму!
         </h2>
 
         {/* Описание */}
-        <p className="text-base text-gray-800 mb-6 font-medium">
+        <p className="text-base text-[var(--color-text-primary)] mb-6 font-medium">
           Вы попали на клетку "Идти в тюрьму".<br />
           Переместитесь в тюрьму без получения $200 за прохождение "Старт".
         </p>
@@ -29,8 +29,7 @@ const GoToJailModal: React.FC<GoToJailModalProps> = ({ onConfirm }) => {
         {/* Кнопка */}
         <button
           onClick={onConfirm}
-          className="w-full py-3 px-6 text-white rounded-lg font-bold text-lg transition-all shadow-lg uppercase"
-          style={{ backgroundColor: '#dc3545' }}
+          className="theme-btn theme-btn-secondary w-full py-3 px-6 rounded-lg font-bold text-lg transition-all shadow-lg uppercase hover:scale-105 active:scale-95"
         >
           Далее
         </button>

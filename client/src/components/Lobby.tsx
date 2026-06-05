@@ -1,6 +1,5 @@
-import React, { useState } from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faDice, faHouse, faUserTie, faPlus, faDoorOpen, faUser, faKey } from '@fortawesome/free-solid-svg-icons';
+import React, { useState, useCallback, useEffect } from 'react';
+import CardDeckAnimation from './CardDeckAnimation';
 
 interface LobbyProps {
   onCreateGame: (playerName: string) => void;
@@ -11,220 +10,215 @@ const Lobby: React.FC<LobbyProps> = ({ onCreateGame, onJoinGame }) => {
   const [playerName, setPlayerName] = useState('');
   const [gameId, setGameId] = useState('');
   const [mode, setMode] = useState<'menu' | 'create' | 'join'>('menu');
+  const [animating, setAnimating] = useState(false);
+  const [deckAnimDone, setDeckAnimDone] = useState(false);
 
-  const handleCreateGame = () => {
+  const switchMode = useCallback((newMode: 'menu' | 'create' | 'join') => {
+    if (animating) return;
+    setAnimating(true);
+    setTimeout(() => {
+      setMode(newMode);
+      setAnimating(false);
+    }, 300);
+  }, [mode, animating]);
+
+  const handleCreateGame = useCallback(() => {
     if (playerName.trim()) {
       onCreateGame(playerName.trim());
     }
-  };
+  }, [playerName, onCreateGame]);
 
-  const handleJoinGame = () => {
-    if (playerName.trim() && gameId.trim()) {
-      onJoinGame(gameId.trim(), playerName.trim());
+  const handleJoinGame = useCallback(() => {
+    const name = playerName.trim();
+    const code = gameId.trim();
+    console.log('[Lobby] Join attempt:', { name, code, hasHandler: !!onJoinGame });
+    if (name && code && onJoinGame) {
+      onJoinGame(code, name);
     }
-  };
+  }, [playerName, gameId, onJoinGame]);
 
+  useEffect(() => {
+    const handleKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && mode !== 'menu') {
+        switchMode('menu');
+      }
+    };
+    window.addEventListener('keydown', handleKey);
+    return () => window.removeEventListener('keydown', handleKey);
+  }, [mode, switchMode]);
+
+  const animClass = animating ? 'lobby-anim-exit' : 'lobby-anim-enter';
+
+  // Главное меню — матовое стекло с серым фоном
   if (mode === 'menu') {
     return (
-      <div className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden bg-gradient-to-br from-[#2d6b4a] via-[#357a55] to-[#2d6b4a]">
-        {/* Декоративные элементы фона */}
-        <div className="absolute inset-0 overflow-hidden pointer-events-none opacity-10">
-          <div className="absolute top-20 left-10 text-6xl animate-float"><FontAwesomeIcon icon={faHouse} /></div>
-          <div className="absolute top-40 right-20 text-5xl animate-float-delayed"><FontAwesomeIcon icon={faDice} /></div>
-          <div className="absolute bottom-32 left-1/4 text-7xl animate-float"><FontAwesomeIcon icon={faUserTie} /></div>
-          <div className="absolute bottom-20 right-1/3 text-6xl animate-float-delayed"><FontAwesomeIcon icon={faHouse} /></div>
-        </div>
-
-        {/* Главная карточка меню */}
-        <div className="bg-white backdrop-blur-sm rounded-2xl p-12 max-w-2xl w-full relative z-10 animate-scale-in">
-          {/* Заголовок */}
-          <div className="text-center mb-10">
-            <h1 className="font-black text-8xl text-[#2d6b4a] mb-4 uppercase tracking-wider">
-              МОНОПОЛИЯ
+      <div className={`flex flex-col items-center justify-center relative overflow-hidden min-h-screen ${animClass}`}
+           style={{
+             background: 'linear-gradient(135deg, rgba(75, 75, 80, 0.6) 0%, rgba(42, 42, 46, 0.7) 100%)',
+             backdropFilter: 'blur(24px)',
+             WebkitBackdropFilter: 'blur(24px)',
+           }}>
+        {/* Анимация раскладывающейся колоды карт-улиц (фоновая) */}
+        <CardDeckAnimation onComplete={() => setDeckAnimDone(true)} />
+        {/* Центрированный контент */}
+        <div className="flex flex-col items-center justify-center relative z-10 w-full max-w-4xl px-4">
+          {/* Логотип */}
+          <div className="mb-12 text-center lobby-logo">
+            <h1 className="lobby-logo-main text-8xl sm:text-9xl font-extralight tracking-[0.25em]">
+              MONOPOLY
             </h1>
-            <div className="flex items-center justify-center gap-4 text-5xl text-[#2d6b4a] mb-4">
-              <FontAwesomeIcon icon={faUserTie} />
-              <FontAwesomeIcon icon={faDice} />
-              <FontAwesomeIcon icon={faHouse} />
-            </div>
-            <div className="inline-block bg-gradient-to-r from-[#2d6b4a] to-[#357a55] text-white px-8 py-3 rounded-lg">
-              <p className="text-xl font-black uppercase tracking-wide">Онлайн игра</p>
-            </div>
+            <div className="mt-3 h-px w-72 mx-auto bg-gradient-to-r from-transparent via-[#d4af37] to-transparent"></div>
           </div>
 
-          {/* Кнопки */}
-          <div className="space-y-5 flex flex-col items-center mb-8">
+          {/* Кнопки — крупные, по центру */}
+          <div className="flex flex-col sm:flex-row gap-6 sm:gap-10 items-center justify-center">
             <button
-              onClick={() => setMode('create')}
-              className="max-w-xl w-full bg-gradient-to-r from-[#c92a3a] to-[#b01f2e] text-white font-black px-10 py-6 rounded-lg transition-all text-2xl uppercase tracking-wide hover:from-[#b01f2e] hover:to-[#9a1a27] hover:scale-105 active:scale-95 transform duration-200"
+              onClick={() => switchMode('create')}
+              className="lobby-btn-main lobby-btn-red w-[360px] h-[80px] lobby-btn-float-1"
             >
-              <span className="flex items-center justify-center gap-4">
-                <FontAwesomeIcon icon={faPlus} className="text-3xl" />
-                <span>Создать игру</span>
-              </span>
+              <span>CREATE</span>
+              <span>New Game</span>
             </button>
 
             <button
-              onClick={() => setMode('join')}
-              className="max-w-xl w-full bg-gradient-to-r from-[#2d6b4a] to-[#357a55] text-white font-black px-10 py-6 rounded-lg transition-all text-2xl uppercase tracking-wide hover:from-[#357a55] hover:to-[#3d8960] hover:scale-105 active:scale-95 transform duration-200"
+              onClick={() => switchMode('join')}
+              className="lobby-btn-main lobby-btn-green-main w-[360px] h-[80px] lobby-btn-float-2"
             >
-              <span className="flex items-center justify-center gap-4">
-                <FontAwesomeIcon icon={faDoorOpen} className="text-3xl" />
-                <span>Присоединиться</span>
-              </span>
+              <span>JOIN</span>
+              <span>Lobby Code</span>
             </button>
-          </div>
-
-          {/* Информация о количестве игроков */}
-          <div className="text-center">
-            <div className="inline-flex items-center gap-3 bg-gray-100 rounded-lg px-8 py-4">
-              <FontAwesomeIcon icon={faUser} className="text-2xl text-[#2d6b4a]" />
-              <p className="text-lg text-gray-800 font-black uppercase">2-4 игрока</p>
-            </div>
-          </div>
-
-          {/* Версия для проверки деплоя */}
-          <div className="mt-6 text-center">
-            <p className="text-xs text-gray-400 font-mono">v3.2 - Dark Colors</p>
           </div>
         </div>
       </div>
     );
   }
 
+  // Создание игры — матовое стекло с серым фоном
   if (mode === 'create') {
     return (
-      <div className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden bg-gradient-to-br from-[#2d6b4a] via-[#357a55] to-[#2d6b4a]">
-        {/* Декоративные элементы фона */}
-        <div className="absolute inset-0 overflow-hidden pointer-events-none opacity-10">
-          <div className="absolute top-20 left-10 text-6xl animate-float"><FontAwesomeIcon icon={faHouse} /></div>
-          <div className="absolute bottom-20 right-20 text-5xl animate-float-delayed"><FontAwesomeIcon icon={faDice} /></div>
-        </div>
-
-        <div className="bg-white backdrop-blur-sm rounded-2xl p-12 max-w-2xl w-full relative z-10 animate-scale-in">
-          {/* Кнопка назад */}
+      <div className={`flex items-center justify-center overflow-hidden relative min-h-screen ${animClass}`}
+           style={{
+             background: 'linear-gradient(135deg, rgba(75, 75, 80, 0.6) 0%, rgba(42, 42, 46, 0.7) 100%)',
+             backdropFilter: 'blur(24px)',
+             WebkitBackdropFilter: 'blur(24px)',
+           }}>
+        <div className="w-full max-w-xl px-6 relative z-10 flex flex-col items-center">
           <button
-            onClick={() => setMode('menu')}
-            className="mb-8 bg-gray-100 hover:bg-gray-200 px-6 py-3 rounded-lg transition-all font-black uppercase text-gray-700 hover:scale-105 active:scale-95"
+            onClick={() => switchMode('menu')}
+            className="lobby-back-btn mb-8 group self-start"
           >
-            <span className="flex items-center gap-2">
-              <span className="text-2xl">←</span>
-              <span>Назад</span>
-            </span>
+            <span className="inline-block transition-transform duration-300 group-hover:-translate-x-1">←</span>
+            <span className="text-[#666] group-hover:text-gray-300 transition-colors ml-2">BACK</span>
           </button>
 
-          {/* Заголовок */}
-          <div className="text-center mb-10">
-            <h2 className="font-black text-6xl bg-gradient-to-r from-[#2d6b4a] to-[#357a55] bg-clip-text text-transparent mb-4 uppercase tracking-wider">
-              Создать игру
+          <div className="lobby-form-panel w-full">
+            <div className="text-center mb-8">
+              <div className="inline-block px-4 py-2 rounded-full bg-[#2a2a2c] border border-[#e53e3e]/30">
+                <span className="text-[#e53e3e] text-xs tracking-widest uppercase">New Game</span>
+              </div>
+              <h2 className="text-3xl font-light tracking-[0.2em] text-[#e53e3e] mt-5">
+                CREATE LOBBY
+              </h2>
+            </div>
+
+            <div className="space-y-7">
+              <div className="lobby-input-group">
+                <label className="block text-xs tracking-[0.2em] text-[#a0a0a0] uppercase mb-3">
+                  Player Name
+                </label>
+                <input
+                  type="text"
+                  value={playerName}
+                  onChange={(e) => setPlayerName(e.target.value)}
+                  placeholder="Enter your name..."
+                  className="lobby-input-form"
+                  maxLength={20}
+                  autoFocus
+                  onKeyDown={(e) => e.key === 'Enter' && handleCreateGame()}
+                />
+              </div>
+
+              <button
+                onClick={handleCreateGame}
+                disabled={!playerName.trim()}
+                className={`lobby-btn-form ${!playerName.trim() ? 'lobby-btn-disabled' : 'lobby-btn-red'}`}
+              >
+                <span className="tracking-[0.2em]">START GAME</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Присоединение к игре — матовое стекло с серым фоном
+  return (
+    <div className={`flex items-center justify-center overflow-hidden relative min-h-screen ${animClass}`}
+         style={{
+           background: 'linear-gradient(135deg, rgba(75, 75, 80, 0.6) 0%, rgba(42, 42, 46, 0.7) 100%)',
+           backdropFilter: 'blur(24px)',
+           WebkitBackdropFilter: 'blur(24px)',
+         }}>
+      <div className="w-full max-w-xl px-6 relative z-10 flex flex-col items-center">
+        <button
+          onClick={() => switchMode('menu')}
+          className="lobby-back-btn mb-8 group self-start"
+        >
+          <span className="inline-block transition-transform duration-300 group-hover:-translate-x-1">←</span>
+          <span className="text-[#666] group-hover:text-gray-300 transition-colors ml-2">BACK</span>
+        </button>
+
+        <div className="lobby-form-panel w-full">
+          <div className="text-center mb-8">
+            <div className="inline-block px-4 py-2 rounded-full bg-[#2a2a2c] border border-[#38a169]/30">
+              <span className="text-[#38a169] text-xs tracking-widest uppercase">Join Game</span>
+            </div>
+            <h2 className="text-3xl font-light tracking-[0.2em] text-[#38a169] mt-5">
+              JOIN LOBBY
             </h2>
-            <p className="text-gray-600 text-lg">Введите ваше имя для начала</p>
           </div>
 
-          <div className="space-y-6">
-            <div>
-              <label className="block text-xl font-black text-gray-700 mb-4 uppercase tracking-wide flex items-center gap-3">
-                <FontAwesomeIcon icon={faUser} className="text-2xl text-[#2d6b4a]" />
-                <span>Ваше имя</span>
+          <div className="space-y-7">
+            <div className="lobby-input-group">
+              <label className="block text-xs tracking-[0.2em] text-[#a0a0a0] uppercase mb-3">
+                Player Name
               </label>
               <input
                 type="text"
                 value={playerName}
                 onChange={(e) => setPlayerName(e.target.value)}
-                placeholder="Введите имя"
-                className="w-full px-6 py-5 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-[#2d6b4a] text-xl font-bold transition-all bg-white"
+                placeholder="Enter your name..."
+                className="lobby-input-form"
                 maxLength={20}
                 autoFocus
+                onKeyDown={(e) => e.key === 'Enter' && handleJoinGame()}
+              />
+            </div>
+
+            <div className="lobby-input-group">
+              <label className="block text-xs tracking-[0.2em] text-[#a0a0a0] uppercase mb-3">
+                Lobby Code
+              </label>
+              <input
+                type="text"
+                value={gameId}
+                onChange={(e) => setGameId(e.target.value)}
+                placeholder="ABC123"
+                className="lobby-input-form lobby-input-code"
+                maxLength={6}
+                onKeyDown={(e) => e.key === 'Enter' && handleJoinGame()}
               />
             </div>
 
             <button
-              onClick={handleCreateGame}
-              disabled={!playerName.trim()}
-              className={`w-full font-black py-6 px-10 rounded-lg transition-all text-2xl uppercase tracking-wide ${
-                playerName.trim()
-                  ? 'bg-gradient-to-r from-[#c92a3a] to-[#b01f2e] text-white hover:from-[#b01f2e] hover:to-[#9a1a27] hover:scale-105 active:scale-95 transform'
-                  : 'bg-gray-200 text-gray-400 cursor-not-allowed'
-              }`}
+              onClick={handleJoinGame}
+              disabled={!playerName.trim() || !gameId.trim()}
+              className={`lobby-btn-form ${(!playerName.trim() || !gameId.trim()) ? 'lobby-btn-disabled' : 'lobby-btn-green-main'}`}
             >
-              Создать игру
+              <span className="tracking-[0.2em]">JOIN LOBBY</span>
             </button>
           </div>
-        </div>
-      </div>
-    );
-  }
-
-  return (
-    <div className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden bg-gradient-to-br from-[#2d6b4a] via-[#357a55] to-[#2d6b4a]">
-      {/* Декоративные элементы фона */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none opacity-10">
-        <div className="absolute top-20 right-10 text-6xl animate-float"><FontAwesomeIcon icon={faDice} /></div>
-        <div className="absolute bottom-20 left-20 text-5xl animate-float-delayed"><FontAwesomeIcon icon={faUserTie} /></div>
-      </div>
-
-      <div className="bg-white/95 backdrop-blur-sm rounded-2xl p-12 max-w-2xl w-full relative z-10 animate-scale-in">
-        {/* Кнопка назад */}
-        <button
-          onClick={() => setMode('menu')}
-          className="mb-8 bg-gray-100 hover:bg-gray-200 px-6 py-3 rounded-lg transition-all font-black uppercase text-gray-700 hover:scale-105 active:scale-95"
-        >
-          <span className="flex items-center gap-2">
-            <span className="text-2xl">←</span>
-            <span>Назад</span>
-          </span>
-        </button>
-
-        {/* Заголовок */}
-        <div className="text-center mb-10">
-          <h2 className="font-black text-6xl bg-gradient-to-r from-[#2d6b4a] to-[#357a55] bg-clip-text text-transparent mb-4 uppercase tracking-wider">
-            Присоединиться
-          </h2>
-          <p className="text-gray-600 text-lg">Введите данные для входа в игру</p>
-        </div>
-
-        <div className="space-y-6">
-          <div>
-            <label className="block text-xl font-black text-gray-700 mb-4 uppercase tracking-wide flex items-center gap-3">
-              <FontAwesomeIcon icon={faUser} className="text-2xl text-[#2d6b4a]" />
-              <span>Ваше имя</span>
-            </label>
-            <input
-              type="text"
-              value={playerName}
-              onChange={(e) => setPlayerName(e.target.value)}
-              placeholder="Введите имя"
-              className="w-full px-6 py-5 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-[#2d6b4a] text-xl font-bold transition-all bg-white"
-              maxLength={20}
-              autoFocus
-            />
-          </div>
-
-          <div>
-            <label className="block text-xl font-black text-gray-700 mb-4 uppercase tracking-wide flex items-center gap-3">
-              <FontAwesomeIcon icon={faKey} className="text-2xl text-[#2d6b4a]" />
-              <span>ID игры</span>
-            </label>
-            <input
-              type="text"
-              value={gameId}
-              onChange={(e) => setGameId(e.target.value)}
-              placeholder="Введите ID"
-              className="w-full px-6 py-5 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-[#2d6b4a] text-xl font-bold font-mono transition-all bg-white"
-            />
-          </div>
-
-          <button
-            onClick={handleJoinGame}
-            disabled={!playerName.trim() || !gameId.trim()}
-            className={`w-full font-black py-6 px-10 rounded-lg transition-all text-2xl uppercase tracking-wide ${
-              playerName.trim() && gameId.trim()
-                ? 'bg-gradient-to-r from-[#2d6b4a] to-[#357a55] text-white hover:from-[#357a55] hover:to-[#3d8960] hover:scale-105 active:scale-95 transform'
-                : 'bg-gray-200 text-gray-400 cursor-not-allowed'
-            }`}
-          >
-            Присоединиться
-          </button>
         </div>
       </div>
     </div>

@@ -8,8 +8,11 @@ const app = express();
 const httpServer = createServer(app);
 const io = new Server(httpServer, {
   cors: {
-    origin: '*', // Разрешить все источники для локальной сети
-    methods: ['GET', 'POST']
+    origin: process.env.NODE_ENV === 'production' 
+      ? [process.env.FRONTEND_URL || 'https://monopoly-game-client.vercel.app', 'http://localhost:5173']
+      : '*',
+    methods: ['GET', 'POST'],
+    credentials: true
   },
   pingTimeout: 60000,
   pingInterval: 25000,
@@ -21,7 +24,8 @@ const io = new Server(httpServer, {
 app.use(cors());
 app.use(express.json());
 
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT || process.env.RENDER_EXTERNAL_PORT || 3001;
+const NODE_ENV = process.env.NODE_ENV || 'development';
 
 const gameService = new GameService();
 

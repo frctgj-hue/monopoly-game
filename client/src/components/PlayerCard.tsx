@@ -35,43 +35,39 @@ const PlayerCard: React.FC<PlayerCardProps> = ({
 }) => {
   return (
     <div
-      className={`rounded-xl shadow-lg p-3 transition-all relative ${
-        player.isBankrupt
-          ? 'bg-gray-300 opacity-60'
-          : isCurrentPlayer
-          ? 'bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-xl scale-105 animate-pulse-glow'
-          : 'bg-white'
+      className={`theme-panel p-4 transition-all relative ${
+        player.isBankrupt ? 'opacity-60' : isCurrentPlayer ? 'animate-glow scale-105' : ''
       }`}
+      style={{
+        background: player.isBankrupt ? 'var(--color-bg-tertiary)' : isCurrentPlayer ? 'linear-gradient(135deg, var(--color-accent-gold) 0%, #f4d03f 100%)' : 'var(--color-bg-secondary)',
+        boxShadow: isCurrentPlayer
+          ? '0 8px 24px rgba(212, 175, 55, 0.4), 0 0 40px rgba(212, 175, 55, 0.2)'
+          : 'var(--shadow-md)',
+      }}
     >
       {/* Анимация изменения денег */}
       {moneyChange && (
-        <MoneyAnimation
-          amount={moneyChange.amount}
-          type={moneyChange.type}
-          trigger={moneyChange.trigger}
-        />
+        <MoneyAnimation amount={moneyChange.amount} type={moneyChange.type} trigger={moneyChange.trigger} />
       )}
 
       {/* Заголовок карточки */}
-      <div className="flex items-center gap-2 mb-2">
+      <div className="flex items-center gap-2 mb-3">
         <TokenPiece color={player.color} size="md" animate={isCurrentPlayer} />
         <div className="flex-1 min-w-0">
-          <div className={`font-bold text-sm flex items-center gap-1 flex-wrap ${isCurrentPlayer ? 'text-white' : 'text-gray-800'}`}>
-            <span className="truncate">{player.name}</span>
+          <div className={`font-light text-sm flex items-center gap-2 flex-wrap tracking-wide ${isCurrentPlayer ? 'text-gray-900' : 'theme-text-primary'}`}>
+            <span className="truncate font-medium">{player.name}</span>
             {isMyPlayer && (
-              <span className={`text-[10px] px-1.5 py-0.5 rounded-full whitespace-nowrap ${
-                isCurrentPlayer ? 'bg-white bg-opacity-20' : 'bg-blue-100 text-blue-700'
-              }`}>
-                Вы
+              <span className={`text-[10px] px-2 py-0.5 rounded-full whitespace-nowrap tracking-wider ${isCurrentPlayer ? 'bg-gray-900 bg-opacity-20 text-gray-900' : 'theme-panel-inset theme-text-muted'}`}>
+                ВЫ
               </span>
             )}
             {player.isBankrupt && (
-              <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-red-500 text-white whitespace-nowrap">
-                Банкрот
+              <span className="text-[10px] px-2 py-0.5 rounded-full theme-toast error whitespace-nowrap tracking-wider">
+                БАНКРОТ
               </span>
             )}
             {player.inJail && !player.isBankrupt && (
-              <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-orange-500 text-white whitespace-nowrap">
+              <span className="text-[10px] px-2 py-0.5 rounded-full theme-toast warning whitespace-nowrap">
                 🔒
               </span>
             )}
@@ -80,10 +76,8 @@ const PlayerCard: React.FC<PlayerCardProps> = ({
       </div>
 
       {/* Информация */}
-      <div className={`flex items-center justify-between text-[10px] mb-2 ${
-        isCurrentPlayer ? 'text-white text-opacity-90' : 'text-gray-600'
-      }`}>
-        <span className="font-semibold">💰 ${player.money}</span>
+      <div className={`flex items-center justify-between text-xs mb-3 font-light tracking-wide ${isCurrentPlayer ? 'text-gray-900' : 'theme-text-muted'}`}>
+        <span className="font-medium">💰 ${player.money}</span>
         <span>🏠 {player.properties.length}</span>
         {player.getOutOfJailFreeCards > 0 && (
           <span>🎫 {player.getOutOfJailFreeCards}</span>
@@ -102,66 +96,36 @@ const PlayerCard: React.FC<PlayerCardProps> = ({
         <div className="space-y-2">
           {player.inJail ? (
             <>
-              <div className="bg-red-100 border border-red-400 rounded-lg p-2 text-center mb-1">
-                <div className="text-lg">🔒</div>
-                <div className="font-bold text-red-700 text-[10px]">В тюрьме</div>
-                <div className="text-[8px] text-red-600">Ход {player.jailTurns + 1} из 3</div>
+              <div className="theme-panel-inset p-3 text-center mb-2">
+                <div className="text-2xl mb-1">🔒</div>
+                <div className="font-medium text-[var(--color-accent-red)] text-xs tracking-wider">В ТЮРЬМЕ</div>
+                <div className="text-[10px] text-[var(--color-text-muted)] mt-1">Ход {player.jailTurns + 1} из 3</div>
               </div>
               {onPayJailFine && player.money >= 50 && (
-                <button
-                  onClick={onPayJailFine}
-                  className="w-full py-1.5 px-2 rounded-lg font-bold text-[10px] bg-green-500 text-white hover:bg-green-600 transition-all"
-                >
+                <button onClick={onPayJailFine} className="theme-btn theme-btn-secondary w-full py-2 px-3 rounded-xl font-light text-xs tracking-wider hover:scale-105">
                   💵 Заплатить $50
                 </button>
               )}
               {onUseJailCard && player.getOutOfJailFreeCards > 0 && (
-                <button
-                  onClick={onUseJailCard}
-                  className="w-full py-1.5 px-2 rounded-lg font-bold text-[10px] bg-purple-500 text-white hover:bg-purple-600 transition-all"
-                >
-                  🎫 Карточка
+                <button onClick={onUseJailCard} className="theme-btn w-full py-2 px-3 rounded-xl font-light text-xs tracking-wider hover:scale-105" style={{ background: 'var(--color-accent-purple)', color: '#fff' }}>
+                  🎫 Использовать карточку
                 </button>
               )}
               {onRollDice && (
-                <button
-                  onClick={onRollDice}
-                  disabled={!canRoll}
-                  className={`w-full py-1.5 px-2 rounded-lg font-bold text-[10px] transition-all ${
-                    canRoll
-                      ? 'bg-blue-500 text-white hover:bg-blue-600'
-                      : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                  }`}
-                >
-                  🎲 Дубль
+                <button onClick={onRollDice} disabled={!canRoll} className={`theme-btn w-full py-2 px-3 rounded-xl font-light text-xs tracking-wider transition-all ${canRoll ? 'hover:scale-105' : 'opacity-30 cursor-not-allowed theme-panel-inset'}`} style={canRoll ? { background: 'var(--color-bg-primary)', color: 'var(--color-text-gold)' } : {}}>
+                  🎲 Попытка дубля
                 </button>
               )}
             </>
           ) : (
             <>
               {onRollDice && (
-                <button
-                  onClick={onRollDice}
-                  disabled={!canRoll}
-                  className={`w-full py-2 px-3 rounded-lg font-bold text-xs transition-all ${
-                    canRoll
-                      ? 'bg-white text-blue-600 hover:bg-gray-50 shadow-md'
-                      : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                  }`}
-                >
+                <button onClick={onRollDice} disabled={!canRoll} className={`theme-btn w-full py-3 px-4 rounded-xl font-light text-sm tracking-wider transition-all ${canRoll ? 'hover:scale-105' : 'opacity-30 cursor-not-allowed theme-panel-inset'}`} style={canRoll ? { background: 'var(--color-bg-primary)', color: 'var(--color-text-gold)', boxShadow: 'var(--shadow-lg)' } : {}}>
                   🎲 Бросить кубики
                 </button>
               )}
               {onEndTurn && (
-                <button
-                  onClick={onEndTurn}
-                  disabled={canRoll}
-                  className={`w-full py-2 px-3 rounded-lg font-bold text-xs transition-all ${
-                    !canRoll
-                      ? 'bg-white text-green-600 hover:bg-gray-50 shadow-md'
-                      : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                  }`}
-                >
+                <button onClick={onEndTurn} disabled={canRoll} className={`theme-btn theme-btn-secondary w-full py-3 px-4 rounded-xl font-light text-sm tracking-wider transition-all ${!canRoll ? 'hover:scale-105' : 'opacity-30 cursor-not-allowed'}`}>
                   ✓ Завершить ход
                 </button>
               )}
@@ -170,20 +134,14 @@ const PlayerCard: React.FC<PlayerCardProps> = ({
 
           {/* Кнопка управления недвижимостью */}
           {onOpenPropertyManagement && player.properties.length > 0 && (
-            <button
-              onClick={onOpenPropertyManagement}
-              className="w-full py-1.5 px-2 rounded-lg font-bold text-[10px] bg-gradient-to-r from-green-500 to-emerald-500 text-white hover:from-green-600 hover:to-emerald-600 transition-all"
-            >
+            <button onClick={onOpenPropertyManagement} className="theme-btn w-full py-2 px-3 rounded-xl font-light text-xs tracking-wider hover:scale-105" style={{ background: 'linear-gradient(135deg, var(--color-accent-green) 0%, #1e5631 100%)', color: '#fff' }}>
               🏠 Недвижимость ({player.properties.length})
             </button>
           )}
 
           {/* Кнопка торговли */}
           {onOpenTrade && (
-            <button
-              onClick={onOpenTrade}
-              className="w-full py-1.5 px-2 rounded-lg font-bold text-[10px] bg-gradient-to-r from-purple-500 to-pink-500 text-white hover:from-purple-600 hover:to-pink-600 transition-all"
-            >
+            <button onClick={onOpenTrade} className="theme-btn w-full py-2 px-3 rounded-xl font-light text-xs tracking-wider hover:scale-105" style={{ background: 'linear-gradient(135deg, var(--color-accent-purple) 0%, #ec4899 100%)', color: '#fff' }}>
               🤝 Торговля
             </button>
           )}
@@ -192,10 +150,10 @@ const PlayerCard: React.FC<PlayerCardProps> = ({
 
       {/* Индикатор ожидания для других игроков */}
       {isMyPlayer && !isCurrentPlayer && !player.isBankrupt && (
-        <div className="text-center py-2">
-          <div className="inline-flex items-center gap-1 bg-gray-100 rounded-full px-3 py-1">
-            <div className="animate-spin text-xs">⏳</div>
-            <span className="text-gray-600 font-semibold text-[10px]">Ожидание...</span>
+        <div className="text-center py-3">
+          <div className="inline-flex items-center gap-2 rounded-full px-4 py-2 theme-panel-inset">
+            <div className="animate-spin text-sm">⏳</div>
+            <span className="theme-text-muted font-light text-xs tracking-wider">Ожидание...</span>
           </div>
         </div>
       )}

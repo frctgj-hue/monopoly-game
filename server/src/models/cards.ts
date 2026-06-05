@@ -19,9 +19,9 @@ export const CHANCE_CARDS: Card[] = [
   { id: 9, type: 'chance', text: 'Вы выиграли кроссворд. Получите $100', action: 'money', value: 100 },
   { id: 10, type: 'chance', text: 'Освобождение из тюрьмы. Эту карточку можно сохранить до тех пор, пока она не понадобится', action: 'jailFree' },
   { id: 11, type: 'chance', text: 'Пройдите на клетку "Вперед"', action: 'move', position: 0 },
-  { id: 12, type: 'chance', text: 'Идите на Иллинойс проспект', action: 'move', position: 24 },
-  { id: 13, type: 'chance', text: 'Идите на Сент-Чарльз Плейс', action: 'move', position: 11 },
-  { id: 14, type: 'chance', text: 'Идите на Бордвок', action: 'move', position: 39 },
+  { id: 12, type: 'chance', text: 'Идите на Ленинградский проспект', action: 'move', position: 24 },
+  { id: 13, type: 'chance', text: 'Идите на Кузнецкий мост', action: 'move', position: 11 },
+  { id: 14, type: 'chance', text: 'Идите на Кремль', action: 'move', position: 39 },
   { id: 15, type: 'chance', text: 'Идите на ближайшую коммунальную компанию. Если она никому не принадлежит, можете купить её у банка', action: 'move', position: -1 },
   { id: 16, type: 'chance', text: 'Банк платит вам дивиденды $50', action: 'money', value: 50 },
 ];

@@ -1,4 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+// @ts-ignore - animejs@4.4.1 не предоставляет типы
+import anime from 'animejs';
 import type { DiceRoll } from '../types/game.types';
 
 interface DiceAnimationProps {
@@ -9,32 +11,86 @@ interface DiceAnimationProps {
 const DiceAnimation: React.FC<DiceAnimationProps> = ({ diceRoll, isRolling }) => {
   const [displayDice1, setDisplayDice1] = useState(1);
   const [displayDice2, setDisplayDice2] = useState(1);
+  const dice1Ref = useRef<HTMLDivElement>(null);
+  const dice2Ref = useRef<HTMLDivElement>(null);
+  // @ts-ignore - animejs не предоставляет типы анимаций
+  const animationRef = useRef<any[]>([]);
 
+  // Запуск анимации броска
   useEffect(() => {
     if (isRolling) {
-      // Анимация случайных чисел во время броска
+      // Останавливаем предыдущие анимации
+      animationRef.current.forEach(anim => anim.pause());
+      animationRef.current = [];
+
+      // Быстрая смена значений во время броска
       const interval = setInterval(() => {
         setDisplayDice1(Math.floor(Math.random() * 6) + 1);
         setDisplayDice2(Math.floor(Math.random() * 6) + 1);
-      }, 100);
+      }, 80);
 
-      return () => clearInterval(interval);
+      // Анимация вращения и подбрасывания с anime.js
+      [dice1Ref.current, dice2Ref.current].forEach((el, idx) => {
+        if (!el) return;
+        const anim = anime({
+          targets: el,
+          rotateZ: [0, 360 * (2 + Math.random() * 2)],
+          translateY: [0, -20, 0],
+          scale: [1, 1.15, 1],
+          duration: 1200 + idx * 200,
+          easing: 'easeInOutCubic',
+        });
+        animationRef.current.push(anim);
+      });
+
+      return () => {
+        clearInterval(interval);
+        animationRef.current.forEach(anim => anim.pause());
+      };
     } else if (diceRoll) {
-      // Показываем финальный результат
+      // Фиксируем финальное значение
       setDisplayDice1(diceRoll.dice1);
       setDisplayDice2(diceRoll.dice2);
+
+      // Эффект "приземления" при остановке
+      [dice1Ref.current, dice2Ref.current].forEach((el, idx) => {
+        if (!el) return;
+        const anim = anime({
+          targets: el,
+          rotateZ: [el.style.rotate || 0, 0],
+          translateY: [0, -8, 0],
+          scale: [1.1, 1],
+          duration: 400,
+          delay: idx * 100,
+          easing: 'easeOutElastic(1, .6)',
+        });
+        animationRef.current.push(anim);
+      });
+
+      // Свечение при дубле
+      if (diceRoll.dice1 === diceRoll.dice2) {
+        [dice1Ref.current, dice2Ref.current].forEach(el => {
+          if (!el) return;
+          anime({
+            targets: el,
+            boxShadow: ['var(--shadow-md)', '0 0 20px var(--color-gold)', 'var(--shadow-md)'],
+            duration: 800,
+            easing: 'easeInOutQuad',
+          });
+        });
+      }
     }
   }, [isRolling, diceRoll]);
 
   const renderDots = (value: number) => {
     const positions = [
-      [], // 0 (не используется)
-      [[50, 50]], // 1
-      [[25, 25], [75, 75]], // 2
-      [[25, 25], [50, 50], [75, 75]], // 3
-      [[25, 25], [25, 75], [75, 25], [75, 75]], // 4
-      [[25, 25], [25, 75], [50, 50], [75, 25], [75, 75]], // 5
-      [[25, 25], [25, 50], [25, 75], [75, 25], [75, 50], [75, 75]], // 6
+      [],
+      [[50, 50]],
+      [[25, 25], [75, 75]],
+      [[25, 25], [50, 50], [75, 75]],
+      [[25, 25], [25, 75], [75, 25], [75, 75]],
+      [[25, 25], [25, 75], [50, 50], [75, 25], [75, 75]],
+      [[25, 25], [25, 50], [25, 75], [75, 25], [75, 50], [75, 75]],
     ];
 
     const dotPositions = positions[value] || [];
@@ -42,11 +98,12 @@ const DiceAnimation: React.FC<DiceAnimationProps> = ({ diceRoll, isRolling }) =>
     return dotPositions.map((pos, idx) => (
       <div
         key={idx}
-        className="absolute w-3 h-3 bg-gray-800 rounded-full"
+        className="absolute w-3 h-3 rounded-full"
         style={{
           left: `${pos[0]}%`,
           top: `${pos[1]}%`,
           transform: 'translate(-50%, -50%)',
+          backgroundColor: 'var(--color-bg-primary)',
         }}
       />
     ));
@@ -55,17 +112,24 @@ const DiceAnimation: React.FC<DiceAnimationProps> = ({ diceRoll, isRolling }) =>
   return (
     <div className="flex gap-3">
       <div
-        className={`relative w-16 h-16 bg-white border-3 border-gray-800 rounded-lg shadow-lg flex items-center justify-center ${
-          isRolling ? 'animate-dice-roll' : 'animate-bounce-soft'
-        }`}
+        ref={dice1Ref}
+        className="relative w-16 h-16 rounded-lg shadow-lg flex items-center justify-center border-4"
+        style={{
+          background: 'var(--color-bg-secondary)',
+          borderColor: 'var(--color-border-primary)',
+          boxShadow: 'var(--shadow-md)',
+        }}
       >
         {renderDots(displayDice1)}
       </div>
       <div
-        className={`relative w-16 h-16 bg-white border-3 border-gray-800 rounded-lg shadow-lg flex items-center justify-center ${
-          isRolling ? 'animate-dice-roll' : 'animate-bounce-soft'
-        }`}
-        style={{ animationDelay: '0.1s' }}
+        ref={dice2Ref}
+        className="relative w-16 h-16 rounded-lg shadow-lg flex items-center justify-center border-4"
+        style={{
+          background: 'var(--color-bg-secondary)',
+          borderColor: 'var(--color-border-primary)',
+          boxShadow: 'var(--shadow-md)',
+        }}
       >
         {renderDots(displayDice2)}
       </div>

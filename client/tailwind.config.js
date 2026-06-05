@@ -17,10 +17,21 @@ export default {
           bg: '#C7DCA7',
           border: '#2C5F2D',
         },
+        modern: {
+          primary: '#6366f1',
+          secondary: '#8b5cf6',
+          accent: '#ec4899',
+          success: '#10b981',
+          warning: '#f59e0b',
+          error: '#ef4444',
+          dark: '#1e293b',
+          light: '#f8fafc',
+        },
       },
       fontFamily: {
-        sans: ['Poppins', 'system-ui', 'sans-serif'],
-        display: ['Bebas Neue', 'system-ui', 'sans-serif'],
+        sans: ['Inter', 'system-ui', 'sans-serif'],
+        display: ['Poppins', 'system-ui', 'sans-serif'],
+        mono: ['JetBrains Mono', 'monospace'],
       },
       boxShadow: {
         'board': '0 20px 60px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(0, 0, 0, 0.1)',
@@ -28,6 +39,13 @@ export default {
         'glow': '0 0 20px rgba(59, 130, 246, 0.5)',
         'glow-green': '0 0 20px rgba(31, 178, 90, 0.5)',
         'glow-red': '0 0 20px rgba(227, 23, 10, 0.5)',
+        'neo': '8px 8px 16px rgba(0, 0, 0, 0.15), -8px -8px 16px rgba(255, 255, 255, 0.7)',
+        'neo-inset': 'inset 4px 4px 8px rgba(0, 0, 0, 0.15), inset -4px -4px 8px rgba(255, 255, 255, 0.7)',
+        'glass': '0 8px 32px 0 rgba(31, 38, 135, 0.37)',
+        'xl-colored': '0 20px 25px -5px rgba(99, 102, 241, 0.3), 0 10px 10px -5px rgba(99, 102, 241, 0.2)',
+      },
+      backdropBlur: {
+        xs: '2px',
       },
       animation: {
         'dice-roll': 'diceRoll 0.6s ease-in-out',
@@ -39,6 +57,10 @@ export default {
         'fade-in': 'fadeIn 0.3s ease-in',
         'scale-in': 'scaleIn 0.3s ease-out',
         'shake': 'shake 0.5s ease-in-out',
+        'float': 'float 6s ease-in-out infinite',
+        'float-delayed': 'float 6s ease-in-out 3s infinite',
+        'gradient': 'gradient 8s ease infinite',
+        'shimmer': 'shimmer 2s linear infinite',
       },
       keyframes: {
         diceRoll: {
@@ -80,6 +102,22 @@ export default {
           '25%': { transform: 'translateX(-5px)' },
           '75%': { transform: 'translateX(5px)' },
         },
+        float: {
+          '0%, 100%': { transform: 'translateY(0px) rotate(0deg)' },
+          '50%': { transform: 'translateY(-20px) rotate(5deg)' },
+        },
+        gradient: {
+          '0%, 100%': { backgroundPosition: '0% 50%' },
+          '50%': { backgroundPosition: '100% 50%' },
+        },
+        shimmer: {
+          '0%': { backgroundPosition: '-1000px 0' },
+          '100%': { backgroundPosition: '1000px 0' },
+        },
+      },
+      backgroundImage: {
+        'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
+        'gradient-conic': 'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
       },
     },
   },

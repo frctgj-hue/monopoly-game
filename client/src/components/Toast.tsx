@@ -14,41 +14,32 @@ const Toast: React.FC<ToastProps> = ({ message, type = 'info', duration = 3000, 
     const timer = setTimeout(() => {
       onClose();
     }, duration);
-
     return () => clearTimeout(timer);
   }, [duration, onClose]);
 
-  const getTypeStyles = () => {
+  const getTypeClass = () => {
     switch (type) {
-      case 'success':
-        return 'bg-green-500 border-green-600';
-      case 'error':
-        return 'bg-red-500 border-red-600';
-      case 'warning':
-        return 'bg-yellow-500 border-yellow-600';
-      default:
-        return 'bg-blue-500 border-blue-600';
+      case 'success': return 'theme-toast success border-l-4 border-[var(--color-accent-green)]';
+      case 'error': return 'theme-toast error border-l-4 border-[var(--color-accent-red)]';
+      case 'warning': return 'theme-toast warning border-l-4 border-[var(--color-accent-gold)]';
+      default: return 'theme-panel border-l-4 border-[var(--color-accent-blue)]';
     }
   };
 
   const getIcon = () => {
     switch (type) {
-      case 'success':
-        return '✓';
-      case 'error':
-        return '✕';
-      case 'warning':
-        return '⚠';
-      default:
-        return 'ℹ';
+      case 'success': return '✓';
+      case 'error': return '✕';
+      case 'warning': return '⚠';
+      default: return 'ℹ';
     }
   };
 
   return (
-    <div className={`${getTypeStyles()} text-white px-3 py-2 rounded-lg shadow-lg border-l-4 flex items-center gap-2 animate-slide-in-right`}>
-      <div className="text-sm font-bold">{getIcon()}</div>
+    <div className={`${getTypeClass()} flex items-center gap-3 animate-slide-in-right shadow-lg`}>
+      <div className="text-lg font-bold opacity-80">{getIcon()}</div>
       <div className="flex-1">
-        <p className="font-medium text-xs">{message}</p>
+        <p className="font-medium text-sm text-[var(--color-text-primary)]">{message}</p>
       </div>
     </div>
   );

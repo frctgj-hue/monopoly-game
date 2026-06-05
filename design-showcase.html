@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monopoly Game - Design Showcase</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #1c1c1e;
+            color: #d4af37;
+            padding: 40px 20px;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            font-size: 4rem;
+            font-weight: 300;
+            letter-spacing: 0.3em;
+            text-align: center;
+            margin-bottom: 20px;
+            text-shadow: 0 0 30px rgba(212, 175, 55, 0.3);
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #888;
+            font-size: 1.2rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            margin-bottom: 60px;
+        }
+
+        .divider {
+            height: 1px;
+            background: linear-gradient(to right, transparent, #d4af37, transparent);
+            margin: 60px 0;
+        }
+
+        .section {
+            margin-bottom: 80px;
+        }
+
+        .section-title {
+            font-size: 2rem;
+            font-weight: 300;
+            letter-spacing: 0.2em;
+            margin-bottom: 30px;
+            text-transform: uppercase;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .card {
+            background: #252528;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 
+                8px 8px 16px rgba(0,0,0,0.4),
+                -8px -8px 16px rgba(60,60,60,0.1);
+            border: 1px solid rgba(212, 175, 55, 0.1);
+            transition: all 0.3s;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 
+                12px 12px 24px rgba(0,0,0,0.5),
+                -12px -12px 24px rgba(60,60,60,0.15),
+                0 0 30px rgba(212, 175, 55, 0.2);
+            border-color: rgba(212, 175, 55, 0.4);
+        }
+
+        .card-title {
+            font-size: 1.2rem;
+            font-weight: 300;
+            letter-spacing: 0.15em;
+            margin-bottom: 15px;
+            color: #d4af37;
+        }
+
+        .card-content {
+            color: #888;
+            font-size: 0.9rem;
+            line-height: 1.8;
+        }
+
+        .color-palette {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+
+        .color-swatch {
+            flex: 1;
+            min-width: 120px;
+            height: 120px;
+            border-radius: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            transition: transform 0.3s;
+        }
+
+        .color-swatch:hover {
+            transform: scale(1.05);
+        }
+
+        .color-name {
+            font-size: 0.7rem;
+            margin-top: 10px;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+        }
+
+        .color-code {
+            font-family: monospace;
+            font-size: 0.8rem;
+            opacity: 0.7;
+        }
+
+        .button-showcase {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+
+        .btn {
+            padding: 15px 40px;
+            border-radius: 12px;
+            border: none;
+            font-size: 1rem;
+            font-weight: 300;
+            letter-spacing: 0.2em;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-transform: uppercase;
+        }
+
+        .btn-primary {
+            background: #d4af37;
+            color: #1c1c1e;
+            box-shadow: 0 4px 16px rgba(212, 175, 55, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 20px rgba(212, 175, 55, 0.5);
+        }
+
+        .btn-secondary {
+            background: #2d5f3f;
+            color: #ffffff;
+            box-shadow: 0 4px 16px rgba(45, 95, 63, 0.3);
+        }
+
+        .btn-secondary:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 20px rgba(45, 95, 63, 0.5);
+        }
+
+        .btn-dark {
+            background: #252528;
+            color: #d4af37;
+            box-shadow: 
+                8px 8px 16px rgba(0,0,0,0.4),
+                -8px -8px 16px rgba(60,60,60,0.1);
+            border: 1px solid rgba(212, 175, 55, 0.1);
+        }
+
+        .btn-dark:hover {
+            box-shadow: 
+                12px 12px 24px rgba(0,0,0,0.5),
+                -12px -12px 24px rgba(60,60,60,0.15),
+                0 0 30px rgba(212, 175, 55, 0.2);
+            border-color: rgba(212, 175, 55, 0.4);
+        }
+
+        .animation-demo {
+            background: #252528;
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            box-shadow: 
+                inset 4px 4px 8px rgba(0,0,0,0.5),
+                inset -4px -4px 8px rgba(60,60,60,0.1);
+        }
+
+        .floating-element {
+            width: 100px;
+            height: 100px;
+            background: radial-gradient(circle, #d4af37, transparent);
+            border-radius: 50%;
+            margin: 20px auto;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-20px);
+            }
+        }
+
+        .glowing-element {
+            width: 200px;
+            height: 60px;
+            background: #d4af37;
+            border-radius: 12px;
+            margin: 20px auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #1c1c1e;
+            font-weight: 300;
+            letter-spacing: 0.2em;
+            animation: glow 2s ease-in-out infinite;
+        }
+
+        @keyframes glow {
+            0%, 100% {
+                box-shadow: 0 0 20px rgba(212, 175, 55, 0.3);
+            }
+            50% {
+                box-shadow: 0 0 40px rgba(212, 175, 55, 0.8);
+            }
+        }
+
+        .fade-in-element {
+            opacity: 0;
+            animation: fadeIn 1s ease-out forwards;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .code-block {
+            background: #1c1c1e;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+            font-family: monospace;
+            font-size: 0.85rem;
+            color: #d4af37;
+            overflow-x: auto;
+            box-shadow: inset 4px 4px 8px rgba(0,0,0,0.5);
+        }
+
+        .feature-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .feature-list li {
+            padding: 10px 0;
+            padding-left: 30px;
+            position: relative;
+            color: #888;
+        }
+
+        .feature-list li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #d4af37;
+            font-weight: bold;
+        }
+
+        .comparison {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-top: 30px;
+        }
+
+        .comparison-item {
+            background: #252528;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 4px 4px 12px rgba(0,0,0,0.4);
+        }
+
+        .comparison-label {
+            font-size: 0.8rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            margin-bottom: 15px;
+            opacity: 0.7;
+        }
+
+        .old {
+            border: 2px solid rgba(239, 68, 68, 0.3);
+        }
+
+        .new {
+            border: 2px solid rgba(212, 175, 55, 0.3);
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.5rem;
+            }
+
+            .comparison {
+                grid-template-columns: 1fr;
+            }
+
+            .button-showcase {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>MONOPOLY GAME</h1>
+        <div class="subtitle">Design System Showcase</div>
+
+        <div class="divider"></div>
+
+        <!-- Цветовая палитра -->
+        <div class="section">
+            <h2 class="section-title">🎨 Цветовая палитра</h2>
+            <div class="color-palette">
+                <div class="color-swatch" style="background: #1c1c1e;">
+                    <div class="color-name" style="color: #d4af37;">Основной фон</div>
+                    <div class="color-code" style="color: #d4af37;">#1c1c1e</div>
+                </div>
+                <div class="color-swatch" style="background: #252528;">
+                    <div class="color-name" style="color: #d4af37;">Карточки</div>
+                    <div class="color-code" style="color: #d4af37;">#252528</div>
+                </div>
+                <div class="color-swatch" style="background: #d4af37;">
+                    <div class="color-name" style="color: #1c1c1e;">Золотой</div>
+                    <div class="color-code" style="color: #1c1c1e;">#d4af37</div>
+                </div>
+                <div class="color-swatch" style="background: #2d5f3f;">
+                    <div class="color-name" style="color: #ffffff;">Зеленый</div>
+                    <div class="color-code" style="color: #ffffff;">#2d5f3f</div>
+                </div>
+                <div class="color-swatch" style="background: linear-gradient(135deg, #d4af37 0%, #f4d03f 100%);">
+                    <div class="color-name" style="color: #1c1c1e;">Градиент</div>
+                    <div class="color-code" style="color: #1c1c1e;">Золотой</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <!-- Кнопки -->
+        <div class="section">
+            <h2 class="section-title">🔘 Кнопки</h2>
+            <div class="button-showcase">
+                <button class="btn btn-primary">Primary Button</button>
+                <button class="btn btn-secondary">Secondary Button</button>
+                <button class="btn btn-dark">Neumorphic Button</button>
+            </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <!-- Карточки -->
+        <div class="section">
+            <h2 class="section-title">📦 Компоненты</h2>
+            <div class="grid">
+                <div class="card">
+                    <div class="card-title">WaitingRoom</div>
+                    <div class="card-content">
+                        <ul class="feature-list">
+                            <li>Анимированный фон</li>
+                            <li>Плавное появление карточек</li>
+                            <li>Hover эффекты</li>
+                            <li>Прогресс-бар с градиентом</li>
+                            <li>Неоморфные тени</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-title">Lobby</div>
+                    <div class="card-content">
+                        <ul class="feature-list">
+                            <li>Плавающие фоновые элементы</li>
+                            <li>Задержка появления кнопок</li>
+                            <li>Улучшенные hover эффекты</li>
+                            <li>Анимация float (6s)</li>
+                            <li>Золотое свечение</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-title">PlayerCard</div>
+                    <div class="card-content">
+                        <ul class="feature-list">
+                            <li>Золотой градиент для активного</li>
+                            <li>Премиум типографика</li>
+                            <li>Кнопки с hover scale</li>
+                            <li>Обновленные цвета</li>
+                            <li>Улучшенная иерархия</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <!-- Анимации -->
+        <div class="section">
+            <h2 class="section-title">✨ Анимации</h2>
+            
+            <div class="grid">
+                <div class="animation-demo">
+                    <div class="card-title">Float Animation</div>
+                    <div class="floating-element"></div>
+                    <div class="code-block">
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-20px); }
+}
+                    </div>
+                </div>
+
+                <div class="animation-demo">
+                    <div class="card-title">Glow Animation</div>
+                    <div class="glowing-element">GLOWING</div>
+                    <div class="code-block">
+@keyframes glow {
+  0%, 100% { 
+    box-shadow: 0 0 20px rgba(212, 175, 55, 0.3);
+  }
+  50% { 
+    box-shadow: 0 0 40px rgba(212, 175, 55, 0.8);
+  }
+}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <!-- Сравнение -->
+        <div class="section">
+            <h2 class="section-title">📊 До и После</h2>
+            
+            <div class="comparison">
+                <div class="comparison-item old">
+                    <div class="comparison-label" style="color: #ef4444;">❌ Старый дизайн</div>
+                    <ul class="feature-list">
+                        <li>Яркие цвета (синий, фиолетовый)</li>
+                        <li>Простые тени</li>
+                        <li>Базовые анимации</li>
+                        <li>Стандартная типографика</li>
+                        <li>Белый фон карточек</li>
+                    </ul>
+                </div>
+
+                <div class="comparison-item new">
+                    <div class="comparison-label" style="color: #d4af37;">✓ Новый дизайн</div>
+                    <ul class="feature-list">
+                        <li>Премиум золотой (#d4af37)</li>
+                        <li>Неоморфные тени</li>
+                        <li>Плавные анимации</li>
+                        <li>Тонкая типографика</li>
+                        <li>Темный фон (#252528)</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <!-- Технические детали -->
+        <div class="section">
+            <h2 class="section-title">🔧 Технические детали</h2>
+            
+            <div class="card">
+                <div class="card-title">Неоморфная тень</div>
+                <div class="code-block">
+box-shadow: 
+  8px 8px 16px rgba(0,0,0,0.4),      /* Темная тень */
+  -8px -8px 16px rgba(60,60,60,0.1); /* Светлая тень */
+                </div>
+            </div>
+
+            <div class="card" style="margin-top: 30px;">
+                <div class="card-title">Золотой градиент</div>
+                <div class="code-block">
+background: linear-gradient(135deg, #d4af37 0%, #f4d03f 100%);
+                </div>
+            </div>
+
+            <div class="card" style="margin-top: 30px;">
+                <div class="card-title">Свечение активного элемента</div>
+                <div class="code-block">
+box-shadow: 
+  0 8px 24px rgba(212, 175, 55, 0.4),
+  0 0 40px rgba(212, 175, 55, 0.2);
+                </div>
+            </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <!-- Футер -->
+        <div style="text-align: center; padding: 40px 0; color: #888;">
+            <p style="font-size: 0.9rem; letter-spacing: 0.2em;">MONOPOLY GAME DESIGN SYSTEM</p>
+            <p style="font-size: 0.8rem; margin-top: 10px; opacity: 0.7;">Version 2.0 • May 2026</p>
+        </div>
+    </div>
+</body>
+</html>
